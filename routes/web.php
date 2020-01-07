@@ -11,11 +11,13 @@
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
+Route::get('/', 'AuthController@login');
+Route::post('/login', 'AuthController@loginPost');
+
+Route::post('logout', 'AuthController@logout');
+
+Route::middleware(['auth'])->group(function () {
+    Route::resource('users', 'UserController');
 });
 
 
-Route::get('users', function(){
-    return view('users.index');
-});

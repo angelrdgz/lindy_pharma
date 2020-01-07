@@ -9,3 +9,35 @@
 
 // Bootstrap
 //@import '~bootstrap/scss/bootstrap';
+
+html{
+    width: 100%;
+    height: 100%;
+
+    #login{
+        width: 100%;
+        height: 100%;
+
+        .flex{
+            height: 100%;
+
+            .h-12{
+                height: 100%;
+                display: flex;
+                flex-direction: row;
+                justify-content: center;
+                align-items: center;
+
+                .logo{
+                    width: 70%;
+                    display: block;
+                    margin: 10px auto;
+                }
+
+                .chemistry{
+                    width: 70%;
+                }
+            }
+        }
+    }
+}
