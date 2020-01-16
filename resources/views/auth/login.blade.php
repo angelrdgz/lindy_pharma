@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!--<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -11,10 +11,11 @@
 <div class="flex mb-4">
   <div class="w-1/2 bg-white h-12">
   <div class="w-full max-w-md">
+    <h1 class="text-center text-5xl">¡Bienvenido!</h1>
   <form action="{{ url('/login') }}" method="post" class="bg-white rounded px-8 pt-6 pb-8 mb-6">
    @csrf
   <div class="mb-4">
-      <img src="{{ asset('images/logo.jpg') }}" class="logo" alt="">
+      
     </div>
     @if (\Session::has('error'))
     <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
@@ -63,9 +64,62 @@
   </p>
 </div>
 </div>
-  <div class="w-1/2 bg-gray-300 h-12">
-  <img src="{{ asset('images/chemistry.png') }}" class="chemistry" alt="">
+  <div class="w-1/2 bg-white-300 h-12 flex flex-col">
+  <img src="{{ asset('images/logo.png') }}" class="logo" alt="">
+  <img src="{{ asset('images/chemistry_gif.gif') }}" class="chemistry" alt="">
 </div>
+</div>
+</body>
+</html>-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <link rel="stylesheet" href="{{ asset('css/app.css') }}">
+  <title>Lindy Pharma</title>
+</head>
+<body id="login">
+<div class="d-md-flex h-md-100 align-items-center">
+
+<!-- First Half -->
+
+<div class="col-md-6 p-0 bg-white h-md-100">
+    <div class="text-white d-md-flex align-items-center h-100 p-5 text-center justify-content-center">
+        <div class="logoarea pt-5 pb-5">
+        <h1 class="text-center text-5xl">¡Bienvenido!</h1>
+  <form action="{{ url('/login') }}" method="post" class="bg-white rounded px-8 pt-6 pb-8 mb-6">
+   @csrf
+  <div class="form-group">
+    <label for="exampleInputEmail1">Email</label>
+    <input type="email" name="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
+    @error('email')
+            <p class="text-red-500 text-xs text-danger italic">El usuario es requerido.</p>
+      @enderror 
+  </div>
+  <div class="form-group">
+    <label for="exampleInputPassword1">Contraseña</label>
+    <input name="password" type="password" class="form-control" id="exampleInputPassword1">
+    @error('password')
+            <p class="text-red-500 text-danger text-xs italic">La contraseña es requerida.</p>
+      @enderror 
+  </div>
+  <button type="submit" class="btn btn-primary">Entrar</button>
+</form>
+        </div>
+    </div>
+</div>
+
+<!-- Second Half -->
+
+<div class="col-md-6 p-0 bg-white h-md-100 loginarea">
+    <div class="d-flex flex-column justify-content-center align-items-center h-md-100 p-5 justify-content-center">
+    <img src="{{ asset('images/logo.png') }}" class="logo" alt="">
+  <img src="{{ asset('images/chemistry_gif.gif') }}" class="chemistry" alt="">
+    </div>
+</div>
+    
 </div>
 </body>
 </html>

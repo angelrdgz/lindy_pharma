@@ -23,7 +23,7 @@ class AuthController extends Controller
 
         if (Auth::attempt($credentials)) {
             // Authentication passed...
-            return redirect()->intended('users');
+            return redirect()->intended('usuarios');
         }else{
             return redirect()->back()->with('error', 'Email y/o contrasela incorrectos');
         }

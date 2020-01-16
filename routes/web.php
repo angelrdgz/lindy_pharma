@@ -17,7 +17,9 @@ Route::post('/login', 'AuthController@loginPost');
 Route::post('logout', 'AuthController@logout');
 
 Route::middleware(['auth'])->group(function () {
-    Route::resource('users', 'UserController');
+    Route::resource('usuarios', 'UserController');
+    Route::resource('insumos', 'SupplyController');
+    Route::resource('productos', 'ProductController');
 });
 
 

@@ -1,43 +1,43 @@
-// Fonts
-@import url('https://fonts.googleapis.com/css?family=Nunito');
-
-// Variables
-@import 'variables';
-@import 'tailwind';
-
-//@import '~tailwind/dist/tailwind';
-
-// Bootstrap
-//@import '~bootstrap/scss/bootstrap';
-
-html{
-    width: 100%;
-    height: 100%;
-
-    #login{
-        width: 100%;
-        height: 100%;
-
-        .flex{
-            height: 100%;
-
-            .h-12{
-                height: 100%;
-                display: flex;
-                flex-direction: row;
-                justify-content: center;
-                align-items: center;
-
-                .logo{
-                    width: 70%;
-                    display: block;
-                    margin: 10px auto;
+                // Fonts
+                @import url('https://fonts.googleapis.com/css?family=Nunito');
+                // Variables
+                @import 'variables';
+                //@import 'tailwind';
+                //@import '~tailwind/dist/tailwind';
+                // Bootstrap
+                @import '~bootstrap/scss/bootstrap';
+                html {
+                    width: 100%;
+                    height: 100%;
+                    #login {
+                        .logoarea {
+                            min-width: 320px;
+                        }
+                        h1 {
+                            color: #000;
+                        }
+                        label {
+                            color: #000 !important;
+                        }
+                        .logo {
+                            width: 300px;
+                        }
+                        .chemistry {
+                            width: 80%;
+                        }
+                        @media (min-width: 768px) {
+                            .h-md-100 {
+                                height: 100vh;
+                            }
+                        }
+                        .btn-round {
+                            border-radius: 30px;
+                        }
+                        .bg-indigo {
+                            background: indigo;
+                        }
+                        .text-cyan {
+                            color: #35bdff;
+                        }
+                    }
                 }
-
-                .chemistry{
-                    width: 70%;
-                }
-            }
-        }
-    }
-}
