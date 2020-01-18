@@ -20,6 +20,7 @@ Route::middleware(['auth'])->group(function () {
     Route::resource('usuarios', 'UserController');
     Route::resource('insumos', 'SupplyController');
     Route::resource('productos', 'ProductController');
+    Route::resource('recetas', 'RecipeController');
 });
 
 

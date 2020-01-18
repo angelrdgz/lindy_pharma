@@ -58,7 +58,11 @@
         <i class="fas fa-capsules"></i>
           <span>Insumos</span></a>
       </li>
-
+      <li class="nav-item">
+        <a class="nav-link" href="{{ url('recetas') }}">
+        <i class="fas fa-flask"></i>
+          <span>Recetas</span></a>
+      </li>
       <li class="nav-item">
         <a class="nav-link" href="{{ url('productos') }}">
         <i class="fas fa-boxes"></i>
