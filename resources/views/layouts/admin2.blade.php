@@ -13,6 +13,7 @@
 
   <!-- Custom fonts for this template-->
   <link href="{{ asset('css/font_awesome.css') }}" rel="stylesheet" type="text/css">
+  <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
   <link href="{{ asset('css/dataTables.bootstrap4.css') }}" rel="stylesheet" type="text/css">
   <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
 
@@ -35,7 +36,7 @@
           <i class="fas fa-laugh-wink"></i>
         </div>-->
         <div class="sidebar-brand-text mx-3">
-    <img src="{{ asset('images/logo.png') }}" class="logo" alt="">
+    <img src="{{ asset('images/logo.png') }}" class="logo p-1" alt="">
         </div>
       </a>
 
@@ -58,27 +59,37 @@
         <i class="fas fa-capsules"></i>
           <span>Insumos</span></a>
       </li>
-      <li class="nav-item">
+      <!--<li class="nav-item">
         <a class="nav-link" href="{{ url('recetas') }}">
         <i class="fas fa-flask"></i>
           <span>Recetas</span></a>
-      </li>
+      </li>-->
       <li class="nav-item">
         <a class="nav-link" href="{{ url('productos') }}">
-        <i class="fas fa-boxes"></i>
+        <i class="fas fa-flask"></i>
           <span>Productos</span></a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="{{ url('ordenes-de-fabricacion') }}">
+        <i class="fas fa-clipboard"></i>
+          <span>Ordenes de Fabricación</span></a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="{{ url('ordenes-de-compra') }}">
+        <i class="fas fa-cart-arrow-down"></i>
+          <span>Ordenes de Compra</span></a>
       </li>
 
       <!-- Divider -->
-      <hr class="sidebar-divider">
+      <!--<hr class="sidebar-divider">-->
 
       <!-- Heading -->
-      <div class="sidebar-heading">
+      <!--<div class="sidebar-heading">
         Interface
-      </div>
+      </div>-->
 
       <!-- Nav Item - Pages Collapse Menu -->
-      <li class="nav-item">
+      <!--<li class="nav-item">
         <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="true" aria-controls="collapseTwo">
           <i class="fas fa-fw fa-cog"></i>
           <span>Components</span>
@@ -91,8 +102,6 @@
           </div>
         </div>
       </li>
-
-      <!-- Nav Item - Utilities Collapse Menu -->
       <li class="nav-item">
         <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseUtilities" aria-expanded="true" aria-controls="collapseUtilities">
           <i class="fas fa-fw fa-wrench"></i>
@@ -109,15 +118,12 @@
         </div>
       </li>
 
-      <!-- Divider -->
       <hr class="sidebar-divider">
 
-      <!-- Heading -->
       <div class="sidebar-heading">
         Addons
       </div>
 
-      <!-- Nav Item - Pages Collapse Menu -->
       <li class="nav-item">
         <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapsePages" aria-expanded="true" aria-controls="collapsePages">
           <i class="fas fa-fw fa-folder"></i>
@@ -137,24 +143,24 @@
         </div>
       </li>
 
-      <!-- Nav Item - Charts -->
       <li class="nav-item">
         <a class="nav-link" href="charts.html">
           <i class="fas fa-fw fa-chart-area"></i>
           <span>Charts</span></a>
       </li>
 
-      <!-- Nav Item - Tables -->
       <li class="nav-item">
         <a class="nav-link" href="tables.html">
           <i class="fas fa-fw fa-table"></i>
           <span>Tables</span></a>
       </li>
 
-      <!-- Divider -->
-      <hr class="sidebar-divider d-none d-md-block">
+      <hr class="sidebar-divider d-none d-md-block">-->
 
       <!-- Sidebar Toggler (Sidebar) -->
+
+      <hr class="sidebar-divider d-none d-md-block">
+
       <div class="text-center d-none d-md-inline">
         <button class="rounded-circle border-0" id="sidebarToggle"></button>
       </div>
@@ -179,12 +185,12 @@
           <!-- Topbar Search -->
           <form class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search">
             <div class="input-group">
-              <input type="text" class="form-control bg-light border-0 small" placeholder="Search for..." aria-label="Search" aria-describedby="basic-addon2">
+              <!--<input type="text" class="form-control bg-light border-0 small" placeholder="Search for..." aria-label="Search" aria-describedby="basic-addon2">
               <div class="input-group-append">
                 <button class="btn btn-primary" type="button">
                   <i class="fas fa-search fa-sm"></i>
                 </button>
-              </div>
+              </div>-->
             </div>
           </form>
 
@@ -274,7 +280,7 @@
                 </h6>
                 <a class="dropdown-item d-flex align-items-center" href="#">
                   <div class="dropdown-list-image mr-3">
-                    <img class="rounded-circle" src="https://source.unsplash.com/fn_BT9fwg_E/60x60" alt="">
+                    <img class="rounded-circle" src="https://drogaspoliticacultura.net/wp-content/uploads/2017/09/placeholder-user.jpg" alt="">
                     <div class="status-indicator bg-success"></div>
                   </div>
                   <div class="font-weight-bold">
@@ -284,7 +290,7 @@
                 </a>
                 <a class="dropdown-item d-flex align-items-center" href="#">
                   <div class="dropdown-list-image mr-3">
-                    <img class="rounded-circle" src="https://source.unsplash.com/AU4VPcFN4LE/60x60" alt="">
+                    <img class="rounded-circle" src="https://drogaspoliticacultura.net/wp-content/uploads/2017/09/placeholder-user.jpg" alt="">
                     <div class="status-indicator"></div>
                   </div>
                   <div>
@@ -294,7 +300,7 @@
                 </a>
                 <a class="dropdown-item d-flex align-items-center" href="#">
                   <div class="dropdown-list-image mr-3">
-                    <img class="rounded-circle" src="https://source.unsplash.com/CS2uCrpNzJY/60x60" alt="">
+                    <img class="rounded-circle" src="https://drogaspoliticacultura.net/wp-content/uploads/2017/09/placeholder-user.jpg" alt="">
                     <div class="status-indicator bg-warning"></div>
                   </div>
                   <div>
@@ -304,7 +310,7 @@
                 </a>
                 <a class="dropdown-item d-flex align-items-center" href="#">
                   <div class="dropdown-list-image mr-3">
-                    <img class="rounded-circle" src="https://source.unsplash.com/Mv9hjnEUHR4/60x60" alt="">
+                    <img class="rounded-circle" src="https://drogaspoliticacultura.net/wp-content/uploads/2017/09/placeholder-user.jpg" alt="">
                     <div class="status-indicator bg-success"></div>
                   </div>
                   <div>
@@ -322,7 +328,7 @@
             <li class="nav-item dropdown no-arrow">
               <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 <span class="mr-2 d-none d-lg-inline text-gray-600 small">{{ Auth::user()->name }}</span>
-                <img class="img-profile rounded-circle" src="https://source.unsplash.com/QAB-WJcbgJk/60x60">
+                <img class="img-profile rounded-circle" src="https://drogaspoliticacultura.net/wp-content/uploads/2017/09/placeholder-user.jpg">
               </a>
               <!-- Dropdown - User Information -->
               <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="userDropdown">
@@ -442,6 +448,7 @@
 
   <!-- Bootstrap core JavaScript-->
   <script src="{{ asset('js/jquery_3.4.1.js') }}"></script>
+  <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
   <script src="{{ asset('js/bootstrap.js') }}"></script>
 
   <!-- Core plugin JavaScript-->
@@ -451,6 +458,17 @@
 
   <!-- Custom scripts for all pages-->
   <script src="{{ asset('js/sb-admin-2.js')}} "></script>
+
+  <script>
+
+  $(document).on('keypress','.number',function (e) {
+     //if the letter is not digit then display error and don't type anything
+     if (e.which != 8 && e.which != 0 && (e.which < 48 || e.which > 57)) {
+        //display error message
+               return false;
+    }
+   });
+  </script>
 
   @yield('script')
 

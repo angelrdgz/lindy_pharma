@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: localhost:3306
--- Tiempo de generación: 16-01-2020 a las 15:41:18
+-- Tiempo de generación: 28-01-2020 a las 05:53:08
 -- Versión del servidor: 5.7.23
 -- Versión de PHP: 7.2.8
 
@@ -17,11 +17,40 @@ SET time_zone = "+00:00";
 -- --------------------------------------------------------
 
 --
+-- Estructura de tabla para la tabla `departures`
+--
+
+CREATE TABLE `departures` (
+  `id` int(11) NOT NULL,
+  `product_id` int(11) NOT NULL,
+  `quantity` int(11) NOT NULL,
+  `mold` varchar(100) NOT NULL,
+  `line` varchar(100) NOT NULL,
+  `created_by` int(11) NOT NULL,
+  `client` varchar(150) NOT NULL,
+  `status` varchar(20) NOT NULL,
+  `type` int(11) NOT NULL,
+  `created_at` datetime NOT NULL,
+  `updated_at` datetime NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Volcado de datos para la tabla `departures`
+--
+
+INSERT INTO `departures` (`id`, `product_id`, `quantity`, `mold`, `line`, `created_by`, `client`, `status`, `type`, `created_at`, `updated_at`) VALUES
+(1, 1, 45, 'Molde 1', 'Linea 2', 1, 'Lindy', 'creada', 1, '2020-01-28 05:18:34', '2020-01-28 05:18:34'),
+(2, 1, 45, 'Molde 1', 'Linea 2', 1, 'Lindy', 'creada', 2, '2020-01-28 05:18:34', '2020-01-28 05:18:34');
+
+-- --------------------------------------------------------
+
+--
 -- Estructura de tabla para la tabla `products`
 --
 
 CREATE TABLE `products` (
   `id` int(11) NOT NULL,
+  `code` varchar(10) NOT NULL,
   `name` varchar(200) NOT NULL,
   `created_at` datetime NOT NULL,
   `updated_at` datetime NOT NULL
@@ -31,8 +60,47 @@ CREATE TABLE `products` (
 -- Volcado de datos para la tabla `products`
 --
 
-INSERT INTO `products` (`id`, `name`, `created_at`, `updated_at`) VALUES
-(1, 'Producto 1', '2020-01-15 00:00:00', '2020-01-15 00:00:00');
+INSERT INTO `products` (`id`, `code`, `name`, `created_at`, `updated_at`) VALUES
+(1, 'GPM0004', 'VITAGERUM, Vitaminas y Minerales.', '2020-01-26 04:55:45', '2020-01-26 05:25:46');
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `product_supplies`
+--
+
+CREATE TABLE `product_supplies` (
+  `id` int(11) NOT NULL,
+  `product_id` int(11) NOT NULL,
+  `supply_id` int(11) NOT NULL,
+  `quantity` decimal(10,4) NOT NULL,
+  `type` int(11) NOT NULL,
+  `created_at` datetime NOT NULL,
+  `updated_at` datetime NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Volcado de datos para la tabla `product_supplies`
+--
+
+INSERT INTO `product_supplies` (`id`, `product_id`, `supply_id`, `quantity`, `type`, `created_at`, `updated_at`) VALUES
+(11, 1, 1, '100.0000', 1, '2020-01-26 05:26:17', '2020-01-26 05:26:17'),
+(12, 1, 2, '500.0000', 1, '2020-01-26 05:26:17', '2020-01-26 05:26:17'),
+(13, 1, 9, '1.0000', 2, '2020-01-26 05:26:17', '2020-01-26 05:26:17'),
+(14, 1, 8, '2.0000', 2, '2020-01-26 05:26:17', '2020-01-26 05:26:17');
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `recipes`
+--
+
+CREATE TABLE `recipes` (
+  `id` int(11) NOT NULL,
+  `name` varchar(200) NOT NULL,
+  `created_at` datetime NOT NULL,
+  `updated_at` datetime NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -78,6 +146,7 @@ INSERT INTO `supplies` (`id`, `name`, `code`, `type_id`, `measurement_use`, `mea
 CREATE TABLE `supply_measurements` (
   `id` int(11) NOT NULL,
   `name` varchar(100) NOT NULL,
+  `code` varchar(5) NOT NULL,
   `created_at` datetime NOT NULL,
   `updated_at` datetime NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -86,12 +155,12 @@ CREATE TABLE `supply_measurements` (
 -- Volcado de datos para la tabla `supply_measurements`
 --
 
-INSERT INTO `supply_measurements` (`id`, `name`, `created_at`, `updated_at`) VALUES
-(1, 'Gramo', '2020-01-11 00:00:00', '2020-01-11 00:00:00'),
-(2, 'Kilogramo', '2020-01-11 00:00:00', '2020-01-11 00:00:00'),
-(3, 'Mililitro', '2020-01-11 00:00:00', '2020-01-11 00:00:00'),
-(4, 'Litro', '2020-01-11 00:00:00', '2020-01-11 00:00:00'),
-(5, 'Pieza', '2020-01-11 00:00:00', '2020-01-11 00:00:00');
+INSERT INTO `supply_measurements` (`id`, `name`, `code`, `created_at`, `updated_at`) VALUES
+(1, 'Gramo', 'Gr', '2020-01-11 00:00:00', '2020-01-11 00:00:00'),
+(2, 'Kilogramo', 'Kg', '2020-01-11 00:00:00', '2020-01-11 00:00:00'),
+(3, 'Mililitro', 'Ml', '2020-01-11 00:00:00', '2020-01-11 00:00:00'),
+(4, 'Litro', 'L', '2020-01-11 00:00:00', '2020-01-11 00:00:00'),
+(5, 'Pieza', 'Pieza', '2020-01-11 00:00:00', '2020-01-11 00:00:00');
 
 -- --------------------------------------------------------
 
@@ -172,9 +241,27 @@ INSERT INTO `user_roles` (`id`, `name`, `created_at`, `updated_at`) VALUES
 --
 
 --
+-- Indices de la tabla `departures`
+--
+ALTER TABLE `departures`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Indices de la tabla `products`
 --
 ALTER TABLE `products`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indices de la tabla `product_supplies`
+--
+ALTER TABLE `product_supplies`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indices de la tabla `recipes`
+--
+ALTER TABLE `recipes`
   ADD PRIMARY KEY (`id`);
 
 --
@@ -213,10 +300,28 @@ ALTER TABLE `user_roles`
 --
 
 --
+-- AUTO_INCREMENT de la tabla `departures`
+--
+ALTER TABLE `departures`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
 -- AUTO_INCREMENT de la tabla `products`
 --
 ALTER TABLE `products`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
+-- AUTO_INCREMENT de la tabla `product_supplies`
+--
+ALTER TABLE `product_supplies`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
+
+--
+-- AUTO_INCREMENT de la tabla `recipes`
+--
+ALTER TABLE `recipes`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT de la tabla `supplies`

@@ -82,6 +82,8 @@ body {
     background-color: #fff;
     .logo {
         max-width: 150px;
+        background: #fff;
+        border-radius: 10px;
     }
 }
 
@@ -10692,6 +10694,7 @@ a:focus {
 .sidebar {
     width: 6.5rem;
     min-height: 100vh;
+    background: #2146f5;
     .nav-item {
         position: relative;
         &:last-child {

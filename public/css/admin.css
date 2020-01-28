@@ -85,6 +85,8 @@ body {
 
 body .logo {
   max-width: 150px;
+  background: #fff;
+  border-radius: 10px;
 }
 
 [tabindex="-1"]:focus {
@@ -11814,6 +11816,7 @@ a:focus {
 .sidebar {
   width: 6.5rem;
   min-height: 100vh;
+  background: #2146f5;
 }
 
 .sidebar .nav-item {

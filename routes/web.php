@@ -21,6 +21,9 @@ Route::middleware(['auth'])->group(function () {
     Route::resource('insumos', 'SupplyController');
     Route::resource('productos', 'ProductController');
     Route::resource('recetas', 'RecipeController');
+    Route::resource('ordenes-de-fabricacion', 'DepartureController');
+    Route::resource('ordenes-de-compra', 'EntranceController');
+    
 });
 
 

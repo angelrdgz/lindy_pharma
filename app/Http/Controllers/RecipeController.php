@@ -12,8 +12,17 @@ class RecipeController extends Controller
 {
     public function index()
     {
-        /*$recipes = Recipe::all();
-        return view('recipes.index', ['recipes'=>$recipes]);*/
+        $recipes = Recipe::all();
+        return view('recipes.index', ['recipes'=>$recipes]);
+    }
+
+    public function create()
+    {
+        return view('recipes.create');
+    }
+
+    private function pdf()
+    {
         $data = [
             'title' => 'First PDF for Medium',
             'heading' => 'Hello from 99Points.info',

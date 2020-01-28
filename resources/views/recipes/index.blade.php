@@ -22,11 +22,8 @@
                 <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                   <thead>
                     <tr>
-                    <th>Código</th>
                     <th>Nombre</th>      
-      <th>Tipo</th>
-      <th>Medida de Uso</th>
-      <th>Medida de Compra</th>
+      <th>Creado Por</th>
       <th></th>
                     </tr>
                   </thead>
