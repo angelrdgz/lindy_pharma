@@ -38,7 +38,7 @@
       <td>{{ $order->quantity }}</td>      
       <td>{{ $order->client }}</td>
       <td>{{ $order->user->name }}</td>
-      <td>{{ $order->type == 1 ? "Contenido":"Covertura"}}</td>
+      <td>{{ $order->type == 1 ? "Contenido":"Cobertura"}}</td>
       <td>{{ $order->status }}</td>
       <td>
       <a href="{{ url('ordenes-de-fabricacion/'.$order->id.'/edit')}}" class="btn btn-warning btn-icon-split btn-sm">

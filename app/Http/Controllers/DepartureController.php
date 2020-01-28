@@ -30,7 +30,10 @@ class DepartureController extends Controller
         $product = Product::find($request->product);
 
         $folderPath = public_path('images/qrcode');
-        $response = mkdir($folderPath);
+        if (!file_exists($folderPath))
+        {
+            $response = mkdir($folderPath);
+        }
 
         if($product->supplies->count() > 0){
 
