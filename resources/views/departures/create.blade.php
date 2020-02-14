@@ -34,8 +34,8 @@
                 <input type="text" name="client" class="form-control">
               </div>
               <div class="col-sm-4">
-                <label for="">Molde</label>
-                <input type="text" name="mold" class="form-control">
+                <label for="">Lote</label>
+                <input type="text" name="lot" class="form-control">
               </div>
               <div class="col-sm-4">
                 <label for="">Linea</label>

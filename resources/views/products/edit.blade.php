@@ -35,7 +35,20 @@
       @enderror 
   </div>
     </div>
-    
+    <div class="col-sm-4">
+    <div class="form-group">
+    <label for="exampleFormControlInput1">Molder</label>
+    <select name="mold" id="" class="form-control @error('mold') is-invalid @enderror">
+      <option value="">Seleccionar molde</option>
+      @foreach($molds as $mold)
+       <option value="{{ $mold->id }}" {{$product->mold_id == $mold->id ? "selected":""}}>{{ $mold->name }}</option>
+      @endforeach
+    </select>
+    @error('name')
+            <p class="text-red-500 text-xs text-danger italic">{{ $message }}</p>
+      @enderror 
+  </div>
+    </div>
   </div>
   <hr>
   <div class="row">
@@ -51,6 +64,7 @@
           <tr class="text-center">
             <th>Nombre</th>
             <th>Cantidad</th>
+            <th>Exceso</th>
             <th>Medida de Uso</th>
             <th></th>
           </tr>
@@ -60,6 +74,7 @@
           <tr>
                         <td><input type="hidden" value="{{ $item->supply_id}}" class="idItem" name="idItem[]"/> <input type="text" value="{{ $item->supply->name }}" class="form-control itemContentidRow+'" /></td>
                         <td><input type="text" name="quantityItem[]" value="{{ $item->quantity}}" class="form-control" /></td>
+                        <td><input type="text" name="excessItem[]" value="{{ $item->excess}}" class="form-control" /></td>
                         <td class="text-center"><span> {{ $item->supply->measurementUse->name}} </span></td>
                         <td class="text-center">
                         <a class="btn btn-danger btn-circle removeRow">
@@ -87,6 +102,7 @@
           <tr class="text-center">
             <th>Nombre</th>
             <th>Cantidad</th>
+            <th>Exceso</th>
             <th>Medida de Uso</th>
             <th></th>
           </tr>
@@ -96,6 +112,7 @@
           <tr>
                         <td><input type="hidden" value="{{ $item->supply_id}}" class="idItemCover" name="idItemCover[]"/> <input type="text" value="{{ $item->supply->name }}" class="form-control itemContentIdRow" /></td>
                         <td><input type="text" name="quantityItemCover[]" value="{{ $item->quantity}}" class="form-control" /></td>
+                        <td><input type="text" name="excessItemCover[]" value="{{ $item->excess}}" class="form-control" /></td>
                         <td class="text-center"><span> {{ $item->supply->measurementUse->name}} </span></td>
                         <td class="text-center">
                         <a class="btn btn-danger btn-circle removeRow">

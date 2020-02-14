@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Product;
 use App\ProductSupply;
 use App\Supply;
+use App\Mold;
 use Illuminate\Http\Request;
 
 
@@ -21,7 +22,8 @@ class ProductController extends Controller
     public function create()
     {
         $supplies = Supply::all();
-        return view('products.create', ['supplies'=>$supplies]);
+        $molds = Mold::all();
+        return view('products.create', ['supplies'=>$supplies, 'molds'=>$molds]);
     }
 
     public function store(Request $request)
@@ -29,6 +31,7 @@ class ProductController extends Controller
         $product = new Product();
         $product->code = $request->code;
         $product->name = $request->name;
+        $product->mold_id = $request->mold;
         $product->save();
 
         foreach ($request->idItem as $key => $item) {
@@ -37,6 +40,7 @@ class ProductController extends Controller
             $prodSupply->product_id = $product->id;
             $prodSupply->supply_id = $request->idItem[$key];
             $prodSupply->quantity = $request->quantityItem[$key];
+            $prodSupply->excess = $request->excessItem[$key];
             $prodSupply->type = 1;
             $prodSupply->save();
             }
@@ -49,6 +53,7 @@ class ProductController extends Controller
             $prodSupply->product_id = $product->id;
             $prodSupply->supply_id = $request->idItemCover[$key];
             $prodSupply->quantity = $request->quantityItemCover[$key];
+            $prodSupply->excess = $request->excessItemCover[$key];
             $prodSupply->type = 2;
             $prodSupply->save();
             }                        
@@ -61,9 +66,10 @@ class ProductController extends Controller
     {
         $product = Product::find($id);
         $supplies = Supply::all();
+        $molds = Mold::all();
         $items = ProductSupply::where('product_id', $id)->where('type', 1)->get();
         $itemsCover = ProductSupply::where('product_id', $id)->where('type', 2)->get();
-        return view('products.edit', ['product'=>$product, 'supplies'=>$supplies, 'items'=>$items, 'itemsCover'=>$itemsCover]);
+        return view('products.edit', ['product'=>$product, 'molds'=>$molds, 'supplies'=>$supplies, 'items'=>$items, 'itemsCover'=>$itemsCover]);
     }
 
     public function update(Request $request, $id)
@@ -71,9 +77,11 @@ class ProductController extends Controller
         $product =  Product::find($id);
         $product->code = $request->code;
         $product->name = $request->name;
+        $product->mold_id = $request->mold;
         $product->save();
 
         $product->supplies()->delete();
+        $product->suppliesCover()->delete();
 
         foreach ($request->idItem as $key => $item) {
             if($request->idItem[$key] != NULL){
@@ -81,6 +89,7 @@ class ProductController extends Controller
             $prodSupply->product_id = $product->id;
             $prodSupply->supply_id = $request->idItem[$key];
             $prodSupply->quantity = $request->quantityItem[$key];
+            $prodSupply->excess = $request->excessItem[$key];
             $prodSupply->type = 1;
             $prodSupply->save();
             }
@@ -93,6 +102,7 @@ class ProductController extends Controller
             $prodSupply->product_id = $product->id;
             $prodSupply->supply_id = $request->idItemCover[$key];
             $prodSupply->quantity = $request->quantityItemCover[$key];
+            $prodSupply->excess = $request->excessItemCover[$key];
             $prodSupply->type = 2;
             $prodSupply->save();
             }                        

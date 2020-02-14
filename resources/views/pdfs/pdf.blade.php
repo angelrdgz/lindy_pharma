@@ -3,8 +3,25 @@
 <head>
  <title>Orden de Fabricación</title>
  <style>
+   body{
+    font-family: sans-serif;
+   }
    .text-center{
      text-align: center;
+   }
+   .text-right{
+     text-align: right;
+   }
+   .ot{
+     background: #ccc;
+     font-size: 20px;
+     text-transform: uppercase;
+   }
+   .lot{
+     background: #ccc;
+     border: 1px solid #000;
+     font-size: 20px;
+     text-transform: uppercase;
    }
      table.bordered{
          font-size: 10px;
@@ -13,20 +30,23 @@
      }
 
      table.item { 
-    width: 750px; 
+    width: 100%; 
     border-collapse: collapse; 
-    margin:50px auto;
+    margin: 0px auto;
     }
     table.item th { 
-    background: #3498db; 
-    color: white; 
+    background: #ccc; 
+    border: 1px solid #888; 
+    color: #000; 
     font-weight: bold; 
     }
     table.item td, table.item th { 
     padding: 10px; 
-    border: 1px solid #ccc; 
-    text-align: left; 
+    border: 1px solid #888;
     font-size: 10px;
+    }
+    .logo{
+      width: 100px;
     }
     .qr{
       width: 100px;
@@ -35,10 +55,27 @@
  </style>
 </head>
 <body>
+  @php
+   $days = ["", "lunes", "martes", "miercoles", "jueves", "viernes", "sabado", "domingo"];
+   $months = ["","enero", "febrero", "marzo", "abril", "mayo", "junio", "julio", "agosto", "septiembre", "octubre", "noviembre", "diciembre"];
+  @endphp
 
-<h1 class="text-center">Orden de Fabricación</h1>
+
 
   <table width="100%" class="bordered" style="width:100%;" border="0">
+      <tr>
+        <td>
+        <img src="{{ public_path().'/images/logo.png' }}" class="logo" alt="">
+        </td>
+        <td colspan="8">
+         <h2 class="text-center ">ORDEN DE PRODUCCIÓN</h2>
+        </td>
+        <td class="text-right">
+          <p style="margin:1px;">Anexo 1</p>
+          <p style="margin:1px;">LPH-4K-02</p>
+          <p style="margin:1px;">rev: Nuevo</p>
+        </td>
+      </tr>
       <tr>
         <td></td>
         <td></td>
@@ -49,11 +86,11 @@
         <td></td>
         <td></td>
         <td>Orden de Trabajo</td>
-        <td>OT-{{ sprintf("%04s", $order->id)}}</td>
+        <td class="ot text-right">OT-{{ sprintf("%04s", $order->id)}}/1.0</td>
       </tr>
       <tr>
           <td>Código del granel:</td>
-        <td>{{ $product->code }}</td>
+        <td><b>{{ $product->code }}</b></td>
         <td></td>
         <td></td>
         <td></td>
@@ -61,14 +98,11 @@
         <td></td>
         <td></td>
         <td rowspan="2">No. de lote	</td>
-        <td rowspan="2">PM2001001</td>
+        <td class="lot text-center" rowspan="2">PM2001001</td>
       </tr>
       <tr>
           <td>Nombre del producto:</td>
-        <td>{{ $product->name }}</td>
-        <td></td>
-        <td></td>
-        <td></td>
+        <td colspan="4"><b>{{ $product->name }}</b></td>
         <td></td>
         <td></td>
         <td></td>
@@ -79,15 +113,15 @@
         <td></td>
         <td></td>
         <td>Tamaño de Lote:</td>
-        <td>{{ $order->quantity}}</td>
+        <td class="text-right"><b>{{ number_format($order->quantity) }}</b></td>
         <td>cápsulas	</td>
         <td></td>
         <td>Fecha de Fabricación:</td>
-        <td> {{date('d/m/Y', strtotime($order->created_at))}} </td>
+        <td></td>
       </tr>
       <tr>
-          <td>Código del granel:</td>
-        <td>GPM0004</td>
+          <td></td>
+        <td></td>
         <td></td>
         <td></td>
         <td></td>
@@ -95,11 +129,11 @@
         <td></td>
         <td></td>
         <td>Fecha de Caducidad:</td>
-        <td>___________________________</td>
+        <td></td>
       </tr>
       <tr>
         <td>Fecha de emisión:</td>
-        <td>07ENE20</td>
+        <td><b>{{ $days[date('N', strtotime($order->created_at))].', '.date('d', strtotime($order->created_at)).' de '.$months[date('n', strtotime($order->created_at))].' de '.date('Y', strtotime($order->created_at))}}</b></td>
         <td></td>
         <td></td>
         <td></td>
@@ -107,36 +141,43 @@
         <td></td>
         <td></td>
         <td></td>
-        <td></td>
-      </tr>
-      <tr>
-        <td>Peso de contenido:</td>
-        <td>865,00</td>
-        <td>mg</td>
-        <td></td>
-        <td>Molde:</td>
-        <td>{{ $order->mold }}</td>
-        <td></td>
-        <td>Cliente:</td>
-        <td>{{ $order->client }}</td>
-        <td rowspan="3" class="text-center">
+        <td rowspan="4" class="text-center">
           <img class="qr" src="{{ public_path().'/images/qrcode/qrcode_'.$order->id.'.png' }}" alt="">
         </td>
       </tr>
+      @php
+      if($order->type == 1){
+           $supplies = $product->supplies;
+           $totalSupplies = $product->supplies->sum('quantity');
+         }else{
+          $supplies = $product->suppliesCover;
+          $totalSupplies = $product->supplies->sum('quantity');
+         }
+      @endphp
       <tr>
-        <td>Peso máximo:</td>
-        <td>951,50</td>
+        <td>Peso de contenido:</td>
+        <td>{{ number_format($totalSupplies,2) }}</td>
         <td>mg</td>
         <td></td>
-        <td>Tiempo de encapsulado:</td>
+        <td>Molde:</td>
+        <td>{{ $order->product->mold->name }}</td>
         <td></td>
+        <td>Cliente:</td>
+        <td>{{ $order->client }}</td>
+      </tr>
+      <tr>
+        <td>Peso máximo:</td>
+        <td>{{ number_format(($totalSupplies + ($totalSupplies * 0.06)),2) }}</td>
+        <td>mg</td>
+        <td></td>
+        <td colspan="3">Tiempo de encapsulado:</td>
         <td></td>
         <td></td>
         <td></td>
       </tr>
       <tr>
         <td>Peso mínimo:</td>
-        <td>778,50</td>
+        <td>{{ number_format(($totalSupplies - ($totalSupplies * 0.06)),2) }}</td>
         <td>mg</td>
         <td></td>
         <td>Línea:</td>
@@ -146,16 +187,11 @@
         <td></td>
       </tr>
     </table>
-
-
     @if($order->type == 1)
-    <h4 class="text-center">CONTENIDO DE LA CAPSULA</h4>
+    <h4 class="text-center" style="margin-top:45px; margin-bottom: 0px;">CONTENIDO DE LA CAPSULA</h4>
     @else
-    <h4 class="text-center">ENVOLVENTE DE LA CAPSULA</h4>
+    <h4 class="text-center" style="margin-top:45px; margin-bottom: 0px;">ENVOLVENTE DE LA CAPSULA</h4>
     @endif
-
-    
-
     <table class="item" width="100%" class="bordered" style="width:100%" border="0">
       <thead>
         <tr>
@@ -176,16 +212,10 @@
          $totalFirst = 0;
          $totalSecond = 0;
          $totalThird = 0;
-
-         if($order->type == 1){
-           $supplies = $product->supplies;
-         }else{
-          $supplies = $product->suppliesCover;
-         }
         @endphp
         @foreach($supplies as $supply)
          <tr>
-           <td>{{ $supply->supply->code }}</td>
+           <td class="text-center">{{ $supply->supply->code }}</td>
            <td>{{ $supply->supply->name }}</td>
            <td>{{ $supply->quantity }}</td>
            <td>{{ $supply->supply->measurementUse->code }}</td>
@@ -218,6 +248,10 @@
         </tr>
       </tfoot>
     </table>
+
+    <htmlpagefooter name="footer">
+contact mail etc
+</htmlpagefooter>
 
     <table style="width:100%;">
       <tbody>

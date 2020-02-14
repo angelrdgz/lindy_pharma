@@ -34,7 +34,20 @@
       @enderror 
   </div>
     </div>
-    
+    <div class="col-sm-4">
+    <div class="form-group">
+    <label for="exampleFormControlInput1">Molder</label>
+    <select name="mold" id="" class="form-control @error('mold') is-invalid @enderror">
+      <option value="">Seleccionar molde</option>
+      @foreach($molds as $mold)
+       <option value="{{ $mold->id }}">{{ $mold->name }}</option>
+      @endforeach
+    </select>
+    @error('name')
+            <p class="text-red-500 text-xs text-danger italic">{{ $message }}</p>
+      @enderror 
+  </div>
+    </div>
   </div>
   <hr>
   <div class="row">
@@ -42,7 +55,7 @@
       <table class="table contentTable">
         <thead>
           <tr>
-            <th colspan="2">Contenido de la Capsula</th>
+            <th colspan="3">Contenido de la Capsula</th>
             <th class="text-right">
               <a class="btn btn-link addContentRow">Agregar Insumo</a>
             </th>
@@ -50,6 +63,7 @@
           <tr>
             <th>Nombre</th>
             <th>Cantidad</th>
+            <th>Exceso</th>
             <th>Medida de Uso</th>
           </tr>
         </thead>
@@ -65,8 +79,8 @@
       <table class="table coverTable">
         <thead>
           <tr>
-            <th colspan="2">Envolvente de la Capsula</th>
-            <th>
+            <th colspan="3">Envolvente de la Capsula</th>
+            <th class="text-right">
              <a  class="btn btn-link addCoverRow">Agregar Insumo</a>
             </th>
           </tr>
@@ -75,6 +89,7 @@
           <tr>
             <td>Nombre</td>
             <td>Cantidad</td>
+            <th>Exceso</th>
             <td>Medida de Uso</td>
           </tr>
         </tbody>
@@ -104,7 +119,7 @@
                     var availableItems = [];
 
                     @foreach($supplies as $supply)
-                     availableItems.push({id: "{{$supply->id}}",value: "{{$supply->name}}", label: "{{$supply->name}}", measurement: "{{$supply->measurementUse->name}}"})
+                     availableItems.push({id: "{{$supply->id}}",value: "{{$supply->name}}", label: "{{$supply->code}} {{$supply->name}}", measurement: "{{$supply->measurementUse->name}}"})
                     @endforeach
     
                        $(document).on('click', '.addContentRow', function(){
@@ -114,7 +129,8 @@
                          let idRow = $('.tableContent tbody tr').length +1;
                         $('.contentTable').append('<tr class="activeRow">'+
                         '<td><input type="hidden" class="idItem" name="idItem[]"/> <input type="text" class="form-control itemContent'+idRow+'" /></td>'+
-                        '<td><input type="text" name="quantityItem[]" class="form-control number" /></td>'+
+                        '<td><input type="text" name="quantityItem[]" class="form-control number"/></td>'+
+                        '<td><input type="text" name="excessItem[]" class="form-control number" value="0.0"/></td>'+
                         '<td><span> - </span></td>'+
                         '</tr>')
 
@@ -136,6 +152,7 @@ let idRow = $('.tableCover tbody tr').length +1;
 $('.coverTable').append('<tr class="activeRow">'+
 '<td><input type="hidden" class="idItem" name="idItemCover[]"/> <input type="text" class="form-control itemCover'+idRow+'" /></td>'+
 '<td><input type="text" name="quantityItemCover[]" class="form-control number" /></td>'+
+'<td><input type="text" name="excessItemCover[]" class="form-control number" value="0.0"/></td>'+
 '<td><span> - </span></td>'+
 '</tr>')
 

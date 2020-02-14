@@ -13,4 +13,8 @@ class Product extends Model
     public function suppliesCover(){
         return $this->hasMany('App\ProductSupply')->where('type', 2);
     }
+
+    public function mold(){
+        return $this->belongsTo('App\Mold');
+    }
 }

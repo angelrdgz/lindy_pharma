@@ -1,30 +1,30 @@
 -- phpMyAdmin SQL Dump
--- version 4.8.3
+-- version 4.9.3
 -- https://www.phpmyadmin.net/
 --
--- Servidor: localhost:3306
--- Tiempo de generación: 28-01-2020 a las 05:53:08
--- Versión del servidor: 5.7.23
--- Versión de PHP: 7.2.8
+-- Host: localhost:3306
+-- Generation Time: Feb 14, 2020 at 10:56 PM
+-- Server version: 5.7.26
+-- PHP Version: 7.3.9
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+00:00";
 
 --
--- Base de datos: `lindy`
+-- Database: `lindy`
 --
 
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla `departures`
+-- Table structure for table `departures`
 --
 
 CREATE TABLE `departures` (
   `id` int(11) NOT NULL,
   `product_id` int(11) NOT NULL,
   `quantity` int(11) NOT NULL,
-  `mold` varchar(100) NOT NULL,
+  `lot` varchar(100) NOT NULL,
   `line` varchar(100) NOT NULL,
   `created_by` int(11) NOT NULL,
   `client` varchar(150) NOT NULL,
@@ -35,38 +35,60 @@ CREATE TABLE `departures` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
--- Volcado de datos para la tabla `departures`
+-- Dumping data for table `departures`
 --
 
-INSERT INTO `departures` (`id`, `product_id`, `quantity`, `mold`, `line`, `created_by`, `client`, `status`, `type`, `created_at`, `updated_at`) VALUES
+INSERT INTO `departures` (`id`, `product_id`, `quantity`, `lot`, `line`, `created_by`, `client`, `status`, `type`, `created_at`, `updated_at`) VALUES
 (1, 1, 45, 'Molde 1', 'Linea 2', 1, 'Lindy', 'creada', 1, '2020-01-28 05:18:34', '2020-01-28 05:18:34'),
 (2, 1, 45, 'Molde 1', 'Linea 2', 1, 'Lindy', 'creada', 2, '2020-01-28 05:18:34', '2020-01-28 05:18:34');
 
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla `products`
+-- Table structure for table `molds`
+--
+
+CREATE TABLE `molds` (
+  `id` int(11) NOT NULL,
+  `name` varchar(100) NOT NULL,
+  `created_at` datetime NOT NULL,
+  `updated_at` datetime NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Dumping data for table `molds`
+--
+
+INSERT INTO `molds` (`id`, `name`, `created_at`, `updated_at`) VALUES
+(1, 'Molde 1', '2020-01-29 00:00:00', '2020-01-29 00:00:00'),
+(2, 'Molde 2', '2020-01-29 00:00:00', '2020-01-29 00:00:00');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `products`
 --
 
 CREATE TABLE `products` (
   `id` int(11) NOT NULL,
   `code` varchar(10) NOT NULL,
   `name` varchar(200) NOT NULL,
+  `mold_id` int(11) NOT NULL,
   `created_at` datetime NOT NULL,
   `updated_at` datetime NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
--- Volcado de datos para la tabla `products`
+-- Dumping data for table `products`
 --
 
-INSERT INTO `products` (`id`, `code`, `name`, `created_at`, `updated_at`) VALUES
-(1, 'GPM0004', 'VITAGERUM, Vitaminas y Minerales.', '2020-01-26 04:55:45', '2020-01-26 05:25:46');
+INSERT INTO `products` (`id`, `code`, `name`, `mold_id`, `created_at`, `updated_at`) VALUES
+(1, 'GPM0004', 'VITAGERUM, Vitaminas y Minerales.', 2, '2020-01-26 04:55:45', '2020-01-26 05:25:46');
 
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla `product_supplies`
+-- Table structure for table `product_supplies`
 --
 
 CREATE TABLE `product_supplies` (
@@ -74,25 +96,26 @@ CREATE TABLE `product_supplies` (
   `product_id` int(11) NOT NULL,
   `supply_id` int(11) NOT NULL,
   `quantity` decimal(10,4) NOT NULL,
+  `excess` decimal(3,2) NOT NULL DEFAULT '0.00',
   `type` int(11) NOT NULL,
   `created_at` datetime NOT NULL,
   `updated_at` datetime NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
--- Volcado de datos para la tabla `product_supplies`
+-- Dumping data for table `product_supplies`
 --
 
-INSERT INTO `product_supplies` (`id`, `product_id`, `supply_id`, `quantity`, `type`, `created_at`, `updated_at`) VALUES
-(11, 1, 1, '100.0000', 1, '2020-01-26 05:26:17', '2020-01-26 05:26:17'),
-(12, 1, 2, '500.0000', 1, '2020-01-26 05:26:17', '2020-01-26 05:26:17'),
-(13, 1, 9, '1.0000', 2, '2020-01-26 05:26:17', '2020-01-26 05:26:17'),
-(14, 1, 8, '2.0000', 2, '2020-01-26 05:26:17', '2020-01-26 05:26:17');
+INSERT INTO `product_supplies` (`id`, `product_id`, `supply_id`, `quantity`, `excess`, `type`, `created_at`, `updated_at`) VALUES
+(19, 1, 1, '100.0000', '1.20', 1, '2020-01-30 01:45:49', '2020-01-30 01:45:49'),
+(20, 1, 2, '500.0000', '3.40', 1, '2020-01-30 01:45:49', '2020-01-30 01:45:49'),
+(21, 1, 9, '1.0000', '0.80', 2, '2020-01-30 01:45:49', '2020-01-30 01:45:49'),
+(22, 1, 8, '2.0000', '5.90', 2, '2020-01-30 01:45:49', '2020-01-30 01:45:49');
 
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla `recipes`
+-- Table structure for table `recipes`
 --
 
 CREATE TABLE `recipes` (
@@ -105,7 +128,7 @@ CREATE TABLE `recipes` (
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla `supplies`
+-- Table structure for table `supplies`
 --
 
 CREATE TABLE `supplies` (
@@ -121,7 +144,7 @@ CREATE TABLE `supplies` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
--- Volcado de datos para la tabla `supplies`
+-- Dumping data for table `supplies`
 --
 
 INSERT INTO `supplies` (`id`, `name`, `code`, `type_id`, `measurement_use`, `measurement_buy`, `stock`, `created_at`, `updated_at`) VALUES
@@ -140,7 +163,7 @@ INSERT INTO `supplies` (`id`, `name`, `code`, `type_id`, `measurement_use`, `mea
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla `supply_measurements`
+-- Table structure for table `supply_measurements`
 --
 
 CREATE TABLE `supply_measurements` (
@@ -152,7 +175,7 @@ CREATE TABLE `supply_measurements` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
--- Volcado de datos para la tabla `supply_measurements`
+-- Dumping data for table `supply_measurements`
 --
 
 INSERT INTO `supply_measurements` (`id`, `name`, `code`, `created_at`, `updated_at`) VALUES
@@ -165,7 +188,7 @@ INSERT INTO `supply_measurements` (`id`, `name`, `code`, `created_at`, `updated_
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla `supply_types`
+-- Table structure for table `supply_types`
 --
 
 CREATE TABLE `supply_types` (
@@ -177,7 +200,7 @@ CREATE TABLE `supply_types` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
--- Volcado de datos para la tabla `supply_types`
+-- Dumping data for table `supply_types`
 --
 
 INSERT INTO `supply_types` (`id`, `name`, `code`, `created_at`, `updated_at`) VALUES
@@ -189,7 +212,7 @@ INSERT INTO `supply_types` (`id`, `name`, `code`, `created_at`, `updated_at`) VA
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla `users`
+-- Table structure for table `users`
 --
 
 CREATE TABLE `users` (
@@ -206,7 +229,7 @@ CREATE TABLE `users` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
--- Volcado de datos para la tabla `users`
+-- Dumping data for table `users`
 --
 
 INSERT INTO `users` (`id`, `name`, `email`, `phone`, `role_id`, `email_verified_at`, `password`, `remember_token`, `created_at`, `updated_at`) VALUES
@@ -217,7 +240,7 @@ INSERT INTO `users` (`id`, `name`, `email`, `phone`, `role_id`, `email_verified_
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla `user_roles`
+-- Table structure for table `user_roles`
 --
 
 CREATE TABLE `user_roles` (
@@ -228,7 +251,7 @@ CREATE TABLE `user_roles` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
--- Volcado de datos para la tabla `user_roles`
+-- Dumping data for table `user_roles`
 --
 
 INSERT INTO `user_roles` (`id`, `name`, `created_at`, `updated_at`) VALUES
@@ -237,118 +260,130 @@ INSERT INTO `user_roles` (`id`, `name`, `created_at`, `updated_at`) VALUES
 (3, 'Químico', '2020-01-11 00:00:00', '2020-01-11 00:00:00');
 
 --
--- Índices para tablas volcadas
+-- Indexes for dumped tables
 --
 
 --
--- Indices de la tabla `departures`
+-- Indexes for table `departures`
 --
 ALTER TABLE `departures`
   ADD PRIMARY KEY (`id`);
 
 --
--- Indices de la tabla `products`
+-- Indexes for table `molds`
+--
+ALTER TABLE `molds`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `products`
 --
 ALTER TABLE `products`
   ADD PRIMARY KEY (`id`);
 
 --
--- Indices de la tabla `product_supplies`
+-- Indexes for table `product_supplies`
 --
 ALTER TABLE `product_supplies`
   ADD PRIMARY KEY (`id`);
 
 --
--- Indices de la tabla `recipes`
+-- Indexes for table `recipes`
 --
 ALTER TABLE `recipes`
   ADD PRIMARY KEY (`id`);
 
 --
--- Indices de la tabla `supplies`
+-- Indexes for table `supplies`
 --
 ALTER TABLE `supplies`
   ADD PRIMARY KEY (`id`);
 
 --
--- Indices de la tabla `supply_measurements`
+-- Indexes for table `supply_measurements`
 --
 ALTER TABLE `supply_measurements`
   ADD PRIMARY KEY (`id`);
 
 --
--- Indices de la tabla `supply_types`
+-- Indexes for table `supply_types`
 --
 ALTER TABLE `supply_types`
   ADD PRIMARY KEY (`id`);
 
 --
--- Indices de la tabla `users`
+-- Indexes for table `users`
 --
 ALTER TABLE `users`
   ADD PRIMARY KEY (`id`),
   ADD UNIQUE KEY `users_email_unique` (`email`);
 
 --
--- Indices de la tabla `user_roles`
+-- Indexes for table `user_roles`
 --
 ALTER TABLE `user_roles`
   ADD PRIMARY KEY (`id`);
 
 --
--- AUTO_INCREMENT de las tablas volcadas
+-- AUTO_INCREMENT for dumped tables
 --
 
 --
--- AUTO_INCREMENT de la tabla `departures`
+-- AUTO_INCREMENT for table `departures`
 --
 ALTER TABLE `departures`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
--- AUTO_INCREMENT de la tabla `products`
+-- AUTO_INCREMENT for table `molds`
+--
+ALTER TABLE `molds`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
+-- AUTO_INCREMENT for table `products`
 --
 ALTER TABLE `products`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
--- AUTO_INCREMENT de la tabla `product_supplies`
+-- AUTO_INCREMENT for table `product_supplies`
 --
 ALTER TABLE `product_supplies`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=23;
 
 --
--- AUTO_INCREMENT de la tabla `recipes`
+-- AUTO_INCREMENT for table `recipes`
 --
 ALTER TABLE `recipes`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT de la tabla `supplies`
+-- AUTO_INCREMENT for table `supplies`
 --
 ALTER TABLE `supplies`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
--- AUTO_INCREMENT de la tabla `supply_measurements`
+-- AUTO_INCREMENT for table `supply_measurements`
 --
 ALTER TABLE `supply_measurements`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
--- AUTO_INCREMENT de la tabla `supply_types`
+-- AUTO_INCREMENT for table `supply_types`
 --
 ALTER TABLE `supply_types`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
--- AUTO_INCREMENT de la tabla `users`
+-- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
   MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
--- AUTO_INCREMENT de la tabla `user_roles`
+-- AUTO_INCREMENT for table `user_roles`
 --
 ALTER TABLE `user_roles`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;

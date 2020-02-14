@@ -40,7 +40,7 @@ class DepartureController extends Controller
             $departure = new Departure();
             $departure->product_id = $request->product;
             $departure->client = $request->client;
-            $departure->mold = $request->mold;
+            $departure->lot = $request->lot;
             $departure->line = $request->line;
             $departure->status = "creada";
             $departure->quantity = $request->quantity;
@@ -57,7 +57,7 @@ class DepartureController extends Controller
             $departure = new Departure();
             $departure->product_id = $request->product;
             $departure->client = $request->client;
-            $departure->mold = $request->mold;
+            $departure->lot = $request->lot;
             $departure->line = $request->line;
             $departure->status = "creada";
             $departure->quantity = $request->quantity;
