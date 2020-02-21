@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 4.9.3
+-- version 4.9.0.1
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Generation Time: Feb 14, 2020 at 10:56 PM
+-- Generation Time: Feb 21, 2020 at 03:48 PM
 -- Server version: 5.7.26
--- PHP Version: 7.3.9
+-- PHP Version: 7.2.21
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+00:00";
@@ -41,6 +41,59 @@ CREATE TABLE `departures` (
 INSERT INTO `departures` (`id`, `product_id`, `quantity`, `lot`, `line`, `created_by`, `client`, `status`, `type`, `created_at`, `updated_at`) VALUES
 (1, 1, 45, 'Molde 1', 'Linea 2', 1, 'Lindy', 'creada', 1, '2020-01-28 05:18:34', '2020-01-28 05:18:34'),
 (2, 1, 45, 'Molde 1', 'Linea 2', 1, 'Lindy', 'creada', 2, '2020-01-28 05:18:34', '2020-01-28 05:18:34');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `entrances`
+--
+
+CREATE TABLE `entrances` (
+  `id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `delivery_date` date NOT NULL,
+  `status` varchar(30) NOT NULL,
+  `created_at` datetime NOT NULL,
+  `updated_at` datetime NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Dumping data for table `entrances`
+--
+
+INSERT INTO `entrances` (`id`, `user_id`, `delivery_date`, `status`, `created_at`, `updated_at`) VALUES
+(3, 1, '2020-02-27', 'Creada', '2020-02-17 01:25:54', '2020-02-17 01:25:54'),
+(4, 1, '2020-02-28', 'Creada', '2020-02-17 02:34:02', '2020-02-17 02:34:02');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `entrance_items`
+--
+
+CREATE TABLE `entrance_items` (
+  `id` int(11) NOT NULL,
+  `entrance_id` int(11) NOT NULL,
+  `supply_id` int(11) NOT NULL,
+  `quantity` decimal(10,4) NOT NULL,
+  `comments` text,
+  `created_at` datetime NOT NULL,
+  `updated_at` datetime NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Dumping data for table `entrance_items`
+--
+
+INSERT INTO `entrance_items` (`id`, `entrance_id`, `supply_id`, `quantity`, `comments`, `created_at`, `updated_at`) VALUES
+(1, 3, 1, '1.0000', NULL, '2020-02-17 01:25:54', '2020-02-17 01:25:54'),
+(2, 3, 2, '2.0000', NULL, '2020-02-17 01:25:54', '2020-02-17 01:25:54'),
+(3, 3, 3, '3.0000', NULL, '2020-02-17 01:25:54', '2020-02-17 01:25:54'),
+(8, 4, 1, '1.0000', NULL, '2020-02-17 02:35:09', '2020-02-17 02:35:09'),
+(9, 4, 2, '2.0000', NULL, '2020-02-17 02:35:09', '2020-02-17 02:35:09'),
+(10, 4, 3, '3.0000', NULL, '2020-02-17 02:35:09', '2020-02-17 02:35:09'),
+(11, 4, 5, '5.0000', NULL, '2020-02-17 02:35:09', '2020-02-17 02:35:09'),
+(12, 4, 10, '3.0000', NULL, '2020-02-17 02:35:09', '2020-02-17 02:35:09');
 
 -- --------------------------------------------------------
 
@@ -257,7 +310,8 @@ CREATE TABLE `user_roles` (
 INSERT INTO `user_roles` (`id`, `name`, `created_at`, `updated_at`) VALUES
 (1, 'Administrador', '2020-01-11 00:00:00', '2020-01-11 00:00:00'),
 (2, 'Supervisor', '2020-01-11 00:00:00', '2020-01-11 00:00:00'),
-(3, 'Químico', '2020-01-11 00:00:00', '2020-01-11 00:00:00');
+(3, 'Químico', '2020-01-11 00:00:00', '2020-01-11 00:00:00'),
+(4, 'Almacen', '2020-02-20 00:00:00', '2020-02-20 00:00:00');
 
 --
 -- Indexes for dumped tables
@@ -267,6 +321,18 @@ INSERT INTO `user_roles` (`id`, `name`, `created_at`, `updated_at`) VALUES
 -- Indexes for table `departures`
 --
 ALTER TABLE `departures`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `entrances`
+--
+ALTER TABLE `entrances`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `entrance_items`
+--
+ALTER TABLE `entrance_items`
   ADD PRIMARY KEY (`id`);
 
 --
@@ -335,6 +401,18 @@ ALTER TABLE `departures`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
+-- AUTO_INCREMENT for table `entrances`
+--
+ALTER TABLE `entrances`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+
+--
+-- AUTO_INCREMENT for table `entrance_items`
+--
+ALTER TABLE `entrance_items`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
+
+--
 -- AUTO_INCREMENT for table `molds`
 --
 ALTER TABLE `molds`
@@ -386,4 +464,4 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT for table `user_roles`
 --
 ALTER TABLE `user_roles`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
