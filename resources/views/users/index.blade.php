@@ -4,8 +4,18 @@
 <div class="row">
   <div class="col-sm-12">
   <div class="card shadow mb-4">
-            <div class="card-header py-3">
-              <h6 class="m-0 font-weight-bold text-primary">Usuarios</h6>
+            <div class="card-header">
+              <div class="row">
+                <div class="col-sm-10 pt-2">
+                <h5 class="m-0 font-weight-bold text-primary">Usuarios</h5>
+                </div>
+                <div class="col-sm-2">
+                  <a href="{{ url('usuarios/create') }}" class="btn btn-link">
+                  <i class="fas fa-plus"></i>
+                  Nuevo usuario
+                </a>
+                </div>
+              </div>
             </div>
             <div class="card-body">
               <div class="table-responsive">

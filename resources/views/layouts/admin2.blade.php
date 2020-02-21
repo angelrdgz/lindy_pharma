@@ -13,7 +13,7 @@
 
   <!-- Custom fonts for this template-->
   <link href="{{ asset('css/font_awesome.css') }}" rel="stylesheet" type="text/css">
-  <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+  <link rel="stylesheet" href="{{ asset('css/jquery_ui.css')}}">
   <link href="{{ asset('css/dataTables.bootstrap4.css') }}" rel="stylesheet" type="text/css">
   <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
 
@@ -448,7 +448,7 @@
 
   <!-- Bootstrap core JavaScript-->
   <script src="{{ asset('js/jquery_3.4.1.js') }}"></script>
-  <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+  <script src="{{ asset('js/jquery_ui.js')}}"></script>
   <script src="{{ asset('js/bootstrap.js') }}"></script>
 
   <!-- Core plugin JavaScript-->
