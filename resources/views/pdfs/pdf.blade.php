@@ -3,6 +3,9 @@
 <head>
  <title>Orden de Fabricación</title>
  <style>
+   @page{
+     margin: 15px;
+   }
    body{
     font-family: sans-serif;
    }
@@ -33,6 +36,7 @@
     width: 100%; 
     border-collapse: collapse; 
     margin: 0px auto;
+    font-size:9px;
     }
     table.item th { 
     background: #ccc; 
@@ -43,7 +47,7 @@
     table.item td, table.item th { 
     padding: 10px; 
     border: 1px solid #888;
-    font-size: 10px;
+    font-size: 9px;
     }
     .logo{
       width: 100px;
@@ -52,6 +56,12 @@
       width: 100px;
       height: 100px;
     }
+    footer {
+                position: fixed; 
+                bottom: 40px; 
+                left: 0px; 
+                right: 0px;
+            }
  </style>
 </head>
 <body>
@@ -86,7 +96,7 @@
         <td></td>
         <td></td>
         <td>Orden de Trabajo</td>
-        <td class="ot text-right">OT-{{ sprintf("%04s", $order->id)}}/1.0</td>
+        <td class="ot text-right">{{ $order->order_number }}/1.0</td>
       </tr>
       <tr>
           <td>Código del granel:</td>
@@ -98,7 +108,7 @@
         <td></td>
         <td></td>
         <td rowspan="2">No. de lote	</td>
-        <td class="lot text-center" rowspan="2">PM2001001</td>
+        <td class="lot text-center" rowspan="2">{{ $order->lot}}</td>
       </tr>
       <tr>
           <td>Nombre del producto:</td>
@@ -109,13 +119,11 @@
       </tr>
       <tr>
           <td>Forma Farmacéutica:</td>
-        <td> Cápsula de gelatina blanda</td>
+        <td colspan="2"> Cápsula de gelatina blanda</td>
         <td></td>
-        <td></td>
-        <td>Tamaño de Lote:</td>
+        <td colspan="2">Tamaño de Lote:</td>
         <td class="text-right"><b>{{ number_format($order->quantity) }}</b></td>
         <td>cápsulas	</td>
-        <td></td>
         <td>Fecha de Fabricación:</td>
         <td></td>
       </tr>
@@ -133,10 +141,7 @@
       </tr>
       <tr>
         <td>Fecha de emisión:</td>
-        <td><b>{{ $days[date('N', strtotime($order->created_at))].', '.date('d', strtotime($order->created_at)).' de '.$months[date('n', strtotime($order->created_at))].' de '.date('Y', strtotime($order->created_at))}}</b></td>
-        <td></td>
-        <td></td>
-        <td></td>
+        <td colspan="4"><b>{{ $days[date('N', strtotime($order->created_at))].', '.date('d', strtotime($order->created_at)).' de '.$months[date('n', strtotime($order->created_at))].' de '.date('Y', strtotime($order->created_at))}}</b></td>
         <td></td>
         <td></td>
         <td></td>
@@ -148,10 +153,8 @@
       @php
       if($order->type == 1){
            $supplies = $product->supplies;
-           $totalSupplies = $product->supplies->sum('quantity');
          }else{
           $supplies = $product->suppliesCover;
-          $totalSupplies = $product->supplies->sum('quantity');
          }
       @endphp
       <tr>
@@ -160,10 +163,10 @@
         <td>mg</td>
         <td></td>
         <td>Molde:</td>
-        <td>{{ $order->product->mold->name }}</td>
+        <td>{{ $order->product->mold->code }}</td>
         <td></td>
         <td>Cliente:</td>
-        <td>{{ $order->client }}</td>
+        <td>{{ $order->client->name }}</td>
       </tr>
       <tr>
         <td>Peso máximo:</td>
@@ -192,7 +195,7 @@
     @else
     <h4 class="text-center" style="margin-top:45px; margin-bottom: 0px;">ENVOLVENTE DE LA CAPSULA</h4>
     @endif
-    <table class="item" width="100%" class="bordered" style="width:100%" border="0">
+    <table class="item" width="100%" class="bordered" border="0">
       <thead>
         <tr>
           <th>Código del Insumo</th>
@@ -219,17 +222,17 @@
            <td>{{ $supply->supply->name }}</td>
            <td>{{ $supply->quantity }}</td>
            <td>{{ $supply->supply->measurementUse->code }}</td>
-           <td>0.0</td>
-           <td>{{ $supply->quantity }}</td>
+           <td>{{ $supply->excess }}</td>
+           <td>{{ number_format(($supply->quantity + ($supply->quantity * ($supply->excess / 100))),4) }}</td>
            <td>{{ $supply->supply->measurementUse->code }}</td>
-           <td>{{ number_format(($supply->quantity * $order->quantity),4)  }}</td>
+           <td>{{ number_format((($supply->quantity + ($supply->quantity * ($supply->excess / 100))) * $order->quantity),4)  }}</td>
            <td>{{ $supply->supply->measurementUse->code }}</td>
            <td>00004-3</td>
          </tr>
          @php
          $totalFirst += $supply->quantity;
-         $totalSecond += $supply->quantity;
-         $totalThird += $supply->quantity * $order->quantity;
+         $totalSecond += ($supply->quantity + ($supply->quantity * ($supply->excess / 100)));
+         $totalThird += ($supply->quantity + ($supply->quantity * ($supply->excess / 100))) * $order->quantity;
          @endphp
         @endforeach
       </tbody>
@@ -249,10 +252,7 @@
       </tfoot>
     </table>
 
-    <htmlpagefooter name="footer">
-contact mail etc
-</htmlpagefooter>
-
+    <footer>
     <table style="width:100%;">
       <tbody>
         <tr>
@@ -281,6 +281,7 @@ contact mail etc
         </tr>
       </tbody>
     </table>
+        </footer>
 
 </body>
 </html>

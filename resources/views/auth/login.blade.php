@@ -89,6 +89,18 @@
     <div class="text-white d-md-flex align-items-center h-100 p-5 text-center justify-content-center">
         <div class="logoarea pt-5 pb-5">
         <h1 class="text-center text-5xl">¡Bienvenido!</h1>
+        @if (session('error'))
+          <div class="row ">          
+            <div class="col-sm-12 mb-10">
+                  <div class="card bg-danger text-white shadow">
+                    <div class="card-body">
+                    {{ session('error') }}
+                    </div>
+                  </div>
+                </div>            
+          </div>
+          <br>
+          @endif
   <form action="{{ url('/login') }}" method="post" class="bg-white rounded px-8 pt-6 pb-8 mb-6">
    @csrf
   <div class="form-group">

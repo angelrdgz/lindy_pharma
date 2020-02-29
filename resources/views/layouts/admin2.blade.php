@@ -44,41 +44,61 @@
       <hr class="sidebar-divider my-0">
 
       <!-- Nav Item - Dashboard -->
-      <li class="nav-item active">
-        <a class="nav-link" href="index.html">
+      @if(in_array(Auth::user()->role_id, [1]))
+      <li class="nav-item {{ Request::is('bitacora') ? 'active':'' }}">
+        <a class="nav-link" href="{{ url('bitacora') }}">
         <i class="fas fa-clipboard-list"></i>
           <span>Bitacora</span></a>
       </li>
-      <li class="nav-item">
+      <li class="nav-item {{ Request::is('usuarios') ? 'active':'' }}">
         <a class="nav-link" href="{{ url('usuarios') }}">
         <i class="fas fa-user-friends"></i>
           <span>Usuarios</span></a>
       </li>
-      <li class="nav-item">
+      <li class="nav-item {{ Request::is('clientes') ? 'active':'' }}">
+        <a class="nav-link" href="{{ url('clientes') }}">
+        <i class="fas fa-user-tie"></i>
+          <span>Clientes</span></a>
+      </li>
+      <li class="nav-item {{ Request::is('insumos') ? 'active':'' }}">
         <a class="nav-link" href="{{ url('insumos') }}">
         <i class="fas fa-capsules"></i>
           <span>Insumos</span></a>
       </li>
+      @endif
       <!--<li class="nav-item">
         <a class="nav-link" href="{{ url('recetas') }}">
         <i class="fas fa-flask"></i>
           <span>Recetas</span></a>
       </li>-->
-      <li class="nav-item">
+      @if(in_array(Auth::user()->role_id, [1,2]))
+      <li class="nav-item {{ Request::is('productos') ? 'active':'' }}">
         <a class="nav-link" href="{{ url('productos') }}">
         <i class="fas fa-flask"></i>
           <span>Productos</span></a>
       </li>
-      <li class="nav-item">
+      @endif
+      @if(in_array(Auth::user()->role_id, [1]))
+      <li class="nav-item {{ Request::is('moldes') ? 'active':'' }}">
+        <a class="nav-link" href="{{ url('moldes') }}">
+        <i class="fas fa-dice-d20"></i>
+          <span>Moldes</span></a>
+      </li>
+      @endif
+      @if(in_array(Auth::user()->role_id, [1,2,3]))
+      <li class="nav-item {{ Request::is('ordenes-de-fabricacion') ? 'active':'' }}">
         <a class="nav-link" href="{{ url('ordenes-de-fabricacion') }}">
         <i class="fas fa-clipboard"></i>
           <span>Ordenes de Fabricación</span></a>
       </li>
-      <li class="nav-item">
+      @endif
+      @if(in_array(Auth::user()->role_id, [1,3,4]))
+      <li class="nav-item {{ Request::is('ordenes-de-compra') ? 'active':'' }}">
         <a class="nav-link" href="{{ url('ordenes-de-compra') }}">
         <i class="fas fa-cart-arrow-down"></i>
           <span>Ordenes de Compra</span></a>
       </li>
+      @endif
 
       <!-- Divider -->
       <!--<hr class="sidebar-divider">-->
@@ -345,10 +365,15 @@
                   Activity Log
                 </a>
                 <div class="dropdown-divider"></div>
-                <a class="dropdown-item" href="#" data-toggle="modal" data-target="#logoutModal">
+                <a class="dropdown-item"  href="{{ route('logout') }}" onclick="event.preventDefault();
+                                                     document.getElementById('logout-form').submit();">
                   <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
-                  Logout
+                  Salir
                 </a>
+
+                                    <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+                                        @csrf
+                                    </form>
               </div>
             </li>
 
@@ -410,7 +435,7 @@
       <footer class="sticky-footer bg-white">
         <div class="container my-auto">
           <div class="copyright text-center my-auto">
-            <span>Copyright &copy; Your Website 2019</span>
+            <span>Copyright &copy; Lindy Pharma 2020</span>
           </div>
         </div>
       </footer>

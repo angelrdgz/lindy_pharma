@@ -37,11 +37,11 @@
     </div>
     <div class="col-sm-4">
     <div class="form-group">
-    <label for="exampleFormControlInput1">Molder</label>
+    <label for="exampleFormControlInput1">Molde</label>
     <select name="mold" id="" class="form-control @error('mold') is-invalid @enderror">
       <option value="">Seleccionar molde</option>
       @foreach($molds as $mold)
-       <option value="{{ $mold->id }}" {{$product->mold_id == $mold->id ? "selected":""}}>{{ $mold->name }}</option>
+       <option value="{{ $mold->id }}" {{$product->mold_id == $mold->id ? "selected":""}}>{{ $mold->code }}</option>
       @endforeach
     </select>
     @error('name')

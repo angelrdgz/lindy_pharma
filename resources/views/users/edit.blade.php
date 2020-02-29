@@ -13,26 +13,28 @@
         </div>
       </div>
       <div class="card-body">
-        <form method="post" action="{{ url('usuarios') }}">
+      <form method="post" action="{{ route('usuarios.update', $user->id) }}">
+             @method('PATCH')
+            @csrf
           @csrf
           <div class="row">
             <div class="col-sm-4">
               <label for="">Nombre</label>
-              <input type="text" name="name" class="form-control">
+              <input type="text" name="name" value="{{ $user->name }}" class="form-control">
             </div>
             <div class="col-sm-4">
               <label for="">Email</label>
-              <input type="email" name="email" class="form-control">
+              <input type="email" name="email" value="{{ $user->email }}" class="form-control">
             </div>
             <div class="col-sm-4">
               <label for="">Contraseña</label>
-              <input type="password" name="password" class="form-control">
+              <input type="password" name="password" value="" class="form-control">
             </div>
             <div class="col-sm-4">
               <label for="">Rol</label>
               <select name="role" class="form-control" id="grid-state">
                 @foreach($roles as $rol)
-                <option value="{{ $rol->id }}">{{ $rol->name }}</option>
+                <option value="{{ $rol->id }}" {{ $user->role_id == $rol->id ? "selected":""}}>{{ $rol->name }}</option>
                 @endforeach
               </select>
             </div>

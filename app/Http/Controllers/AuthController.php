@@ -22,8 +22,28 @@ class AuthController extends Controller
         $credentials = $request->only('email', 'password');
 
         if (Auth::attempt($credentials)) {
-            return redirect()->intended('usuarios');
-        }else{
+            switch (Auth::user()->role_id) {
+                case 1:
+                    return redirect()->intended('bitacora');
+                    break;
+                case 2:
+                    return redirect()->intended('ordenes-de-fabricacion');
+                    break;
+                case 3:
+                    return redirect()->intended('ordenes-de-fabricacion');
+                    break;
+                case 4:
+                    return redirect()->intended('ordenes-de-compra');
+                    break;
+                case 5:
+                    return redirect()->intended('bitacora');
+                    break;
+
+                default:
+                    return redirect()->intended('bitacora');
+                    break;
+            }
+        } else {
             return redirect()->back()->with('error', 'Email y/o contrasela incorrectos');
         }
     }
@@ -32,6 +52,5 @@ class AuthController extends Controller
     {
         Auth::logout();
         return redirect('/')->with('success', 'Cerró sesión correctamente.');
-
     }
 }

@@ -44,7 +44,14 @@
       <td class="border px-4 py-2">{{ $user->name }}</td>
       <td class="border px-4 py-2">{{ $user->email }}</td>
       <td class="border px-4 py-2">{{ $user->role->name }}</td>
-      <td class="border px-4 py-2"></td>
+      <td class="border px-4 py-2">
+      <a href="{{ url('usuarios/'.$user->id.'/edit')}}" class="btn btn-warning btn-icon-split">
+                    <span class="icon text-white-50">
+                      <i class="fas fa-pencil-alt"></i>
+                    </span>
+                    <span class="text">Modificar</span>
+                  </a>
+      </td>
     </tr>
     @endforeach
                   </tbody>

@@ -7,6 +7,9 @@ use Illuminate\Http\Request;
 use App\Supply;
 use App\SupplyType;
 use App\SupplyMeasurement;
+use App\Logbook;
+
+use Auth;
 
 class SupplyController extends Controller
 {
@@ -50,6 +53,14 @@ class SupplyController extends Controller
         $supply->measurement_buy = $request->measurement_buy;
         $supply->save();
 
+        $logbook = new Logbook();
+        $logbook->type_id = 1;
+        $logbook->title = 'Insumo Creado';
+        $logbook->content = 'El insumo con el código "'.$request->code.'" ha sido creado';
+        $logbook->icon = 'fas fa-capsules';
+        $logbook->created_by = Auth::user()->id;
+        $logbook->save();
+
         return redirect('insumos')->with('success', 'Insumo guardado correctamente');
     }
 
@@ -89,6 +100,14 @@ class SupplyController extends Controller
         $supply->measurement_use = $request->measurement_use;
         $supply->measurement_buy = $request->measurement_buy;
         $supply->save();
+
+        $logbook = new Logbook();
+        $logbook->type_id = 2;
+        $logbook->title = 'Insumo Modificado';
+        $logbook->content = 'El insumo con el código "'.$request->code.'" ha sido modificado';
+        $logbook->icon = 'fas fa-capsules';
+        $logbook->created_by = Auth::user()->id;
+        $logbook->save();
 
         return redirect('insumos')->with('success', 'Insumo modificado correctamente');
     }

@@ -31,7 +31,12 @@
               </div>
               <div class="col-sm-4">
                 <label for="">Cliente</label>
-                <input type="text" name="client" class="form-control">
+                <select name="client" id="" class="form-control">
+                  <option value="">Seleccionar cliente</option>
+                  @foreach($clients as $client)
+                   <option value="{{ $client->id }}">{{ $client->name }}</option>
+                  @endforeach
+                </select>
               </div>
               <div class="col-sm-4">
                 <label for="">Lote</label>

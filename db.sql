@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 4.9.0.1
+-- version 4.9.3
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Generation Time: Feb 21, 2020 at 03:48 PM
+-- Generation Time: Feb 29, 2020 at 03:25 PM
 -- Server version: 5.7.26
--- PHP Version: 7.2.21
+-- PHP Version: 7.3.9
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+00:00";
@@ -17,17 +17,48 @@ SET time_zone = "+00:00";
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `clients`
+--
+
+CREATE TABLE `clients` (
+  `id` int(11) NOT NULL,
+  `name` varchar(200) NOT NULL,
+  `contact` varchar(80) NOT NULL,
+  `phone` varchar(15) NOT NULL,
+  `address` varchar(250) NOT NULL,
+  `neight` varchar(100) NOT NULL,
+  `city` varchar(100) NOT NULL,
+  `state` varchar(50) NOT NULL,
+  `zip` varchar(6) NOT NULL,
+  `email` varchar(200) NOT NULL,
+  `status` tinyint(1) NOT NULL,
+  `created_at` datetime NOT NULL,
+  `updated_at` datetime NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Dumping data for table `clients`
+--
+
+INSERT INTO `clients` (`id`, `name`, `contact`, `phone`, `address`, `neight`, `city`, `state`, `zip`, `email`, `status`, `created_at`, `updated_at`) VALUES
+(1, 'Cliente 1.1.1', '1', '1', '1', '2', '3', '4', '5', 'Cliente 1.1', 1, '2020-02-22 23:25:37', '2020-02-27 04:47:59'),
+(2, 'Ricardo Castañeda', 'Ricardo', '3121812759', 'xyz', 'trt', 'rtr', 'rtrt', '12312', 'ricardoenrique_111@hotmail.com', 1, '2020-02-27 04:51:02', '2020-02-27 04:51:02');
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `departures`
 --
 
 CREATE TABLE `departures` (
   `id` int(11) NOT NULL,
+  `order_number` varchar(10) NOT NULL,
   `product_id` int(11) NOT NULL,
   `quantity` int(11) NOT NULL,
   `lot` varchar(100) NOT NULL,
   `line` varchar(100) NOT NULL,
   `created_by` int(11) NOT NULL,
-  `client` varchar(150) NOT NULL,
+  `client_id` int(11) NOT NULL,
   `status` varchar(20) NOT NULL,
   `type` int(11) NOT NULL,
   `created_at` datetime NOT NULL,
@@ -38,9 +69,11 @@ CREATE TABLE `departures` (
 -- Dumping data for table `departures`
 --
 
-INSERT INTO `departures` (`id`, `product_id`, `quantity`, `lot`, `line`, `created_by`, `client`, `status`, `type`, `created_at`, `updated_at`) VALUES
-(1, 1, 45, 'Molde 1', 'Linea 2', 1, 'Lindy', 'creada', 1, '2020-01-28 05:18:34', '2020-01-28 05:18:34'),
-(2, 1, 45, 'Molde 1', 'Linea 2', 1, 'Lindy', 'creada', 2, '2020-01-28 05:18:34', '2020-01-28 05:18:34');
+INSERT INTO `departures` (`id`, `order_number`, `product_id`, `quantity`, `lot`, `line`, `created_by`, `client_id`, `status`, `type`, `created_at`, `updated_at`) VALUES
+(1, 'OT-0001', 1, 200, 'ABC-123', 'Linea 2', 1, 2, 'creada', 1, '2020-02-29 14:16:25', '2020-02-29 14:16:25'),
+(2, 'OT-0001', 1, 200, 'ABC-123', 'Linea 2', 1, 2, 'creada', 2, '2020-02-29 14:16:25', '2020-02-29 14:16:25'),
+(3, 'OT-0002', 1, 500, 'ABC-123', 'Linea 2', 1, 2, 'Finalizada', 1, '2020-02-29 14:17:19', '2020-02-29 14:58:10'),
+(4, 'OT-0002', 1, 500, 'ABC-123', 'Linea 2', 1, 2, 'Finalizada', 2, '2020-02-29 14:17:20', '2020-02-29 14:58:10');
 
 -- --------------------------------------------------------
 
@@ -62,7 +95,7 @@ CREATE TABLE `entrances` (
 --
 
 INSERT INTO `entrances` (`id`, `user_id`, `delivery_date`, `status`, `created_at`, `updated_at`) VALUES
-(3, 1, '2020-02-27', 'Creada', '2020-02-17 01:25:54', '2020-02-17 01:25:54'),
+(3, 1, '2020-02-27', 'Cancelada', '2020-02-17 01:25:54', '2020-02-27 05:28:07'),
 (4, 1, '2020-02-28', 'Creada', '2020-02-17 02:34:02', '2020-02-17 02:34:02');
 
 -- --------------------------------------------------------
@@ -98,10 +131,47 @@ INSERT INTO `entrance_items` (`id`, `entrance_id`, `supply_id`, `quantity`, `com
 -- --------------------------------------------------------
 
 --
--- Table structure for table `molds`
+-- Table structure for table `Logbooks`
 --
 
-CREATE TABLE `molds` (
+CREATE TABLE `Logbooks` (
+  `id` int(11) NOT NULL,
+  `type_id` int(11) NOT NULL,
+  `title` varchar(100) NOT NULL,
+  `content` varchar(250) NOT NULL,
+  `icon` varchar(100) NOT NULL,
+  `created_by` int(11) NOT NULL,
+  `created_at` datetime NOT NULL,
+  `updated_at` datetime NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Dumping data for table `Logbooks`
+--
+
+INSERT INTO `Logbooks` (`id`, `type_id`, `title`, `content`, `icon`, `created_by`, `created_at`, `updated_at`) VALUES
+(1, 1, 'Order de Fabricación Creada', 'Se ha creado el usuario \"Tal\" con el rol \"Tal\"', 'fas fa-user', 1, '2020-02-27 20:17:25', '2020-02-26 20:17:25'),
+(2, 2, 'Usuario Modificado', 'El usuario \"Tal\" ah sido modificado.', 'fas fa-user', 2, '2020-02-27 20:17:25', '2020-02-26 20:17:25'),
+(3, 4, 'Orden de Compra Actualizada', 'Se ha actualizado la orden de compra #3 al estatus \"Revisada\".', 'fas fa-cart-arrow-down', 1, '2020-02-27 22:05:04', '2020-02-27 22:05:04'),
+(4, 3, 'Orden de Fabricación Cancelada', 'La orden de fabricación #1000 ha sido cancelada', 'fas fa-clipboard', 3, '2020-02-27 22:20:03', '2020-02-27 22:20:03'),
+(5, 2, 'Cliente Modificado', 'El cliente \"Cliente 1.1.1\" ha sido modificado', 'fas fa-user-tie', 1, '2020-02-27 04:47:59', '2020-02-27 04:47:59'),
+(6, 1, 'Cliente Creado', 'El cliente \"Ricardo Castañeda\" ha sido creado', 'fas fa-user-tie', 1, '2020-02-27 04:51:02', '2020-02-27 04:51:02'),
+(7, 3, 'Orden de Compra Cancelada', 'La orden de compra #\"3\" ha sido cancelada', 'fas fa-cart-arrow-down', 1, '2020-02-27 05:28:07', '2020-02-27 05:28:07'),
+(8, 3, 'Orden de Fabricación Cancelada', 'La orden de fabricación #\"OT-0001\" ha sido cancelada', 'fas fa-clipboard', 1, '2020-02-27 05:37:04', '2020-02-27 05:37:04'),
+(9, 3, 'Orden de Fabricación Cancelada', 'La orden de fabricación #OT-0002 ha sido cancelada', 'fas fa-clipboard', 1, '2020-02-29 14:07:44', '2020-02-29 14:07:44'),
+(10, 3, 'Orden de Fabricación Cancelada', 'La orden de fabricación #OT-0002 ha sido cancelada', 'fas fa-clipboard', 1, '2020-02-29 14:09:10', '2020-02-29 14:09:10'),
+(11, 3, 'Orden de Fabricación Cancelada', 'La orden de fabricación #OT-0002 ha sido cancelada', 'fas fa-clipboard', 1, '2020-02-29 14:10:50', '2020-02-29 14:10:50'),
+(12, 1, 'Orden de Fabricació Creada', 'La orden de fabricación \"OT-02.5\" ha sido creado', 'fas fa-clipboard', 1, '2020-02-29 14:14:24', '2020-02-29 14:14:24'),
+(13, 1, 'Orden de Fabricació Creada', 'La orden de fabricación \"OT-0001\" ha sido creado', 'fas fa-clipboard', 1, '2020-02-29 14:16:25', '2020-02-29 14:16:25'),
+(14, 1, 'Orden de Fabricació Creada', 'La orden de fabricación \"OT-0002\" ha sido creado', 'fas fa-clipboard', 1, '2020-02-29 14:17:20', '2020-02-29 14:17:20');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `logbook_types`
+--
+
+CREATE TABLE `logbook_types` (
   `id` int(11) NOT NULL,
   `name` varchar(100) NOT NULL,
   `created_at` datetime NOT NULL,
@@ -109,12 +179,45 @@ CREATE TABLE `molds` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
+-- Dumping data for table `logbook_types`
+--
+
+INSERT INTO `logbook_types` (`id`, `name`, `created_at`, `updated_at`) VALUES
+(1, 'success', '2020-02-26 20:15:35', '2020-02-26 20:15:35'),
+(2, 'warning', '2020-02-26 20:15:58', '2020-02-26 20:15:58'),
+(3, 'danger', '2020-02-26 20:15:58', '2020-02-26 20:15:58'),
+(4, 'info', '2020-02-26 20:15:58', '2020-02-26 20:15:58');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `molds`
+--
+
+CREATE TABLE `molds` (
+  `id` int(11) NOT NULL,
+  `code` varchar(10) NOT NULL,
+  `type` varchar(20) NOT NULL,
+  `created_at` datetime NOT NULL,
+  `updated_at` datetime NOT NULL,
+  `minimals` decimal(10,2) NOT NULL,
+  `long_mm` int(11) NOT NULL,
+  `width_mm` int(11) NOT NULL,
+  `caps_long` int(11) NOT NULL,
+  `caps_circ` int(11) NOT NULL,
+  `kilograms` decimal(10,2) NOT NULL,
+  `reference_product` varchar(100) DEFAULT NULL,
+  `observations` text
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
 -- Dumping data for table `molds`
 --
 
-INSERT INTO `molds` (`id`, `name`, `created_at`, `updated_at`) VALUES
-(1, 'Molde 1', '2020-01-29 00:00:00', '2020-01-29 00:00:00'),
-(2, 'Molde 2', '2020-01-29 00:00:00', '2020-01-29 00:00:00');
+INSERT INTO `molds` (`id`, `code`, `type`, `created_at`, `updated_at`, `minimals`, `long_mm`, `width_mm`, `caps_long`, `caps_circ`, `kilograms`, `reference_product`, `observations`) VALUES
+(1, '16OBE-01', 'Oblongos', '2020-01-29 00:00:00', '2020-02-23 04:22:41', '16.00', 22, 10, 9, 32, '272.92', 'DIABION', NULL),
+(2, '03OVE-01', 'Ovales', '2020-01-29 00:00:00', '2020-02-23 04:23:52', '3.00', 12, 7, 16, 41, '119.82', 'SAW PALMETO', NULL),
+(3, '20OBE-01', 'Oblongos', '2020-02-23 04:25:07', '2020-02-23 04:25:07', '20.00', 26, 10, 8, 32, '307.03', 'LACRIVIT, VITAGERUM', NULL);
 
 -- --------------------------------------------------------
 
@@ -126,6 +229,7 @@ CREATE TABLE `products` (
   `id` int(11) NOT NULL,
   `code` varchar(10) NOT NULL,
   `name` varchar(200) NOT NULL,
+  `stock` decimal(10,2) NOT NULL DEFAULT '0.00',
   `mold_id` int(11) NOT NULL,
   `created_at` datetime NOT NULL,
   `updated_at` datetime NOT NULL
@@ -135,8 +239,8 @@ CREATE TABLE `products` (
 -- Dumping data for table `products`
 --
 
-INSERT INTO `products` (`id`, `code`, `name`, `mold_id`, `created_at`, `updated_at`) VALUES
-(1, 'GPM0004', 'VITAGERUM, Vitaminas y Minerales.', 2, '2020-01-26 04:55:45', '2020-01-26 05:25:46');
+INSERT INTO `products` (`id`, `code`, `name`, `stock`, `mold_id`, `created_at`, `updated_at`) VALUES
+(1, 'GPM0004', 'VITAGERUM, Vitaminas y Minerales.', '0.00', 2, '2020-01-26 04:55:45', '2020-01-26 05:25:46');
 
 -- --------------------------------------------------------
 
@@ -286,9 +390,12 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`id`, `name`, `email`, `phone`, `role_id`, `email_verified_at`, `password`, `remember_token`, `created_at`, `updated_at`) VALUES
-(1, 'Angel Garcia', 'angelrodriguez@ucol.mx', '3121812759', 1, NULL, '$2y$10$8.2N9tpdRRy431BL9bz7y.zlboUX.CZFR9NOgDlyTsOBGF8FkwUMG', NULL, '2019-10-19 19:56:12', '2019-10-19 19:56:12'),
-(2, 'Usuario Supervisor', 'supervisor@lindy.com', NULL, 2, NULL, '$2y$10$zfS1CYtyUAXTo30.4PZ9CO2ddieWn.Sr9Nu4REkptZloUl.0J4k9e', NULL, '2020-01-11 20:13:30', '2020-01-11 20:13:30'),
-(3, 'Alejandro Saldaña', 'alejandro@lyndy.com', NULL, 2, NULL, '$2y$10$d114ynQZlYZNQKAd4opM2e1mxspvKBA.aDqLnBTT67wW7el4HS5hi', NULL, '2020-01-11 22:30:27', '2020-01-11 22:30:27');
+(1, 'Angel Garcia', 'angelrodriguez@ucol.mx', '3121812759', 1, NULL, '$2y$10$OucV2LRaxsrMtXCP8qCtNOy4Q9hD24yx4/YafZBDjlIhGrh4Ak/pK', NULL, '2019-10-19 19:56:12', '2020-02-25 07:30:20'),
+(2, 'Usuario Compras', 'compas@lindypharma.com', NULL, 4, NULL, '$2y$10$2Odxtv5sXCkY681iVCN32ulYpe6s6o18ZmcS37AlWIU5KSV.SfsqC', NULL, '2020-01-11 20:13:30', '2020-02-25 08:01:51'),
+(3, 'Alejandro Saldaña', 'alejandro@lyndy.com', NULL, 1, NULL, '$2y$10$chA02ExRwrYpL8Hr6Lu1c.ohb2HtM5GYcG0YzRfk3agdP/qZSdieW', NULL, '2020-01-11 22:30:27', '2020-02-25 07:57:32'),
+(4, 'Usuario almacenista', 'almacen@lindypharma.com', NULL, 3, NULL, '$2y$10$lvaryw5RcAEgFY/ZWRn5le2lFK8FZZmZgz2Ysf4y5KM7u4CdRVvvy', NULL, '2020-02-24 03:07:18', '2020-02-25 08:01:45'),
+(5, 'Usuario ventas', 'ventas@lindypharma.com', NULL, 5, NULL, '$2y$10$HUxhD68hJwMT3UAvwyS0kONdTAZQxSNbu43e63wSm7XTboJHXGvyK', NULL, '2020-02-24 03:08:03', '2020-02-25 08:01:59'),
+(6, 'Karla', 'karla@lindy.com', NULL, 2, NULL, '$2y$10$AVME96FW6X09nZ8ZO62Szef314.OHtkz0y9BJpaErL6.X/CFjUnJG', NULL, '2020-02-25 07:57:23', '2020-02-25 07:57:23');
 
 -- --------------------------------------------------------
 
@@ -309,13 +416,20 @@ CREATE TABLE `user_roles` (
 
 INSERT INTO `user_roles` (`id`, `name`, `created_at`, `updated_at`) VALUES
 (1, 'Administrador', '2020-01-11 00:00:00', '2020-01-11 00:00:00'),
-(2, 'Supervisor', '2020-01-11 00:00:00', '2020-01-11 00:00:00'),
-(3, 'Químico', '2020-01-11 00:00:00', '2020-01-11 00:00:00'),
-(4, 'Almacen', '2020-02-20 00:00:00', '2020-02-20 00:00:00');
+(2, 'Dirección de Calidad', '2020-01-11 00:00:00', '2020-01-11 00:00:00'),
+(3, 'Almacenista', '2020-01-11 00:00:00', '2020-01-11 00:00:00'),
+(4, 'Compras', '2020-02-20 00:00:00', '2020-02-20 00:00:00'),
+(5, 'Ventas', '2020-02-23 13:02:44', '2020-02-23 13:02:44');
 
 --
 -- Indexes for dumped tables
 --
+
+--
+-- Indexes for table `clients`
+--
+ALTER TABLE `clients`
+  ADD PRIMARY KEY (`id`);
 
 --
 -- Indexes for table `departures`
@@ -333,6 +447,18 @@ ALTER TABLE `entrances`
 -- Indexes for table `entrance_items`
 --
 ALTER TABLE `entrance_items`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `Logbooks`
+--
+ALTER TABLE `Logbooks`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `logbook_types`
+--
+ALTER TABLE `logbook_types`
   ADD PRIMARY KEY (`id`);
 
 --
@@ -395,10 +521,16 @@ ALTER TABLE `user_roles`
 --
 
 --
+-- AUTO_INCREMENT for table `clients`
+--
+ALTER TABLE `clients`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
 -- AUTO_INCREMENT for table `departures`
 --
 ALTER TABLE `departures`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `entrances`
@@ -413,10 +545,22 @@ ALTER TABLE `entrance_items`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
 
 --
+-- AUTO_INCREMENT for table `Logbooks`
+--
+ALTER TABLE `Logbooks`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
+
+--
+-- AUTO_INCREMENT for table `logbook_types`
+--
+ALTER TABLE `logbook_types`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+
+--
 -- AUTO_INCREMENT for table `molds`
 --
 ALTER TABLE `molds`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `products`
@@ -458,10 +602,10 @@ ALTER TABLE `supply_types`
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT for table `user_roles`
 --
 ALTER TABLE `user_roles`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;

@@ -6,6 +6,9 @@ use App\Product;
 use App\ProductSupply;
 use App\Supply;
 use App\Mold;
+use App\Logbook;
+
+use Auth;
 use Illuminate\Http\Request;
 
 
@@ -59,6 +62,14 @@ class ProductController extends Controller
             }                        
         }
 
+        $logbook = new Logbook();
+        $logbook->type_id = 1;
+        $logbook->title = 'Producto Creado';
+        $logbook->content = 'El producto con el código "'.$request->code.'" ha sido creado';
+        $logbook->icon = 'fas fa-flask';
+        $logbook->created_by = Auth::user()->id;
+        $logbook->save();
+
         return redirect('productos')->with('success', 'Producto guardado correctamente');
     }
 
@@ -107,6 +118,14 @@ class ProductController extends Controller
             $prodSupply->save();
             }                        
         }
+
+        $logbook = new Logbook();
+        $logbook->type_id = 2;
+        $logbook->title = 'Producto Modificado';
+        $logbook->content = 'El producto con el código "'.$request->code.'" ha sido modificado';
+        $logbook->icon = 'fas fa-flask';
+        $logbook->created_by = Auth::user()->id;
+        $logbook->save();
 
         return redirect('productos')->with('success', 'Producto guardado correctamente');
         

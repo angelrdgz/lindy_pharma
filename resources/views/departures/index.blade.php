@@ -10,10 +10,12 @@
                 <h5 class="m-0 font-weight-bold text-primary">Ordenes de Fabricación</h5>
                 </div>
                 <div class="col-sm-2">
+                @if(in_array(Auth::user()->role_id, [1,2]))
                   <a href="{{ url('ordenes-de-fabricacion/create') }}" class="btn btn-link">
                   <i class="fas fa-plus"></i>
                   Nueva Orden
                 </a>
+                @endif
                 </div>
               </div>
             </div>
@@ -36,29 +38,49 @@
     <tr>
       <td>{{ $order->product->name }}</td>
       <td>{{ $order->quantity }}</td>      
-      <td>{{ $order->client }}</td>
+      <td>{{ $order->client->name }}</td>
       <td>{{ $order->user->name }}</td>
       <td>{{ $order->type == 1 ? "Contenido":"Cobertura"}}</td>
       <td>{{ $order->status }}</td>
       <td>
-      <a href="{{ url('ordenes-de-fabricacion/'.$order->id.'/edit')}}" class="btn btn-warning btn-icon-split btn-sm">
+      <!--<a href="{{ url('ordenes-de-fabricacion/'.$order->id.'/edit')}}" class="btn btn-warning btn-icon-split btn-sm">
+                    <span class="icon text-white-50">
+                      <i class="fas fa-pencil-alt"></i>
+                    </span>
+                    <span class="text">Modificar</span>
+                  </a>-->
+                  @if(in_array(Auth::user()->role_id, [1,2]))
+                  <a href="{{ url('ordenes-de-fabricacion/'.$order->id.'/edit')}}" class="btn btn-warning btn-icon-split btn-sm">
                     <span class="icon text-white-50">
                       <i class="fas fa-pencil-alt"></i>
                     </span>
                     <span class="text">Modificar</span>
                   </a>
+                  <form method="post" action="{{ route('ordenes-de-fabricacion.destroy', $order->order_number) }}">
+                    @method('DELETE')
+                    @csrf
+                    <button type="submit" class="btn btn-danger btn-icon-split btn-sm">
+                      <span class="icon text-white-50">
+                        <i class="fas fa-trash"></i>
+                      </span>
+                      <span class="text">Cancelar</span>
+</button>
+                  </form>
+                  @endif
+                  @if(in_array(Auth::user()->role_id, [1,2,3]))
                   <a href="{{ url('ordenes-de-fabricacion/'.$order->id)}}" target="_blank" class="btn btn-info btn-icon-split btn-sm">
                     <span class="icon text-white-50">
                     <i class="far fa-file-pdf"></i>
                     </span>
                     <span class="text">PDF</span>
                   </a>
-                  <a href="{{ url('ordenes-de-fabricacion/'.$order->id)}}" class="btn btn-danger btn-icon-split btn-sm">
+                  @endif
+                  <!--<a href="{{ url('ordenes-de-fabricacion/'.$order->id)}}" class="btn btn-danger btn-icon-split btn-sm">
                     <span class="icon text-white-50">
                     <i class="fas fa-trash"></i>
                     </span>
                     <span class="text">Cancelar</span>
-                  </a>
+                  </a>-->
       </td>
     </tr>
     @endforeach

@@ -10,6 +10,10 @@ class Departure extends Model
         return $this->belongsTo('App\Product');
     }
 
+    public function client(){
+        return $this->belongsTo('App\Client');
+    }
+
     public function user(){
         return $this->belongsTo('App\User', 'created_by', 'id');
     }

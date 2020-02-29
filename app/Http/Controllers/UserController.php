@@ -34,4 +34,25 @@ class UserController extends Controller
 
        return redirect('usuarios')->with('success', 'Usuario guardado correctamente');
     }
+
+    public function edit($id)
+    {
+        $roles = UserRole::all();
+        $user = User::find($id);
+        return view('users.edit', ['roles'=>$roles, 'user'=>$user]);
+    }
+
+    public function update(Request $request, $id)
+    {
+       $user = User::find($id);
+       $user->name = $request->name;
+       $user->email = $request->email;
+       if($request->password !== ''){
+        $user->password = Hash::make($request->password);
+       }       
+       $user->role_id = $request->role;
+       $user->save();
+
+       return redirect('usuarios')->with('success', 'Usuario modificado correctamente');
+    }
 }

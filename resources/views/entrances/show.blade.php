@@ -8,100 +8,51 @@
             <div class="card-header">
               <div class="row">
                 <div class="col-sm-12 pt-2">
-                <h5 class="m-0 font-weight-bold text-primary">Nuevo Producto</h5>
+                <h5 class="m-0 font-weight-bold text-primary">Orden de Compra #{{ $entrance->id}}</h5>
                 </div>
               </div>
             </div>
             <div class="card-body">
-            <form method="post" action="{{ url('productos') }}">
-            @csrf
-  <div class="row">
-    <div class="col-sm-3">
-    <div class="form-group">
-    <label for="exampleFormControlInput1">Código de Producto</label>
-    <input type="text" name="code" class="form-control @error('code') is-invalid @enderror" value="{{ old('code') }}">
-    @error('code')
-            <p class="text-red-500 text-xs text-danger italic">{{ $message }}</p>
-      @enderror 
-  </div>
-    </div>
-    <div class="col-sm-5">
-    <div class="form-group">
-    <label for="exampleFormControlInput1">Nombre</label>
-    <input type="text" name="name" class="form-control @error('name') is-invalid @enderror" value="{{ old('name') }}">
-    @error('name')
-            <p class="text-red-500 text-xs text-danger italic">{{ $message }}</p>
-      @enderror 
-  </div>
-    </div>
-    <div class="col-sm-4">
-    <div class="form-group">
-    <label for="exampleFormControlInput1">Molde</label>
-    <select name="mold" id="" class="form-control @error('mold') is-invalid @enderror">
-      <option value="">Seleccionar molde</option>
-      @foreach($molds as $mold)
-       <option value="{{ $mold->id }}">{{ $mold->code }}</option>
-      @endforeach
-    </select>
-    @error('name')
-            <p class="text-red-500 text-xs text-danger italic">{{ $message }}</p>
-      @enderror 
-  </div>
-    </div>
-  </div>
-  <hr>
+                <form method="post" action="{{ route('ordenes-de-compra.update', $entrance->id) }}">
+                    @method('PATCH')
+                   @csrf
+                   <input type="hidden" name="status" value="Revisada">
   <div class="row">
     <div class="col-sm-12">
       <table class="table contentTable">
         <thead>
           <tr>
-            <th colspan="3">Contenido de la Capsula</th>
-            <th class="text-right">
-              <a class="btn btn-link addContentRow">Agregar Insumo</a>
-            </th>
+            <th colspan="3">Contenido de la orden</th>
           </tr>
           <tr>
             <th>Nombre</th>
             <th>Cantidad</th>
-            <th>Exceso</th>
-            <th>Medida de Uso</th>
+            <th>Comentarios</th>
           </tr>
         </thead>
         <tbody>
+            @foreach($entrance->items as $item)
+            <tr>
+                          <td><input type="hidden" value="{{ $item->supply_id}}" class="idItem" name="idItem[]"/> <input type="text" value="{{ $item->supply->name }}" class="form-control itemContentidRow+'" /></td>
+                          <td><input type="text" name="quantityItem[]" value="{{ $item->quantity}}" class="form-control" /></td>
+                          <td class="text-center">
+                          <input type="text" name="commentsItem[]" value="" class="form-control" />
+                          </td>
+                          </tr>
+             
+            @endforeach
           
         </tbody>
       </table>
     </div>
   </div>
-  <hr>
-  <div class="row">
-    <div class="col-sm-12">
-      <table class="table coverTable">
-        <thead>
-          <tr>
-            <th colspan="3">Envolvente de la Capsula</th>
-            <th class="text-right">
-             <a  class="btn btn-link addCoverRow">Agregar Insumo</a>
-            </th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>Nombre</td>
-            <td>Cantidad</td>
-            <th>Exceso</th>
-            <td>Medida de Uso</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-  </div>
+            <br>
   <div class="row">
     <div class="col-sm-3 offset-sm-3">
       <button type="submit" class="btn btn-primary btn-block">Guardar</button>
     </div>
     <div class="col-sm-3 ">
-      <a href="{{ url('productos') }}" class="btn btn-secondary btn-block">Cancelar</a>
+      <a href="{{ url('ordenes-de-compra') }}" class="btn btn-secondary btn-block">Cancelar</a>
     </div>
   </div>
 </form>
@@ -119,7 +70,7 @@
                     var availableItems = [];
 
                     @foreach($supplies as $supply)
-                     availableItems.push({id: "{{$supply->id}}",value: "{{$supply->name}}", label: "{{$supply->code}} {{$supply->name}}", measurement: "{{$supply->measurementUse->name}}"})
+                     availableItems.push({id: "{{$supply->id}}",value: "{{$supply->name}}", label: "{{$supply->code}} {{$supply->name}}", measurement: "{{$supply->measurementBuy->name}}"})
                     @endforeach
     
                        $(document).on('click', '.addContentRow', function(){
@@ -130,7 +81,6 @@
                         $('.contentTable').append('<tr class="activeRow">'+
                         '<td><input type="hidden" class="idItem" name="idItem[]"/> <input type="text" class="form-control itemContent'+idRow+'" /></td>'+
                         '<td><input type="text" name="quantityItem[]" class="form-control number"/></td>'+
-                        '<td><input type="text" name="excessItem[]" class="form-control number" value="0.0"/></td>'+
                         '<td><span> - </span></td>'+
                         '</tr>')
 
