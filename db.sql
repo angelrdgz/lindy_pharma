@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Generation Time: Feb 29, 2020 at 03:25 PM
+-- Generation Time: Mar 20, 2020 at 10:14 PM
 -- Server version: 5.7.26
 -- PHP Version: 7.3.9
 
@@ -13,6 +13,29 @@ SET time_zone = "+00:00";
 --
 -- Database: `lindy`
 --
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `catalogs`
+--
+
+CREATE TABLE `catalogs` (
+  `id` int(11) NOT NULL,
+  `code` varchar(15) NOT NULL,
+  `type` varchar(20) NOT NULL,
+  `name` varchar(100) NOT NULL,
+  `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Dumping data for table `catalogs`
+--
+
+INSERT INTO `catalogs` (`id`, `code`, `type`, `name`, `created_at`, `updated_at`) VALUES
+(1, 'G01', 'cfdi', 'Adquisición de mercancias', '2020-03-08 18:34:10', '2020-03-08 18:34:10'),
+(2, 'G02', 'cfdi', 'Devoluciones, descuentos o bonificaciones', '2020-03-08 18:34:10', '2020-03-08 18:34:10');
 
 -- --------------------------------------------------------
 
@@ -47,6 +70,30 @@ INSERT INTO `clients` (`id`, `name`, `contact`, `phone`, `address`, `neight`, `c
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `decreases`
+--
+
+CREATE TABLE `decreases` (
+  `id` int(11) NOT NULL,
+  `supply_id` int(11) NOT NULL,
+  `entrance_item_id` int(11) NOT NULL,
+  `quantity` decimal(10,2) NOT NULL,
+  `description` varchar(255) NOT NULL,
+  `created_by` int(11) NOT NULL,
+  `created_at` datetime NOT NULL,
+  `updated_at` datetime NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Dumping data for table `decreases`
+--
+
+INSERT INTO `decreases` (`id`, `supply_id`, `entrance_item_id`, `quantity`, `description`, `created_by`, `created_at`, `updated_at`) VALUES
+(1, 1, 8, '1.00', 'Se me cayóx', 1, '2020-03-18 23:35:21', '2020-03-19 00:58:23');
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `departures`
 --
 
@@ -70,10 +117,33 @@ CREATE TABLE `departures` (
 --
 
 INSERT INTO `departures` (`id`, `order_number`, `product_id`, `quantity`, `lot`, `line`, `created_by`, `client_id`, `status`, `type`, `created_at`, `updated_at`) VALUES
-(1, 'OT-0001', 1, 200, 'ABC-123', 'Linea 2', 1, 2, 'creada', 1, '2020-02-29 14:16:25', '2020-02-29 14:16:25'),
-(2, 'OT-0001', 1, 200, 'ABC-123', 'Linea 2', 1, 2, 'creada', 2, '2020-02-29 14:16:25', '2020-02-29 14:16:25'),
-(3, 'OT-0002', 1, 500, 'ABC-123', 'Linea 2', 1, 2, 'Finalizada', 1, '2020-02-29 14:17:19', '2020-02-29 14:58:10'),
-(4, 'OT-0002', 1, 500, 'ABC-123', 'Linea 2', 1, 2, 'Finalizada', 2, '2020-02-29 14:17:20', '2020-02-29 14:58:10');
+(1, 'OT-0001', 1, 350, 'ABC-123', 'Linea 2', 1, 2, 'Creada', 1, '2020-03-04 04:46:58', '2020-03-04 04:46:58'),
+(2, 'OT-0001', 1, 350, 'ABC-123', 'Linea 2', 1, 2, 'Creada', 2, '2020-03-04 04:46:59', '2020-03-04 04:46:59');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `departure_items`
+--
+
+CREATE TABLE `departure_items` (
+  `id` int(11) NOT NULL,
+  `departure_id` int(11) NOT NULL,
+  `supplie_id` int(11) NOT NULL,
+  `quantity` decimal(10,2) NOT NULL,
+  `excess` decimal(3,2) NOT NULL,
+  `order_number` int(11) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Dumping data for table `departure_items`
+--
+
+INSERT INTO `departure_items` (`id`, `departure_id`, `supplie_id`, `quantity`, `excess`, `order_number`) VALUES
+(1, 1, 1, '100.00', '1.20', 8),
+(2, 1, 2, '500.00', '3.40', NULL),
+(3, 2, 9, '1.00', '0.80', NULL),
+(4, 2, 8, '2.00', '5.90', NULL);
 
 -- --------------------------------------------------------
 
@@ -84,8 +154,11 @@ INSERT INTO `departures` (`id`, `order_number`, `product_id`, `quantity`, `lot`,
 CREATE TABLE `entrances` (
   `id` int(11) NOT NULL,
   `user_id` int(11) NOT NULL,
-  `delivery_date` date NOT NULL,
+  `cfdi_id` int(11) NOT NULL,
+  `supplier_id` int(11) NOT NULL,
   `status` varchar(30) NOT NULL,
+  `requisition` varchar(60) NOT NULL,
+  `department` varchar(60) NOT NULL,
   `created_at` datetime NOT NULL,
   `updated_at` datetime NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -94,9 +167,30 @@ CREATE TABLE `entrances` (
 -- Dumping data for table `entrances`
 --
 
-INSERT INTO `entrances` (`id`, `user_id`, `delivery_date`, `status`, `created_at`, `updated_at`) VALUES
-(3, 1, '2020-02-27', 'Cancelada', '2020-02-17 01:25:54', '2020-02-27 05:28:07'),
-(4, 1, '2020-02-28', 'Creada', '2020-02-17 02:34:02', '2020-02-17 02:34:02');
+INSERT INTO `entrances` (`id`, `user_id`, `cfdi_id`, `supplier_id`, `status`, `requisition`, `department`, `created_at`, `updated_at`) VALUES
+(1, 1, 1, 1, 'Creada', 'sadsaasdsada', 'asdas', '2020-03-20 01:41:21', '2020-03-20 01:41:21'),
+(2, 1, 1, 1, 'Creada', 'sadsaasdsada', 'asdas', '2020-03-20 01:41:50', '2020-03-20 01:41:50'),
+(3, 1, 1, 2, 'Aprobada', '0024', 'Operaciones', '2020-03-20 21:39:15', '2020-03-20 21:39:15');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `entrance_comments`
+--
+
+CREATE TABLE `entrance_comments` (
+  `id` int(11) NOT NULL,
+  `entrance_id` int(11) NOT NULL,
+  `comment` varchar(250) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Dumping data for table `entrance_comments`
+--
+
+INSERT INTO `entrance_comments` (`id`, `entrance_id`, `comment`) VALUES
+(1, 2, 'asdasdadsad'),
+(2, 3, 'Entregar despues de las 17:00');
 
 -- --------------------------------------------------------
 
@@ -109,7 +203,9 @@ CREATE TABLE `entrance_items` (
   `entrance_id` int(11) NOT NULL,
   `supply_id` int(11) NOT NULL,
   `quantity` decimal(10,4) NOT NULL,
+  `price` decimal(10,2) NOT NULL,
   `comments` text,
+  `order_number` int(11) DEFAULT NULL,
   `created_at` datetime NOT NULL,
   `updated_at` datetime NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -118,15 +214,23 @@ CREATE TABLE `entrance_items` (
 -- Dumping data for table `entrance_items`
 --
 
-INSERT INTO `entrance_items` (`id`, `entrance_id`, `supply_id`, `quantity`, `comments`, `created_at`, `updated_at`) VALUES
-(1, 3, 1, '1.0000', NULL, '2020-02-17 01:25:54', '2020-02-17 01:25:54'),
-(2, 3, 2, '2.0000', NULL, '2020-02-17 01:25:54', '2020-02-17 01:25:54'),
-(3, 3, 3, '3.0000', NULL, '2020-02-17 01:25:54', '2020-02-17 01:25:54'),
-(8, 4, 1, '1.0000', NULL, '2020-02-17 02:35:09', '2020-02-17 02:35:09'),
-(9, 4, 2, '2.0000', NULL, '2020-02-17 02:35:09', '2020-02-17 02:35:09'),
-(10, 4, 3, '3.0000', NULL, '2020-02-17 02:35:09', '2020-02-17 02:35:09'),
-(11, 4, 5, '5.0000', NULL, '2020-02-17 02:35:09', '2020-02-17 02:35:09'),
-(12, 4, 10, '3.0000', NULL, '2020-02-17 02:35:09', '2020-02-17 02:35:09');
+INSERT INTO `entrance_items` (`id`, `entrance_id`, `supply_id`, `quantity`, `price`, `comments`, `order_number`, `created_at`, `updated_at`) VALUES
+(1, 2, 1, '2434.0000', '2344324.00', NULL, NULL, '2020-03-20 01:41:50', '2020-03-20 01:41:50'),
+(2, 3, 4, '100.0000', '120.00', NULL, NULL, '2020-03-20 21:39:15', '2020-03-20 21:39:15');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `entrance_supplies`
+--
+
+CREATE TABLE `entrance_supplies` (
+  `id` int(11) NOT NULL,
+  `departure_id` int(11) NOT NULL,
+  `supplie_id` int(11) NOT NULL,
+  `quantity` decimal(10,2) NOT NULL,
+  `entrance_number` varchar(5) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -163,7 +267,22 @@ INSERT INTO `Logbooks` (`id`, `type_id`, `title`, `content`, `icon`, `created_by
 (11, 3, 'Orden de Fabricación Cancelada', 'La orden de fabricación #OT-0002 ha sido cancelada', 'fas fa-clipboard', 1, '2020-02-29 14:10:50', '2020-02-29 14:10:50'),
 (12, 1, 'Orden de Fabricació Creada', 'La orden de fabricación \"OT-02.5\" ha sido creado', 'fas fa-clipboard', 1, '2020-02-29 14:14:24', '2020-02-29 14:14:24'),
 (13, 1, 'Orden de Fabricació Creada', 'La orden de fabricación \"OT-0001\" ha sido creado', 'fas fa-clipboard', 1, '2020-02-29 14:16:25', '2020-02-29 14:16:25'),
-(14, 1, 'Orden de Fabricació Creada', 'La orden de fabricación \"OT-0002\" ha sido creado', 'fas fa-clipboard', 1, '2020-02-29 14:17:20', '2020-02-29 14:17:20');
+(14, 1, 'Orden de Fabricació Creada', 'La orden de fabricación \"OT-0002\" ha sido creado', 'fas fa-clipboard', 1, '2020-02-29 14:17:20', '2020-02-29 14:17:20'),
+(15, 1, 'Orden de Compra Modificada', 'La orden de compra #\"6\" ha sido creada', 'fas fa-cart-arrow-down', 1, '2020-02-29 18:25:41', '2020-02-29 18:25:41'),
+(16, 3, 'Orden de Compra Cancelada', 'La orden de compra #\"5\" ha sido cancelada', 'fas fa-cart-arrow-down', 1, '2020-02-29 18:25:56', '2020-02-29 18:25:56'),
+(17, 1, 'Insumo Creado', 'El insumo con el código \"A-00008\" ha sido creado', 'fas fa-capsules', 1, '2020-02-29 19:01:18', '2020-02-29 19:01:18'),
+(18, 2, 'Insumo Modificado', 'El insumo con el código \"A-00008\" ha sido modificado', 'fas fa-capsules', 1, '2020-02-29 19:03:25', '2020-02-29 19:03:25'),
+(19, 1, 'Orden de Fabricació Creada', 'La orden de fabricación \"OT-0001\" ha sido creado', 'fas fa-clipboard', 1, '2020-03-04 04:19:48', '2020-03-04 04:19:48'),
+(20, 1, 'Orden de Fabricació Creada', 'La orden de fabricación \"OT-0001\" ha sido creado', 'fas fa-clipboard', 1, '2020-03-04 04:46:59', '2020-03-04 04:46:59'),
+(21, 2, 'Orden de Compra Modificada', 'La orden de compra #\"3\" ha sido modificada', 'fas fa-cart-arrow-down', 1, '2020-03-11 21:51:10', '2020-03-11 21:51:10'),
+(22, 2, 'Orden de Compra Modificada', 'La orden de compra #\"3\" ha sido modificada', 'fas fa-cart-arrow-down', 1, '2020-03-11 21:58:50', '2020-03-11 21:58:50'),
+(23, 2, 'Orden de Compra Modificada', 'La orden de compra #\"3\" ha sido modificada', 'fas fa-cart-arrow-down', 1, '2020-03-11 21:59:00', '2020-03-11 21:59:00'),
+(24, 1, 'Orden de Compra Modificada', 'La orden de compra #\"7\" ha sido creada', 'fas fa-cart-arrow-down', 1, '2020-03-11 22:22:53', '2020-03-11 22:22:53'),
+(25, 1, 'Orden de Compra Modificada', 'La orden de compra #\"1\" ha sido creada', 'fas fa-cart-arrow-down', 1, '2020-03-20 01:37:44', '2020-03-20 01:37:44'),
+(26, 1, 'Orden de Compra Modificada', 'La orden de compra #\"1\" ha sido creada', 'fas fa-cart-arrow-down', 1, '2020-03-20 01:39:29', '2020-03-20 01:39:29'),
+(27, 1, 'Orden de Compra Modificada', 'La orden de compra #\"2\" ha sido creada', 'fas fa-cart-arrow-down', 1, '2020-03-20 01:41:50', '2020-03-20 01:41:50'),
+(28, 1, 'Orden de Compra Modificada', 'La orden de compra #\"3\" ha sido creada', 'fas fa-cart-arrow-down', 1, '2020-03-20 21:39:15', '2020-03-20 21:39:15'),
+(29, 2, 'Insumo Modificado', 'El insumo con el código \"A-00001\" ha sido modificado', 'fas fa-capsules', 1, '2020-03-20 22:08:21', '2020-03-20 22:08:21');
 
 -- --------------------------------------------------------
 
@@ -201,8 +320,8 @@ CREATE TABLE `molds` (
   `created_at` datetime NOT NULL,
   `updated_at` datetime NOT NULL,
   `minimals` decimal(10,2) NOT NULL,
-  `long_mm` int(11) NOT NULL,
-  `width_mm` int(11) NOT NULL,
+  `long_mm` decimal(10,2) NOT NULL,
+  `width_mm` decimal(10,2) NOT NULL,
   `caps_long` int(11) NOT NULL,
   `caps_circ` int(11) NOT NULL,
   `kilograms` decimal(10,2) NOT NULL,
@@ -215,9 +334,61 @@ CREATE TABLE `molds` (
 --
 
 INSERT INTO `molds` (`id`, `code`, `type`, `created_at`, `updated_at`, `minimals`, `long_mm`, `width_mm`, `caps_long`, `caps_circ`, `kilograms`, `reference_product`, `observations`) VALUES
-(1, '16OBE-01', 'Oblongos', '2020-01-29 00:00:00', '2020-02-23 04:22:41', '16.00', 22, 10, 9, 32, '272.92', 'DIABION', NULL),
-(2, '03OVE-01', 'Ovales', '2020-01-29 00:00:00', '2020-02-23 04:23:52', '3.00', 12, 7, 16, 41, '119.82', 'SAW PALMETO', NULL),
-(3, '20OBE-01', 'Oblongos', '2020-02-23 04:25:07', '2020-02-23 04:25:07', '20.00', 26, 10, 8, 32, '307.03', 'LACRIVIT, VITAGERUM', NULL);
+(1, '16OBE-01', 'Oblongos', '2020-01-29 00:00:00', '2020-02-23 04:22:41', '16.00', '22.00', '10.00', 9, 32, '272.92', 'DIABION', NULL),
+(2, '03OVE-01', 'Ovales', '2020-01-29 00:00:00', '2020-02-23 04:23:52', '3.00', '12.00', '7.00', 16, 41, '119.82', 'SAW PALMETO', NULL),
+(3, '20OBE-01', 'Oblongos', '2020-02-23 04:25:07', '2020-02-23 04:25:07', '20.00', '26.00', '10.00', 8, 32, '307.03', 'LACRIVIT, VITAGERUM', NULL);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `packages`
+--
+
+CREATE TABLE `packages` (
+  `id` int(11) NOT NULL,
+  `name` varchar(100) NOT NULL,
+  `product_id` int(11) NOT NULL,
+  `client_id` int(11) NOT NULL,
+  `quantity` decimal(10,2) NOT NULL,
+  `presentation` varchar(150) NOT NULL,
+  `date_expire` date NOT NULL,
+  `lot` varchar(50) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `created_at` datetime NOT NULL,
+  `updated_at` datetime NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Dumping data for table `packages`
+--
+
+INSERT INTO `packages` (`id`, `name`, `product_id`, `client_id`, `quantity`, `presentation`, `date_expire`, `lot`, `user_id`, `created_at`, `updated_at`) VALUES
+(1, 'sdfsdfdf', 1, 1, '23123.00', 'sadadas', '2020-03-28', 'sadasd', 1, '2020-03-20 20:28:07', '2020-03-20 20:28:07'),
+(2, 'sdfsdfdf', 1, 1, '23123.00', 'sadadas', '2020-03-28', 'sadasd', 1, '2020-03-20 20:29:05', '2020-03-20 20:29:05');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `package_supplies`
+--
+
+CREATE TABLE `package_supplies` (
+  `id` int(11) NOT NULL,
+  `package_id` int(11) NOT NULL,
+  `supply_id` int(11) NOT NULL,
+  `quantity` decimal(10,4) NOT NULL,
+  `excess` decimal(3,2) NOT NULL DEFAULT '0.00',
+  `created_at` datetime NOT NULL,
+  `updated_at` datetime NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Dumping data for table `package_supplies`
+--
+
+INSERT INTO `package_supplies` (`id`, `package_id`, `supply_id`, `quantity`, `excess`, `created_at`, `updated_at`) VALUES
+(1, 1, 4, '11.0000', '2.00', '2020-03-20 20:28:07', '2020-03-20 20:28:07'),
+(2, 2, 4, '11.0000', '2.00', '2020-03-20 20:29:05', '2020-03-20 20:29:05');
 
 -- --------------------------------------------------------
 
@@ -285,6 +456,36 @@ CREATE TABLE `recipes` (
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `suppliers`
+--
+
+CREATE TABLE `suppliers` (
+  `id` int(11) NOT NULL,
+  `name` varchar(100) NOT NULL,
+  `contact` varchar(120) NOT NULL,
+  `address` varchar(120) NOT NULL,
+  `neight` varchar(120) NOT NULL,
+  `city` varchar(100) DEFAULT NULL,
+  `state` varchar(100) NOT NULL,
+  `zip` varchar(6) NOT NULL,
+  `rfc` varchar(15) DEFAULT NULL,
+  `phone` varchar(18) NOT NULL,
+  `email` varchar(150) NOT NULL,
+  `created_at` datetime NOT NULL,
+  `updated_at` datetime NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Dumping data for table `suppliers`
+--
+
+INSERT INTO `suppliers` (`id`, `name`, `contact`, `address`, `neight`, `city`, `state`, `zip`, `rfc`, `phone`, `email`, `created_at`, `updated_at`) VALUES
+(1, 'Stefanny Jacqueline Velazquez Hernández', 'ANGEL DAVID GARCÍA RODRIGUEZ', 'Padre Xavier Scheifler 835, Int 118\r\n				', 'Parques del Bosque', 'San Pedro Tlaquepaque', 'Jalisco', '25609', 'VEHS890726BH5', '+52 1 312 1812759', 'angelrodriguez@ucol.mx', '2020-03-01 01:05:15', '2020-03-06 04:28:09'),
+(2, 'Alejandro Saldaña', 'Karla Becerra', 'Av San Jose 1210', 'Los  Cajetes', 'Zapopan', 'Jalisco', '45234', NULL, '3315432480', 'angelrodriguez@ucol.mx', '2020-03-20 21:37:06', '2020-03-20 21:37:06');
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `supplies`
 --
 
@@ -305,7 +506,7 @@ CREATE TABLE `supplies` (
 --
 
 INSERT INTO `supplies` (`id`, `name`, `code`, `type_id`, `measurement_use`, `measurement_buy`, `stock`, `created_at`, `updated_at`) VALUES
-(1, 'Agua Purificada Nivel 1', 'A-00001', 1, 3, 4, '0.00', '2020-01-16 02:50:46', '2020-01-16 03:02:59'),
+(1, 'Agua Purificada Nivel 1', 'A-00001', 1, 3, 4, '1000.00', '2020-01-16 02:50:46', '2020-03-20 22:08:21'),
 (2, 'Gelatina LB 175 B', 'A-00002', 1, 1, 2, '0.00', '2020-01-16 03:03:55', '2020-01-16 03:03:55'),
 (3, 'Glicerol', 'A-00003', 1, 3, 4, '0.00', '2020-01-16 03:05:00', '2020-01-16 03:05:00'),
 (4, 'Metilparabeno sódico (Nipagin)', 'A-00004', 1, 3, 4, '0.00', '2020-01-16 03:07:02', '2020-01-16 03:07:02'),
@@ -315,7 +516,8 @@ INSERT INTO `supplies` (`id`, `name`, `code`, `type_id`, `measurement_use`, `mea
 (8, 'Etiqueta de Aceite de Krill F. Similares', 'C-00001', 3, 5, 5, '0.00', '2020-01-16 03:08:42', '2020-01-16 03:08:42'),
 (9, 'Caja colectiva doble corrugado de 50 x 50 x50', 'D-00001', 4, 5, 5, '0.00', '2020-01-16 03:09:04', '2020-01-16 03:09:04'),
 (10, 'Bióxido de Titanio 19-380-C', 'A-00006', 1, 3, 4, '0.00', '2020-01-16 03:09:36', '2020-01-16 03:09:36'),
-(11, 'Colorante óxido negro azabache', 'A-00007', 1, 1, 2, '0.00', '2020-01-16 03:10:45', '2020-01-16 03:10:45');
+(11, 'Colorante óxido negro azabache', 'A-00007', 1, 1, 2, '0.00', '2020-01-16 03:10:45', '2020-01-16 03:10:45'),
+(12, 'Colorante Rojo No. 6', 'A-00008', 1, 6, 2, '0.00', '2020-02-29 19:01:18', '2020-02-29 19:03:25');
 
 -- --------------------------------------------------------
 
@@ -340,7 +542,8 @@ INSERT INTO `supply_measurements` (`id`, `name`, `code`, `created_at`, `updated_
 (2, 'Kilogramo', 'Kg', '2020-01-11 00:00:00', '2020-01-11 00:00:00'),
 (3, 'Mililitro', 'Ml', '2020-01-11 00:00:00', '2020-01-11 00:00:00'),
 (4, 'Litro', 'L', '2020-01-11 00:00:00', '2020-01-11 00:00:00'),
-(5, 'Pieza', 'Pieza', '2020-01-11 00:00:00', '2020-01-11 00:00:00');
+(5, 'Pieza', 'Pieza', '2020-01-11 00:00:00', '2020-01-11 00:00:00'),
+(6, 'MIligramos', 'ml', '2020-02-29 13:02:51', '2020-02-29 13:02:51');
 
 -- --------------------------------------------------------
 
@@ -426,9 +629,21 @@ INSERT INTO `user_roles` (`id`, `name`, `created_at`, `updated_at`) VALUES
 --
 
 --
+-- Indexes for table `catalogs`
+--
+ALTER TABLE `catalogs`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Indexes for table `clients`
 --
 ALTER TABLE `clients`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `decreases`
+--
+ALTER TABLE `decreases`
   ADD PRIMARY KEY (`id`);
 
 --
@@ -438,15 +653,33 @@ ALTER TABLE `departures`
   ADD PRIMARY KEY (`id`);
 
 --
+-- Indexes for table `departure_items`
+--
+ALTER TABLE `departure_items`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Indexes for table `entrances`
 --
 ALTER TABLE `entrances`
   ADD PRIMARY KEY (`id`);
 
 --
+-- Indexes for table `entrance_comments`
+--
+ALTER TABLE `entrance_comments`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Indexes for table `entrance_items`
 --
 ALTER TABLE `entrance_items`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `entrance_supplies`
+--
+ALTER TABLE `entrance_supplies`
   ADD PRIMARY KEY (`id`);
 
 --
@@ -468,6 +701,18 @@ ALTER TABLE `molds`
   ADD PRIMARY KEY (`id`);
 
 --
+-- Indexes for table `packages`
+--
+ALTER TABLE `packages`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `package_supplies`
+--
+ALTER TABLE `package_supplies`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Indexes for table `products`
 --
 ALTER TABLE `products`
@@ -483,6 +728,12 @@ ALTER TABLE `product_supplies`
 -- Indexes for table `recipes`
 --
 ALTER TABLE `recipes`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `suppliers`
+--
+ALTER TABLE `suppliers`
   ADD PRIMARY KEY (`id`);
 
 --
@@ -521,34 +772,64 @@ ALTER TABLE `user_roles`
 --
 
 --
+-- AUTO_INCREMENT for table `catalogs`
+--
+ALTER TABLE `catalogs`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
 -- AUTO_INCREMENT for table `clients`
 --
 ALTER TABLE `clients`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
+-- AUTO_INCREMENT for table `decreases`
+--
+ALTER TABLE `decreases`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
 -- AUTO_INCREMENT for table `departures`
 --
 ALTER TABLE `departures`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
+-- AUTO_INCREMENT for table `departure_items`
+--
+ALTER TABLE `departure_items`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `entrances`
 --
 ALTER TABLE `entrances`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+
+--
+-- AUTO_INCREMENT for table `entrance_comments`
+--
+ALTER TABLE `entrance_comments`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `entrance_items`
 --
 ALTER TABLE `entrance_items`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
+-- AUTO_INCREMENT for table `entrance_supplies`
+--
+ALTER TABLE `entrance_supplies`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `Logbooks`
 --
 ALTER TABLE `Logbooks`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=30;
 
 --
 -- AUTO_INCREMENT for table `logbook_types`
@@ -561,6 +842,18 @@ ALTER TABLE `logbook_types`
 --
 ALTER TABLE `molds`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+
+--
+-- AUTO_INCREMENT for table `packages`
+--
+ALTER TABLE `packages`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
+-- AUTO_INCREMENT for table `package_supplies`
+--
+ALTER TABLE `package_supplies`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `products`
@@ -581,16 +874,22 @@ ALTER TABLE `recipes`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
+-- AUTO_INCREMENT for table `suppliers`
+--
+ALTER TABLE `suppliers`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
 -- AUTO_INCREMENT for table `supplies`
 --
 ALTER TABLE `supplies`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
 
 --
 -- AUTO_INCREMENT for table `supply_measurements`
 --
 ALTER TABLE `supply_measurements`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT for table `supply_types`
