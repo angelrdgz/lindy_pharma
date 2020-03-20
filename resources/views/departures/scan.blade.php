@@ -24,15 +24,39 @@
 </div>
 
 <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog-centered" role="document">
+    <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title text-center" id="exampleModalLabel">Actualizar Orden</h5>
             </div>
             <div class="modal-body">
+                @switch($departure->status)
+                @case("Creada")
+                 <?php $newStatus = "Pesado";; ?>
+                @break
+
+                @case("Pesado")
+                  <?php $newStatus = "Preparación";; ?>
+                @break
+
+                @case("Preparación")
+                  <?php $newStatus = "Encapsulado";; ?>
+                @break
+
+                @case("Encapsulado")
+                  <?php $newStatus = "Secado";; ?>
+                @break
+
+                @case("Secado")
+                  <?php $newStatus = "Granel";; ?>
+                @break
+
+                @default
+                 <?php $newStatus = "Nada"; ?>
+                @endswitch
                 <h5>¿Desea cambiar el estatus de la order?</h5>
                 <p><b>Estatus actual:</b> {{ ucfirst($departure->status) }}</p>
-                <p><b>Siguiente estatus:</b> Finalizada</p>
+                <p><b>Siguiente estatus:</b> {{ ucfirst($newStatus) }}</p>
             </div>
             <div class="modal-footer">
                 <a href="{{ url('ordenes-de-fabricacion') }}" class="btn btn-secondary">No</a>

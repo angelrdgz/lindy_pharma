@@ -35,7 +35,7 @@
               @foreach($entrances as $entrance)
               <tr>
                 <td>{{ $entrance->user->name }}</td>
-                <td>{{ date('d/m/Y', strtotime($entrance->delivery_date))}}</td>
+                <td>{{ date('d/m/Y', strtotime($entrance->created_at))}}</td>
                 <td>{{ count($entrance->items) }}</td>
                 <td>{{ $entrance->status }}</td>
                 <td>
@@ -45,6 +45,14 @@
                       <i class="fas fa-pencil-alt"></i>
                     </span>
                     <span class="text">Modificar</span>
+                  </a>
+                  @endif
+                  @if(Auth::user()->role_id == 1)
+                  <a href="{{ url('ordenes-de-compra/'.$entrance->id)}}" target="_blank" class="btn btn-info btn-icon-split btn-sm">
+                    <span class="icon text-white-50">
+                      <i class="fas fa-file-pdf"></i>
+                    </span>
+                    <span class="text">PDF</span>
                   </a>
                   @endif
                   @if(Auth::user()->role_id == 3)

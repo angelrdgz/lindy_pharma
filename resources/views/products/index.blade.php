@@ -24,6 +24,7 @@
                     <tr>
                     <th>ID</th>
                     <th>Nombre</th>
+                    <th>Stock</th>
       <th></th>
                     </tr>
                   </thead>
@@ -32,6 +33,7 @@
     <tr>
       <td>{{ $product->id }}</td>
       <td>{{ $product->name }}</td>
+      <td>{{ $product->stock }}</td>
       <td>
       <a href="{{ url('productos/'.$product->id.'/edit')}}" class="btn btn-warning btn-icon-split">
                     <span class="icon text-white-50">

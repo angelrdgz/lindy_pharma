@@ -77,6 +77,12 @@
       @enderror 
   </div>
     </div>
+    <div class="col-sm-4">
+    <div class="form-group">
+    <label for="exampleFormControlInput1">Stock</label>
+    <input type="text" class="form-control number" name="stock">
+  </div>
+    </div>
   </div>
   <div class="row">
     <div class="col-sm-3 offset-sm-3">

@@ -200,7 +200,7 @@
 <!--[if mso]><table width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td style="padding-right: 10px; padding-left: 10px; padding-top: 20px; padding-bottom: 10px; font-family: Tahoma, sans-serif"><![endif]-->
 <div style="color:#0D0D0D;font-family:Montserrat, Trebuchet MS, Lucida Grande, Lucida Sans Unicode, Lucida Sans, Tahoma, sans-serif;line-height:1.5;padding-top:20px;padding-right:10px;padding-bottom:10px;padding-left:10px;">
 <div style="font-size: 12px; line-height: 1.5; color: #0D0D0D; font-family: Montserrat, Trebuchet MS, Lucida Grande, Lucida Sans Unicode, Lucida Sans, Tahoma, sans-serif; mso-line-height-alt: 18px;">
-<p style="font-size: 14px; line-height: 1.5; text-align: center; word-break: break-word; mso-line-height-alt: 21px; margin: 0;">El empleado <b>{{ $user_name }}</b> há actualizado la orden de fabricación con el número <b>{{ $order_number }}</b> al estatus <b>{{ $status}}</b></p>
+<p style="font-size: 14px; line-height: 1.5; text-align: center; word-break: break-word; mso-line-height-alt: 21px; margin: 0;">El empleado <b>{{ $user_name }}</b> há actualizado la orden de fabricación con el número <b>{{ $order_number }}</b> del tipo {{ $type == 1 ? "Contenido":"Cobertura"}} al estatus <b>{{ $status}}</b></p>
 </div>
 </div>
 <!--[if mso]></td></tr></table><![endif]-->

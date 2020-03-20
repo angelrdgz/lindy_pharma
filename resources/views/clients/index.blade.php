@@ -6,7 +6,7 @@
   <div class="card shadow mb-4">
             <div class="card-header">
               <div class="row">
-                <div class="col-sm-10 pt-2">
+                <div class="col-sm-8 pt-2">
                 <h5 class="m-0 font-weight-bold text-primary">Clientes</h5>
                 </div>
                 <div class="col-sm-2">
@@ -15,6 +15,9 @@
                   Nuevo Cliente
                 </a>
                 </div>
+                <div class="col-sm-2 pt-2">
+                        <a href="{{ url('exportar/clientes') }}" target="_blank" class="btn btn-primary btn-block">Exportar CSV</a>
+                    </div>
               </div>
             </div>
             <div class="card-body">

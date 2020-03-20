@@ -85,4 +85,17 @@ class ClientController extends Controller
         return redirect('clientes')->with('success', 'Cliente modificado correctamente');
 
     }
+
+    public function export()
+    {
+        $csvExporter = new \Laracsv\Export();
+        $clients = Client::all();
+
+        // Register the hook before building
+        $csvExporter->beforeEach(function ($client) {
+            $client->address = $client->address.', '.$client->neight.'. '.$client->city.', '.$client->state.'. CP:'.$client->zip;
+        });
+
+        $csvExporter->build($clients, ['name'=>'Nombre', 'contact'=>'Contacto','phone'=>'Teléfono', 'address'=>'Dirección','email'=>'Correo'])->download('clientes_'.date('d_m_Y').'.csv');
+    }
 }

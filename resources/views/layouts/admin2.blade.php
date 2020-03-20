@@ -60,12 +60,22 @@
         <i class="fas fa-user-tie"></i>
           <span>Clientes</span></a>
       </li>
+      <li class="nav-item {{ Request::is('proveedores') ? 'active':'' }}">
+        <a class="nav-link" href="{{ url('proveedores') }}">
+        <i class="fas fa-users"></i>
+          <span>Proveedores</span></a>
+      </li>
       <li class="nav-item {{ Request::is('insumos') ? 'active':'' }}">
         <a class="nav-link" href="{{ url('insumos') }}">
         <i class="fas fa-capsules"></i>
           <span>Insumos</span></a>
       </li>
       @endif
+      <li class="nav-item {{ Request::is('descargas') ? 'active':'' }}">
+        <a class="nav-link" href="{{ url('descargas') }}">
+        <i class="fas fa-angle-double-down"></i>
+          <span>Descarga de Insumo</span></a>
+      </li>
       <!--<li class="nav-item">
         <a class="nav-link" href="{{ url('recetas') }}">
         <i class="fas fa-flask"></i>
@@ -99,7 +109,11 @@
           <span>Ordenes de Compra</span></a>
       </li>
       @endif
-
+      <li class="nav-item {{ Request::is('ordenes-de-acondicionamiento') ? 'active':'' }}">
+        <a class="nav-link" href="{{ url('ordenes-de-acondicionamiento') }}">
+        <i class="fas fa-box"></i>
+          <span>Acondicionamiento</span></a>
+      </li>
       <!-- Divider -->
       <!--<hr class="sidebar-divider">-->
 

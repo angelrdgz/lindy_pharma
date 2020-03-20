@@ -24,6 +24,8 @@
                     <tr>
                     <th>Código</th>
                     <th>Tipo</th>
+                    <th>Largo</th>
+                    <th>Ancho</th>
                     <th>Minimas</th>
                     <th>Capsulas Totales</th>   
       <th></th>
@@ -33,7 +35,9 @@
                   @foreach($molds as $mold)
     <tr>
       <td>{{ $mold->code }}</td>
-      <td>{{ $mold->type }}</td>      
+      <td>{{ $mold->type }}</td>
+      <td>{{ number_format($mold->long_mm, 1) }} mm</td>
+      <td>{{ number_format($mold->width_mm, 1) }} mm</td>      
       <td>{{ $mold->minimals }}</td>
       <td>{{ $mold->caps_long * $mold->caps_circ }}</td>
       <td>

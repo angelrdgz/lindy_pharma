@@ -4,7 +4,7 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Entrace extends Model
+class Packing extends Model
 {
     //
 }

@@ -67,6 +67,14 @@
 </button>
                   </form>
                   @endif
+                  @if(in_array(Auth::user()->role_id, [3]))
+                  <a href="{{ url('ordenes-de-fabricacion/'.$order->id.'/edit')}}" class="btn btn-warning btn-icon-split btn-sm">
+                    <span class="icon text-white-50">
+                    <i class="far fa-eye"></i>
+                    </span>
+                    <span class="text">Ver</span>
+                  </a>
+                  @endif
                   @if(in_array(Auth::user()->role_id, [1,2,3]))
                   <a href="{{ url('ordenes-de-fabricacion/'.$order->id)}}" target="_blank" class="btn btn-info btn-icon-split btn-sm">
                     <span class="icon text-white-50">

@@ -64,6 +64,12 @@ class SupplyController extends Controller
         return redirect('insumos')->with('success', 'Insumo guardado correctamente');
     }
 
+    public function show($id)
+    {
+        $supply = Supply::find($id);        
+        return response()->json($supply->entranceNumbers($supply->id));
+    }
+
     public function edit($id)
     {
         $supply = Supply::find($id);
@@ -97,6 +103,7 @@ class SupplyController extends Controller
         $supply->name = $request->name;
         $supply->code = $request->code;
         $supply->type_id = $request->type;
+        $supply->stock = $request->stock;
         $supply->measurement_use = $request->measurement_use;
         $supply->measurement_buy = $request->measurement_buy;
         $supply->save();

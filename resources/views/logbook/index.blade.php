@@ -6,11 +6,14 @@
         <div class="card shadow mb-4">
             <div class="card-header">
                 <div class="row">
-                    <div class="col-sm-9 pt-2">
+                    <div class="col-sm-7 pt-2">
                         <h5 class="m-0 font-weight-bold text-primary">Bitácora</h5>
                     </div>
                     <div class="col-sm-3 pt-2">
                         <input type="date" max="{{ date('d/m/Y') }}" onchange="sendDate(event)" class="date form-control">
+                    </div>
+                    <div class="col-sm-2 pt-2">
+                        <a href="{{ url('exportar/bitacora') }}" target="_blank" class="btn btn-primary btn-block">Exportar CSV</a>
                     </div>
                 </div>
             </div>

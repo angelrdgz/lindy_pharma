@@ -14,4 +14,16 @@ class Entrance extends Model
     {
         return $this->belongsTo('App\User');
     }
+
+    public function supplier(){
+        return $this->belongsTo('App\Supplier', 'supplier_id','id');
+    }
+
+    public function CFDI(){
+        return $this->belongsTo('App\Catalog','cfdi_id', 'id');
+    }
+
+    public function comments(){
+        return $this->hasMany('App\EntranceComment', 'entrance_id', 'id');
+    }
 }

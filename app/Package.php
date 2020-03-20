@@ -4,7 +4,7 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Departure extends Model
+class Package extends Model
 {
     public function product(){
         return $this->belongsTo('App\Product');
@@ -15,10 +15,6 @@ class Departure extends Model
     }
 
     public function user(){
-        return $this->belongsTo('App\User', 'created_by', 'id');
-    }
-
-    public function items(){
-        return $this->hasMany('App\DepartureItem', 'departure_id', 'id');
+        return $this->belongsTo('App\User');
     }
 }
