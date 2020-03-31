@@ -42,6 +42,27 @@
               <label for="">Departamento</label>
               <input type="text" name="department" class="form-control">
             </div>
+            <div class="col-sm-4">
+              <label for="">Elabora</label>
+              <input type="text" name="mader" class="form-control">
+            </div>
+            <div class="col-sm-4">
+              <label for="">Solicita</label>
+              <input type="text" name="owner" class="form-control">
+            </div>
+            <div class="col-sm-4">
+              <label for="">Autoriza</label>
+              <input type="text" name="authorizer" class="form-control">
+            </div>
+            <div class="col-sm-4">
+              <label for="">Cto. de Costos</label>
+              <select name="costs" id="" class="form-control">
+                <option value="">Seleccionar Cto de Costos</option>
+                @foreach($costs as $cost)
+                 <option value="{{ $cost->id }}">{{ $cost->name }}</option>
+                @endforeach
+              </select>
+            </div>
           </div>
           <hr>
           <div class="row">

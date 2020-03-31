@@ -17,4 +17,8 @@ class Package extends Model
     public function user(){
         return $this->belongsTo('App\User');
     }
+
+    public function supplies(){
+        return $this->hasMany('App\PackageSupply');
+    }
 }

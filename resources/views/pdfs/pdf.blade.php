@@ -100,7 +100,7 @@
       </tr>
       <tr>
           <td>Código del granel:</td>
-        <td><b>{{ $product->code }}</b></td>
+        <td><b>{{ $recipe->code }}</b></td>
         <td></td>
         <td></td>
         <td></td>
@@ -112,7 +112,7 @@
       </tr>
       <tr>
           <td>Nombre del producto:</td>
-        <td colspan="4"><b>{{ $product->name }}</b></td>
+        <td colspan="4"><b>{{ $recipe->name }}</b></td>
         <td></td>
         <td></td>
         <td></td>
@@ -152,9 +152,9 @@
       </tr>
       @php
       if($order->type == 1){
-           $supplies = $product->supplies;
+           $supplies = $recipe->supplies;
          }else{
-          $supplies = $product->suppliesCover;
+          $supplies = $recipe->suppliesCover;
          }
       @endphp
       <tr>
@@ -163,7 +163,7 @@
         <td>mg</td>
         <td></td>
         <td>Molde:</td>
-        <td>{{ $order->product->mold->code }}</td>
+        <td>{{ $order->recipe->mold->code }}</td>
         <td></td>
         <td>Cliente:</td>
         <td>{{ $order->client->name }}</td>
@@ -225,8 +225,8 @@
            <td class="text-center">{{ $supply->excess }}</td>
            <td class="text-right">{{ number_format(($supply->quantity + ($supply->quantity * ($supply->excess / 100))),4) }}</td>
            <td class="text-center">{{ $supply->supply->measurementUse->code }}</td>
-           <td class="text-right">{{ number_format((($supply->quantity + ($supply->quantity * ($supply->excess / 100))) * $order->quantity),4)  }}</td>
-           <td class="text-center">{{ $supply->supply->measurementUse->code }}</td>
+           <td class="text-right">{{ number_format(((($supply->quantity + ($supply->quantity * ($supply->excess / 100))) * $order->quantity) / 1000),4)  }}</td>
+           <td class="text-center">gr</td>
            <td class="text-center">{{ $supply->order_number == NULL ? "":sprintf("%05s", $supply->order_number)}}</td>
          </tr>
          @php

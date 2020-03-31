@@ -43,6 +43,36 @@
               <label for="">Departamento</label>
               <input type="text" name="department" value="{{ $entrance->department }}" class="form-control">
             </div>
+            <div class="col-sm-4">
+              <label for="">Estatus</label>
+              <select name="status" id="" class="form-control">
+                <option value="">Seleccionar Estatus</option>
+                <option value="Cuarentena" {{$entrance->status == "Cuarentena" ? "selected":""}}>Cuarentena</option>
+                <option value="Aprobada" {{$entrance->status == "Aprobada" ? "selected":""}}>Aprobada</option>
+                <option value="Rechazada" {{$entrance->status == "Rechazada" ? "selected":""}}>Rechazada</option>
+              </select>
+            </div>
+            <div class="col-sm-4">
+              <label for="">Elabora</label>
+              <input type="text" name="mader" value="{{ $entrance->mader }}" class="form-control">
+            </div>
+            <div class="col-sm-4">
+              <label for="">Solicita</label>
+              <input type="text" name="owner" value="{{ $entrance->owner }}" class="form-control">
+            </div>
+            <div class="col-sm-4">
+              <label for="">Autoriza</label>
+              <input type="text" name="authorizer" value="{{ $entrance->authorizer }}" class="form-control">
+            </div>
+            <div class="col-sm-4">
+              <label for="">Cto. de Costos</label>
+              <select name="costs" id="" class="form-control">
+                <option value="">Seleccionar Cto de Costos</option>
+                @foreach($costs as $cost)
+                 <option value="{{ $cost->id }}" {{$cost->id == $entrance->cost_id ? "selected":""}}>{{ $cost->name }}</option>
+                @endforeach
+              </select>
+            </div>
           </div>
           <hr>
           <div class="row">
@@ -96,7 +126,7 @@
                 <tbody>
                   @foreach($entrance->comments as $comment)
                   <tr>
-                    <td><input type="hidden" value="{{ $comment->id}}" class="idComment" name="comments[]" /> <input type="text" value="{{ $comment->comment }}" class="form-control itemCommentRow+'" /></td>
+                    <td><input type="text" value="{{ $comment->comment }}" name="comments[]" class="form-control itemCommentRow+'" /></td>
                     <td class="text-center">
                       <a class="btn btn-danger btn-circle removeCommentRow">
                         <i class="fas fa-trash" style="color: #fff;"></i>

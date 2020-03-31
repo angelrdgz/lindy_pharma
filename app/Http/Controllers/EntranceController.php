@@ -11,6 +11,8 @@ use App\Supply;
 use App\Supplier;
 use App\Logbook;
 use App\Catalog;
+use App\Cost;
+use App\User;
 
 use Auth;
 use PDF;
@@ -28,8 +30,9 @@ class EntranceController extends Controller
     {
         $supplies = Supply::all();
         $suppliers = Supplier::all();
+        $costs = Cost::all();
         $codes = Catalog::where('type', 'cfdi')->get();
-        return view('entrances.create', ['supplies' => $supplies, "suppliers" => $suppliers, "codes" => $codes]);
+        return view('entrances.create', ['supplies' => $supplies, "suppliers" => $suppliers, "codes" => $codes, "costs" => $costs]);
     }
 
     public function store(Request $request)
@@ -40,7 +43,11 @@ class EntranceController extends Controller
         $entrance->cfdi_id = $request->cfdi;
         $entrance->requisition = $request->requisition;
         $entrance->department = $request->department;
+        $entrance->owner = $request->owner;
+        $entrance->mader = $request->mader;
+        $entrance->authorizer = $request->authorizer;
         $entrance->status = 'Creada';
+        $entrance->cost_id = $request->costs;
         $entrance->save();
 
 
@@ -84,11 +91,12 @@ class EntranceController extends Controller
     {
         $entrance = Entrance::find($id);
         $supplies = Supply::all();
+        $buyer = User::where('role_id',4 )->first();
 
         if (Auth::user()->role_id == 3) {
             return view('entrances.show', ['entrance' => $entrance, 'supplies' => $supplies]);
         } else {
-            $pdf = PDF::setOptions(['isHtml5ParserEnabled' => true, 'isRemoteEnabled' => true])->loadView('pdfs.entrance', ["entrance" => $entrance]);
+            $pdf = PDF::setOptions(['isHtml5ParserEnabled' => true, 'isRemoteEnabled' => true])->loadView('pdfs.entrance', ["entrance" => $entrance, 'buyer' => $buyer]);
             return $pdf->stream('orden_de_compra_' . $entrance->id . '.pdf');
             //return view('pdfs.entrance', ["entrance"=>$entrance]);
         }
@@ -100,9 +108,10 @@ class EntranceController extends Controller
     {
         $entrance = Entrance::find($id);
         $supplies = Supply::all();
+        $costs = Cost::all();
         $suppliers = Supplier::all();
         $codes = Catalog::where('type', 'cfdi')->get();
-        return view('entrances.edit', ['entrance' => $entrance, 'supplies' => $supplies, 'suppliers' => $suppliers, 'codes' => $codes]);
+        return view('entrances.edit', ['entrance' => $entrance, 'supplies' => $supplies, 'suppliers' => $suppliers, 'codes' => $codes, 'costs' => $costs]);
     }
 
     public function update(Request $request, $id)
@@ -112,7 +121,12 @@ class EntranceController extends Controller
         $entrance->cfdi_id = $request->cfdi;
         $entrance->requisition = $request->requisition;
         $entrance->department = $request->department;
-        $entrance->save();
+        $entrance->status = $request->status;
+        $entrance->owner = $request->owner;
+        $entrance->mader = $request->mader;
+        $entrance->authorizer = $request->authorizer;
+        $entrance->cost_id = $request->costs;
+
         $entrance->items()->delete();
 
         foreach ($request->idItem as $key => $item) {
@@ -138,6 +152,19 @@ class EntranceController extends Controller
                 }
             }
         }
+
+        if($entrance->status == "Cuarentena" && $request->status == "Aprobada"){
+            foreach($entrance->items as $item){
+
+                $supply = Supply::find($item->supply_id);
+                $supply->stock = $this->convert($supply->measurement_buy, $supply->measurement_use, $item->quantity);
+                $supply->save();
+            }
+        }
+
+        $entrance->save();
+
+        
 
         $logbook = new Logbook();
         $logbook->type_id = 2;
@@ -167,5 +194,22 @@ class EntranceController extends Controller
         $logbook->save();
 
         return redirect('ordenes-de-compra')->with('success', 'Orden cancelada correctamente');
+    }
+
+    private function convert($type1, $type2, $quantity)
+    {
+        $total = 0;
+
+        if ($type1 == 2 && $type2 == 1) {
+            $total = $quantity * 1000;             
+        }elseif($type1 == 2 && $type2 == 6){
+            $total = $quantity * 1000000;
+        }elseif($type1 == 4 && $type2 == 3){
+            $total = $quantity * 1000;
+        }else{
+            $total = $quantity;
+        }
+
+        return $total;
     }
 }

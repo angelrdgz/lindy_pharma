@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Product;
+use App\Recipe;
+use App\ProductRecipe;
 use App\ProductSupply;
 use App\Supply;
 use App\Mold;
@@ -25,8 +27,8 @@ class ProductController extends Controller
     public function create()
     {
         $supplies = Supply::all();
-        $molds = Mold::all();
-        return view('products.create', ['supplies'=>$supplies, 'molds'=>$molds]);
+        $recipes = Recipe::all();
+        return view('products.create', ['recipes'=>$recipes, 'supplies'=>$supplies]);
     }
 
     public function store(Request $request)
@@ -34,8 +36,18 @@ class ProductController extends Controller
         $product = new Product();
         $product->code = $request->code;
         $product->name = $request->name;
-        $product->mold_id = $request->mold;
         $product->save();
+
+        foreach ($request->idItemRecipe as $key => $item) {
+            if($request->idItemRecipe[$key] != NULL){
+                $prodSupply = new ProductRecipe();
+            $prodSupply->product_id = $product->id;
+            $prodSupply->recipe_id = $request->idItemRecipe[$key];
+            $prodSupply->quantity = $request->quantityItemRecipe[$key];
+            $prodSupply->excess = $request->excessItemRecipe[$key];
+            $prodSupply->save();
+            }                        
+        }
 
         foreach ($request->idItem as $key => $item) {
             if($request->idItem[$key] != NULL){
@@ -44,22 +56,8 @@ class ProductController extends Controller
             $prodSupply->supply_id = $request->idItem[$key];
             $prodSupply->quantity = $request->quantityItem[$key];
             $prodSupply->excess = $request->excessItem[$key];
-            $prodSupply->type = 1;
             $prodSupply->save();
-            }
-            
-        }
-
-        foreach ($request->idItemCover as $key => $item) {
-            if($request->idItemCover[$key] != NULL){
-                $prodSupply = new ProductSupply();
-            $prodSupply->product_id = $product->id;
-            $prodSupply->supply_id = $request->idItemCover[$key];
-            $prodSupply->quantity = $request->quantityItemCover[$key];
-            $prodSupply->excess = $request->excessItemCover[$key];
-            $prodSupply->type = 2;
-            $prodSupply->save();
-            }                        
+            }            
         }
 
         $logbook = new Logbook();
@@ -77,10 +75,10 @@ class ProductController extends Controller
     {
         $product = Product::find($id);
         $supplies = Supply::all();
-        $molds = Mold::all();
-        $items = ProductSupply::where('product_id', $id)->where('type', 1)->get();
-        $itemsCover = ProductSupply::where('product_id', $id)->where('type', 2)->get();
-        return view('products.edit', ['product'=>$product, 'molds'=>$molds, 'supplies'=>$supplies, 'items'=>$items, 'itemsCover'=>$itemsCover]);
+        $recipes = Recipe::all();
+        $productRecipes = ProductRecipe::where('product_id', $id)->get();
+        $productSupplies = ProductSupply::where('product_id', $id)->get();
+        return view('products.edit', ['product'=>$product, 'recipes'=>$recipes, 'supplies'=>$supplies, 'productRecipes'=>$productRecipes, 'productSupplies'=>$productSupplies]);
     }
 
     public function update(Request $request, $id)
@@ -88,11 +86,22 @@ class ProductController extends Controller
         $product =  Product::find($id);
         $product->code = $request->code;
         $product->name = $request->name;
-        $product->mold_id = $request->mold;
         $product->save();
 
         $product->supplies()->delete();
-        $product->suppliesCover()->delete();
+        $product->recipes()->delete();
+
+        foreach ($request->idItemRecipe as $key => $item) {
+            if($request->idItemRecipe[$key] != NULL){
+                $prodSupply = new ProductRecipe();
+            $prodSupply->product_id = $product->id;
+            $prodSupply->recipe_id = $request->idItemRecipe[$key];
+            $prodSupply->quantity = $request->quantityItemRecipe[$key];
+            $prodSupply->excess = $request->excessItemRecipe[$key];
+            $prodSupply->save();
+            }
+            
+        }
 
         foreach ($request->idItem as $key => $item) {
             if($request->idItem[$key] != NULL){
@@ -101,20 +110,6 @@ class ProductController extends Controller
             $prodSupply->supply_id = $request->idItem[$key];
             $prodSupply->quantity = $request->quantityItem[$key];
             $prodSupply->excess = $request->excessItem[$key];
-            $prodSupply->type = 1;
-            $prodSupply->save();
-            }
-            
-        }
-
-        foreach ($request->idItemCover as $key => $item) {
-            if($request->idItemCover[$key] != NULL){
-                $prodSupply = new ProductSupply();
-            $prodSupply->product_id = $product->id;
-            $prodSupply->supply_id = $request->idItemCover[$key];
-            $prodSupply->quantity = $request->quantityItemCover[$key];
-            $prodSupply->excess = $request->excessItemCover[$key];
-            $prodSupply->type = 2;
             $prodSupply->save();
             }                        
         }

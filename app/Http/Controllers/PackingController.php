@@ -44,20 +44,21 @@ class PackingController extends Controller
         $package->user_id = Auth::user()->id;
         $package->save();
 
-        foreach ($request->idItem as $key => $item) {
-            if ($request->idItem[$key] != NULL) {
-                $prodSupply = new PackageSupply();
-                $prodSupply->package_id = $package->id;
-                $prodSupply->supply_id = $request->idItem[$key];
-                $prodSupply->quantity = $request->quantityItem[$key];
-                $prodSupply->excess = $request->excessItem[$key];
-                $prodSupply->save();
-            }
-        }
-
         QrCode::size(150)->format('png')->generate(env('APP_URL') . 'ordenes-de-acondicionamiento/' . $package->id . '/escanear', public_path('images/qrcode/packing/qrcode_packing_' . $package->id . '.png'));
 
         return redirect('ordenes-de-acondicionamiento')->with('success', 'Orden creada correctamente');
+    }
+
+    public function show($id)
+    {
+        $order = Package::find($id);
+        /*$totals = DB::select('SELECT quantity + (quantity * (excess / 100)) as "Total" FROM recipe_supplies where recipe_id = :id AND type = :type', ["id" => $order->recipe_id, "type" => $order->type]);
+        $tt = 0;
+        foreach ($totals as $total) {
+            $tt += $total->Total;
+        }*/
+        $pdf = PDF::setOptions(['isHtml5ParserEnabled' => true, 'isRemoteEnabled' => true])->loadView('pdfs.conditioning', ["order" => $order]);
+        return $pdf->stream('orden_de_acondicionamiento_' . $order->id . '.pdf');
     }
 
     public function edit($id)

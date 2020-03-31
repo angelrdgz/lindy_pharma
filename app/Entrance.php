@@ -15,6 +15,11 @@ class Entrance extends Model
         return $this->belongsTo('App\User');
     }
 
+    public function cost()
+    {
+        return $this->belongsTo('App\Cost');
+    }
+
     public function supplier(){
         return $this->belongsTo('App\Supplier', 'supplier_id','id');
     }

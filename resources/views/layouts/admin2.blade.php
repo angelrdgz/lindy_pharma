@@ -85,7 +85,14 @@
       <li class="nav-item {{ Request::is('productos') ? 'active':'' }}">
         <a class="nav-link" href="{{ url('productos') }}">
         <i class="fas fa-flask"></i>
-          <span>Productos</span></a>
+          <span>Productos Terminado</span></a>
+      </li>
+      @endif
+      @if(in_array(Auth::user()->role_id, [1,2]))
+      <li class="nav-item {{ Request::is('recetas') ? 'active':'' }}">
+        <a class="nav-link" href="{{ url('recetas') }}">
+        <i class="fas fa-flask"></i>
+          <span>Productos Agranel</span></a>
       </li>
       @endif
       @if(in_array(Auth::user()->role_id, [1]))

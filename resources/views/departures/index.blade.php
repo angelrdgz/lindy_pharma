@@ -36,7 +36,7 @@
                   <tbody>
                   @foreach($orders as $order)
     <tr>
-      <td>{{ $order->product->name }}</td>
+      <td>{{ $order->recipe->name }}</td>
       <td>{{ $order->quantity }}</td>      
       <td>{{ $order->client->name }}</td>
       <td>{{ $order->user->name }}</td>

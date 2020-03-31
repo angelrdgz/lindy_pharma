@@ -1,7 +1,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
- <title>Orden de Fabricación</title>
+ <title>Orden de Acondicionamiento</title>
  <style>
    @page{
      margin: 15px;
@@ -78,7 +78,7 @@
         <img src="{{ public_path().'/images/logo.png' }}" class="logo" alt="">
         </td>
         <td colspan="8">
-         <h2 class="text-center ">ORDEN DE PRODUCCIÓN</h2>
+         <h2 class="text-center ">ORDEN DE ACONDICIONAMIENTO</h2>
         </td>
         <td class="text-right">
           <p style="margin:1px;">Anexo 1</p>
@@ -96,11 +96,11 @@
         <td></td>
         <td></td>
         <td>Orden de Trabajo</td>
-        <td class="ot text-right">{{ $order->order_number }}/1.0</td>
+        <td class="ot text-right">/1.0</td>
       </tr>
       <tr>
           <td>Código del granel:</td>
-        <td><b>{{ $product->code }}</b></td>
+        <td><b></b></td>
         <td></td>
         <td></td>
         <td></td>
@@ -112,18 +112,18 @@
       </tr>
       <tr>
           <td>Nombre del producto:</td>
-        <td colspan="4"><b>{{ $product->name }}</b></td>
+        <td colspan="4"><b>{{ $order->product->name }}</b></td>
         <td></td>
         <td></td>
         <td></td>
       </tr>
       <tr>
           <td>Forma Farmacéutica:</td>
-        <td colspan="2"> Cápsula de gelatina blanda</td>
+        <td colspan="2"> {{ $order->form }} </td>
         <td></td>
         <td colspan="2">Tamaño de Lote:</td>
         <td class="text-right"><b>{{ number_format($order->quantity) }}</b></td>
-        <td>cápsulas	</td>
+        <td></td>
         <td>Fecha de Fabricación:</td>
         <td></td>
       </tr>
@@ -137,7 +137,7 @@
         <td></td>
         <td></td>
         <td>Fecha de Caducidad:</td>
-        <td></td>
+        <td>{{ $order->date_expire }}</td>
       </tr>
       <tr>
         <td>Fecha de emisión:</td>
@@ -150,27 +150,20 @@
           <img class="qr" src="{{ public_path().'/images/qrcode/qrcode_'.$order->id.'.png' }}" alt="">
         </td>
       </tr>
-      @php
-      if($order->type == 1){
-           $supplies = $product->supplies;
-         }else{
-          $supplies = $product->suppliesCover;
-         }
-      @endphp
       <tr>
         <td>Peso de contenido:</td>
-        <td>{{ number_format($totalSupplies,2) }}</td>
+        <td></td>
         <td>mg</td>
         <td></td>
         <td>Molde:</td>
-        <td>{{ $order->product->mold->code }}</td>
+        <td></td>
         <td></td>
         <td>Cliente:</td>
         <td>{{ $order->client->name }}</td>
       </tr>
       <tr>
         <td>Peso máximo:</td>
-        <td>{{ number_format(($totalSupplies + ($totalSupplies * 0.06)),2) }}</td>
+        <td></td>
         <td>mg</td>
         <td></td>
         <td colspan="3">Tiempo de encapsulado:</td>
@@ -180,21 +173,17 @@
       </tr>
       <tr>
         <td>Peso mínimo:</td>
-        <td>{{ number_format(($totalSupplies - ($totalSupplies * 0.06)),2) }}</td>
+        <td></td>
         <td>mg</td>
         <td></td>
         <td>Línea:</td>
-        <td>{{ $order->line }}</td>
+        <td></td>
         <td></td>
         <td></td>
         <td></td>
       </tr>
     </table>
-    @if($order->type == 1)
-    <h4 class="text-center" style="margin-top:45px; margin-bottom: 0px;">CONTENIDO DE LA CAPSULA</h4>
-    @else
-    <h4 class="text-center" style="margin-top:45px; margin-bottom: 0px;">ENVOLVENTE DE LA CAPSULA</h4>
-    @endif
+    <h4 class="text-center" style="margin-top:45px; margin-bottom: 0px;">INSUMOS REQUERIDOS</h4>
     <table class="item" width="100%" class="bordered" border="0">
       <thead>
         <tr>
@@ -211,45 +200,21 @@
         </tr>
       </thead>
       <tbody>
-        @php
-         $totalFirst = 0;
-         $totalSecond = 0;
-         $totalThird = 0;
-        @endphp
-        @foreach($order->items as $supply)
+        @foreach($order->product->recipes as $recipe)
          <tr>
-           <td class="text-center">{{ $supply->supply->code }}</td>
-           <td>{{ $supply->supply->name }}</td>
-           <td class="text-right">{{ $supply->quantity }}</td>
-           <td class="text-center">{{ $supply->supply->measurementUse->code }}</td>
-           <td class="text-center">{{ $supply->excess }}</td>
-           <td class="text-right">{{ number_format(($supply->quantity + ($supply->quantity * ($supply->excess / 100))),4) }}</td>
-           <td class="text-center">{{ $supply->supply->measurementUse->code }}</td>
-           <td class="text-right">{{ number_format((($supply->quantity + ($supply->quantity * ($supply->excess / 100))) * $order->quantity),4)  }}</td>
-           <td class="text-center">{{ $supply->supply->measurementUse->code }}</td>
-           <td class="text-center">{{ $supply->order_number == NULL ? "":sprintf("%05s", $supply->order_number)}}</td>
+           <td class="text-center">{{ $recipe->recipe->code }}</td>
+           <td>{{ $recipe->recipe->name }}</td>
+           <td class="text-right">{{ $recipe->quantity }}</td>
+           <td class="text-center">caps</td>
+           <td class="text-center">{{ $recipe->excess }}</td>
+           <td class="text-right">{{ number_format(($recipe->quantity + ($recipe->quantity * ($recipe->excess / 100))),4) }}</td>
+           <td class="text-center">caps</td>
+           <td class="text-right">{{ number_format((($recipe->quantity + ($recipe->quantity * ($recipe->excess / 100))) * $order->quantity),4)  }}</td>
+           <td class="text-center">caps</td>
+           <td class="text-center">{{ $recipe->order_number == NULL ? "":sprintf("%05s", $recipe->order_number)}}</td>
          </tr>
-         @php
-         $totalFirst += $supply->quantity;
-         $totalSecond += ($supply->quantity + ($supply->quantity * ($supply->excess / 100)));
-         $totalThird += ($supply->quantity + ($supply->quantity * ($supply->excess / 100))) * $order->quantity;
-         @endphp
         @endforeach
       </tbody>
-      <tfoot>
-        <tr>
-          <td></td>
-          <td><b>Total</b></td>
-          <td><b>{{ number_format($totalFirst,4) }}</b></td>
-          <td></td>
-          <td></td>
-          <td><b>{{ number_format($totalSecond,4) }}</b></td>
-          <td></td>
-          <td><b>{{ number_format($totalThird,4) }}</b></td>
-          <td></td>
-          <td></td>
-        </tr>
-      </tfoot>
     </table>
 
     <footer>

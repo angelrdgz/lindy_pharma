@@ -4,7 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Client;
 use App\Departure;
-use App\Product;
+use App\Recipe;
+use App\Supply;
 use App\DepartureItem;
 use Illuminate\Http\Request;
 use App\Logbook;
@@ -20,20 +21,20 @@ class DepartureController extends Controller
 {
     public function index()
     {
-        $orders = Departure::all();
+        $orders = Departure::where('visible', true)->get();
         return view('departures.index', ['orders' => $orders]);
     }
 
     public function create()
     {
-        $products = Product::all();
+        $recipes = Recipe::all();
         $clients = Client::all();
-        return view('departures.create', ['products' => $products, 'clients' => $clients]);
+        return view('departures.create', ['recipes' => $recipes, 'clients' => $clients]);
     }
 
     public function store(Request $request)
     {
-        $product = Product::find($request->product);
+        $recipe = Recipe::find($request->recipe);
 
         $total = Departure::count();
 
@@ -44,11 +45,11 @@ class DepartureController extends Controller
             $response = mkdir($folderPath);
         }
 
-        if ($product->supplies->count() > 0) {
+        if ($recipe->supplies->count() > 0) {
 
             $departure = new Departure();
             $departure->order_number = $order_number;
-            $departure->product_id = $request->product;
+            $departure->recipe_id = $request->recipe;
             $departure->client_id = $request->client;
             $departure->lot = $request->lot;
             $departure->line = $request->line;
@@ -58,7 +59,7 @@ class DepartureController extends Controller
             $departure->type = 1;
             $departure->save();
 
-            foreach ($product->supplies as $supplie) {
+            foreach ($recipe->supplies as $supplie) {
                 $item = new DepartureItem();
                 $item->departure_id = $departure->id;
                 $item->supplie_id = $supplie->supply_id;
@@ -67,20 +68,24 @@ class DepartureController extends Controller
                 $item->save();
             }
 
-            Mail::send('emails.departure', ["order_number" => $order_number, "user_name" => Auth::user()->name, "link" => env("APP_URL") . 'ordenes-de-fabricación/' . $departure->id], function ($message) {
-                $message->from('info@lindypharma.com', 'Lindy Pharma');
-                $message->to('angelrodriguez@ucol.mx');
-                $message->subject('Orden de Fabricación Creada');
-            });
+            try {
+                Mail::send('emails.departure', ["order_number" => $order_number, "user_name" => Auth::user()->name, "link" => env("APP_URL") . 'ordenes-de-fabricación/' . $departure->id], function ($message) {
+                    $message->from('info@lindypharma.com', 'Lindy Pharma');
+                    $message->to('angelrodriguez@ucol.mx');
+                    $message->subject('Orden de Fabricación Creada');
+                });
+            } catch (\Throwable $th) {
+                //throw $th;
+            }
 
             QrCode::size(150)->format('png')->generate(env('APP_URL') . 'ordenes-de-fabricacion/' . $departure->id . '/escanear', public_path('images/qrcode/qrcode_' . $departure->id . '.png'));
         }
 
-        if ($product->suppliesCover->count() > 0) {
+        if ($recipe->suppliesCover->count() > 0) {
 
             $departure = new Departure();
             $departure->order_number = $order_number;
-            $departure->product_id = $request->product;
+            $departure->recipe_id = $request->recipe;
             $departure->client_id = $request->client;
             $departure->lot = $request->lot;
             $departure->line = $request->line;
@@ -90,7 +95,7 @@ class DepartureController extends Controller
             $departure->type = 2;
             $departure->save();
 
-            foreach ($product->suppliesCover as $supplie) {
+            foreach ($recipe->suppliesCover as $supplie) {
                 $item = new DepartureItem();
                 $item->departure_id = $departure->id;
                 $item->supplie_id = $supplie->supply_id;
@@ -116,27 +121,26 @@ class DepartureController extends Controller
     public function show($id)
     {
         $order = Departure::find($id);
-        $product = Product::find($order->product_id);
-        $totals = DB::select('SELECT quantity + (quantity * (excess / 100)) as "Total" FROM product_supplies where product_id = :id AND type = :type', ["id" => $order->product_id, "type" => $order->type]);
+        $recipe = Recipe::find($order->recipe_id);
+        $totals = DB::select('SELECT quantity + (quantity * (excess / 100)) as "Total" FROM recipe_supplies where recipe_id = :id AND type = :type', ["id" => $order->recipe_id, "type" => $order->type]);
         $tt = 0;
         foreach ($totals as $total) {
             $tt += $total->Total;
         }
-        return view('pdfs.pdf', ["order"=>$order, "product"=>$product, "totalSupplies"=>$tt]);
-        //$pdf = PDF::setOptions(['isHtml5ParserEnabled' => true, 'isRemoteEnabled' => true])->loadView('pdfs.pdf', ["order" => $order, "product" => $product, "totalSupplies" => $tt]);
-        //return $pdf->download('orden_de_fabricación_' . $order->id . '.pdf');
+        $pdf = PDF::setOptions(['isHtml5ParserEnabled' => true, 'isRemoteEnabled' => true])->loadView('pdfs.pdf', ["order" => $order, "recipe" => $recipe, "totalSupplies" => $tt]);
+        return $pdf->stream('orden_de_fabricación_' . $order->id . '.pdf');
     }
 
     public function edit($id)
     {
-        $products = Product::all();
+        $recipes = Recipe::all();
         $clients = Client::all();
         $departure = Departure::find($id);
         
         if(Auth::user()->role_id == 3){
 
         }else{
-            return view('departures.edit_ware', ['departure'=>$departure, 'products' => $products, 'clients' => $clients]);
+            return view('departures.edit_ware', ['departure'=>$departure, 'recipes' => $recipes, 'clients' => $clients]);
         }
     }
 
@@ -181,6 +185,17 @@ class DepartureController extends Controller
             default:
             $newStatus = "N/A";
                 break;
+        }
+
+        if($newStatus == 'Pesado'){
+            foreach ($departure->recipe->items as $item) {
+                $supply = Supply::find($item->supply_id);
+                $supply->stock = $supply->stock - (($supply->quantity + ($supply->quantity * ($supply->excess / 100))) * $departure->quantity);
+                $supply->save();
+            }
+            if($departure->type == 2){
+                $departure->visible = false;
+            }
         }
 
         $departure->status = $newStatus;

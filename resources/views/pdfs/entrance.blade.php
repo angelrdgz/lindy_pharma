@@ -169,8 +169,8 @@
     </tr>
     <tr>
       <td>RFC: LPH 15051484A Tel. +52 (33) 1543 2480</td>
-      <td class="text-right">COT. DE PROVEEDOR</td>
-      <td class="block"></td>
+      <td class="text-right">CTO. DE COSTOS</td>
+      <td class="block"> {{$entrance->cost->name }} </td>
     </tr>
     <tr>
       <td class="box-blue" colspan="4">Proveedor</td>
@@ -180,7 +180,7 @@
     <tr>
       <td colspan="4">{{ $entrance->supplier->name }}</td>
       <td></td>
-      <td colspan="8">ATN: Alejandro Saldaña</td>
+      <td colspan="8">ATN: {{ $buyer->name}}</td>
     </tr>
     <tr>
       <td colspan="4">{{ $entrance->supplier->address.', '.$entrance->supplier->neight }}</td>
@@ -211,7 +211,7 @@
     <tr>
       <td colspan="4">{{ $entrance->supplier->email }}</td>
       <td></td>
-      <td colspan="8">Email contacto:alejandros@lindypharma.com.mx</td>
+      <td colspan="8">Email {{ $buyer->email }}</td>
     </tr>
   </table>
   <br>
@@ -279,6 +279,15 @@
   <br>
   <table style="width:100%;" cellspacing="0">
     <tbody>
+    <tr>
+        <td></td>
+        <td class="text-center" style="font-size: 10px;">{{ $entrance->mader }}</td>
+        <td></td>
+        <td class="text-center" style="font-size: 10px;">{{ $entrance->owner }}</td>
+        <td></td>
+        <td class="text-center" style="font-size: 10px;">{{ $entrance->authorizer }}</td>
+        <td></td>
+      </tr>
       <tr>
         <td></td>
         <td>_______________________</td>

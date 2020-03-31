@@ -74,13 +74,21 @@
             success: function(data){
                 console.log(data)
                 data.map(function(entrance){
-                    $('select[name="entrance"]').append('<option value="'+entrance.id+'">Entrada #'+entrance.id+'</option>');
+                    $('select[name="entrance"]').append('<option value="'+entrance.id+'">'+entrance.id.pad(5)+'</option>');
                 })
             },
             error:function(){
 
             }
         })
+    }
+
+    Number.prototype.pad = function(size){
+        var s = String(this);
+        while(s.length < (size || 2)) {
+            s = "0" + s;
+        }
+        return s;
     }
 
     try {

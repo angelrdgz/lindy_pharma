@@ -10,6 +10,10 @@ class Departure extends Model
         return $this->belongsTo('App\Product');
     }
 
+    public function recipe(){
+        return $this->belongsTo('App\Recipe');
+    }
+
     public function client(){
         return $this->belongsTo('App\Client');
     }

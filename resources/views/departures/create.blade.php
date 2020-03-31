@@ -18,10 +18,10 @@
             <div class="row">
             <div class="col-sm-4">
                 <label for="">Producto</label>
-                <select name="product" id="" class="form-control">
+                <select name="recipe" id="" class="form-control">
                   <option value="">Seleccionar Producto</option>
-                  @foreach($products as $product)
-                   <option value="{{ $product->id }}">{{ $product->name }}</option>
+                  @foreach($recipes as $recipe)
+                   <option value="{{ $recipe->id }}">{{ $recipe->name }}</option>
                   @endforeach
                 </select>
               </div>

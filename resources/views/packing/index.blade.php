@@ -37,6 +37,14 @@
                                 <td>{{ $package->client->name }}</td>
                                 <td>{{ $package->user->name }}</td>
                                 <td>
+                                    @if(in_array(Auth::user()->role_id, [1,2,3]))
+                                    <a href="{{ url('ordenes-de-acondicionamiento/'.$package->id)}}" target="_blank" class="btn btn-info btn-icon-split btn-sm">
+                                        <span class="icon text-white-50">
+                                            <i class="far fa-file-pdf"></i>
+                                        </span>
+                                        <span class="text">PDF</span>
+                                    </a>
+                                    @endif
                                     @if(in_array(Auth::user()->role_id, [1,2]))
                                     <a href="{{ url('ordenes-de-acondicionamiento/'.$package->id.'/edit')}}" class="btn btn-warning btn-icon-split btn-sm">
                                         <span class="icon text-white-50">

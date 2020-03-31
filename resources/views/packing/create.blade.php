@@ -16,10 +16,6 @@
                 <form method="post" action="{{ url('ordenes-de-acondicionamiento') }}">
                     @csrf
                     <div class="row">
-                    <div class="col-sm-4">
-                            <label for="">Nombre de Acondicionamiento</label>
-                            <input type="text" name="name" class="form-control">
-                        </div>
                         <div class="col-sm-4">
                             <label for="">Producto</label>
                             <select name="product" id="" class="form-control">
@@ -54,30 +50,14 @@
                             <label for="">Fecha de Expiración</label>
                             <input type="date" name="expire" class="form-control">
                         </div>
-                    </div>
-                    <hr>
-                    <div class="row">
-                        <div class="col-sm-12">
-                            <table class="table contentTable">
-                                <thead>
-                                    <tr>
-                                        <th colspan="3">Insumos Requeridos</th>
-                                        <th class="text-right">
-                                            <a class="btn btn-link addContentRow">Agregar Insumo</a>
-                                        </th>
-                                    </tr>
-                                    <tr>
-                                        <th>Nombre</th>
-                                        <th>Cantidad</th>
-                                        <th>Exceso</th>
-                                        <th>Medida de Uso</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-
-                                </tbody>
-                            </table>
+                        <div class="col-sm-4">
+                            <label for="">Forma Farmacéutica</label>
+                            <input type="text" name="form" class="form-control">
                         </div>
+                        <div class="col-sm-4">
+                            <label for="">Precio Máximo</label>
+                            <input type="text" name="price" class="form-control number">
+                        </div>                        
                     </div>
                     <br>
                     <div class="row">
@@ -94,44 +74,5 @@
     </div>
 </div>
 
-
-@stop
-
-@section('script')
-
-<script>
-    var availableItems = [];
-
-    @foreach($supplies as $supply)
-    availableItems.push({
-        id: "{{$supply->id}}",
-        value: "{{$supply->name}}",
-        label: "{{$supply->code}} {{$supply->name}}",
-        measurement: "{{$supply->measurementUse->name}}"
-    })
-    @endforeach
-
-    $(document).on('click', '.addContentRow', function() {
-
-        $('.contentTable tbody tr').removeClass('activeRow')
-
-        let idRow = $('.tableContent tbody tr').length + 1;
-        $('.contentTable').append('<tr class="activeRow">' +
-            '<td><input type="hidden" class="idItem" name="idItem[]"/> <input type="text" class="form-control itemContent' + idRow + '" /></td>' +
-            '<td><input type="text" name="quantityItem[]" class="form-control number"/></td>' +
-            '<td><input type="text" name="excessItem[]" class="form-control number" value="0.0"/></td>' +
-            '<td><span> - </span></td>' +
-            '</tr>')
-
-        $(".itemContent" + idRow).autocomplete({
-            source: availableItems,
-            select: function(event, ui) {
-                console.log(ui)
-                $('.contentTable .activeRow .idItem').val(ui.item.id)
-                $('.contentTable .activeRow span').text(ui.item.measurement)
-            }
-        });
-    })
-</script>
 
 @stop
