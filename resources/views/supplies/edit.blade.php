@@ -80,7 +80,13 @@
     <div class="col-sm-4">
     <div class="form-group">
     <label for="exampleFormControlInput1">Stock</label>
-    <input type="text" class="form-control number" name="stock">
+    <input type="text" class="form-control number" value="{{ $supply->stock }}" name="stock">
+  </div>
+    </div>
+    <div class="col-sm-4">
+    <div class="form-group">
+    <label for="exampleFormControlInput1">Precio Por Kg/Pza</label>
+    <input type="text" class="form-control number" value="{{ $supply->price }}" name="price">
   </div>
     </div>
   </div>

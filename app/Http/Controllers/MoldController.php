@@ -83,4 +83,17 @@ class MoldController extends Controller
         return redirect('moldes')->with('success', 'Molde modificado correctamente');
 
     }
+
+    public function export()
+    {
+        $csvExporter = new \Laracsv\Export();
+        $molds = Mold::all();
+
+        // Register the hook before building
+        $csvExporter->beforeEach(function ($mold) {
+            //$client->address = $client->address.', '.$client->neight.'. '.$client->city.', '.$client->state.'. CP:'.$client->zip;
+        });
+
+        $csvExporter->build($molds, ['code'=>'Código', 'type'=>'Tipo','minimals'=>'Minimas', 'long_mm'=>'Largo mm','width_mm'=>'Ancho mm','caps_long'=>'Caps Long','caps_circ'=>'Caps Circ','kilograms'=>'Kilogramos','reference_product'=>'Productos de Referencia', 'observations'=>'Observaciones'])->download('moldes_'.date('d_m_Y').'.csv');
+    }
 }

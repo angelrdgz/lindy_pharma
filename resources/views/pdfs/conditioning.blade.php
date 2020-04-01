@@ -96,11 +96,11 @@
         <td></td>
         <td></td>
         <td>Orden de Trabajo</td>
-        <td class="ot text-right">/1.0</td>
+        <td class="ot text-right">{{ sprintf("%05s",  $order->id) }}/1.0</td>
       </tr>
       <tr>
-          <td>Código del granel:</td>
-        <td><b></b></td>
+          <td></td>
+        <td></td>
         <td></td>
         <td></td>
         <td></td>
@@ -109,6 +109,13 @@
         <td></td>
         <td rowspan="2">No. de lote	</td>
         <td class="lot text-center" rowspan="2">{{ $order->lot}}</td>
+      </tr>
+      <tr>
+          <td>Código de producto:</td>
+        <td colspan="4"><b>{{ $order->product->code }}</b></td>
+        <td></td>
+        <td></td>
+        <td></td>
       </tr>
       <tr>
           <td>Nombre del producto:</td>
@@ -137,7 +144,7 @@
         <td></td>
         <td></td>
         <td>Fecha de Caducidad:</td>
-        <td>{{ $order->date_expire }}</td>
+        <td>{{ date('d', strtotime($order->date_expire)).' de '.$months[date('n', strtotime($order->date_expire))].' de '.date('Y', strtotime($order->date_expire))}}</td>
       </tr>
       <tr>
         <td>Fecha de emisión:</td>
@@ -145,41 +152,17 @@
         <td></td>
         <td></td>
         <td></td>
-        <td></td>
-        <td rowspan="4" class="text-center">
-          <img class="qr" src="{{ public_path().'/images/qrcode/qrcode_'.$order->id.'.png' }}" alt="">
-        </td>
+        <td>Precio Máximo al publico</td>
+        <td>${{ number_format($order->price, 4) }}</td>
       </tr>
       <tr>
-        <td>Peso de contenido:</td>
-        <td></td>
-        <td>mg</td>
-        <td></td>
-        <td>Molde:</td>
+        <td>Presentación:</td>
+        <td>{{ $order->presentation }}</td>
         <td></td>
         <td></td>
+        <td></td>        
         <td>Cliente:</td>
-        <td>{{ $order->client->name }}</td>
-      </tr>
-      <tr>
-        <td>Peso máximo:</td>
-        <td></td>
-        <td>mg</td>
-        <td></td>
-        <td colspan="3">Tiempo de encapsulado:</td>
-        <td></td>
-        <td></td>
-        <td></td>
-      </tr>
-      <tr>
-        <td>Peso mínimo:</td>
-        <td></td>
-        <td>mg</td>
-        <td></td>
-        <td>Línea:</td>
-        <td></td>
-        <td></td>
-        <td></td>
+        <td colspan="2">{{ $order->client->name }}</td>
         <td></td>
       </tr>
     </table>
@@ -212,6 +195,20 @@
            <td class="text-right">{{ number_format((($recipe->quantity + ($recipe->quantity * ($recipe->excess / 100))) * $order->quantity),4)  }}</td>
            <td class="text-center">caps</td>
            <td class="text-center">{{ $recipe->order_number == NULL ? "":sprintf("%05s", $recipe->order_number)}}</td>
+         </tr>
+        @endforeach
+        @foreach($order->product->supplies as $supply)
+         <tr>
+           <td class="text-center">{{ $supply->supply->code }}</td>
+           <td>{{ $supply->supply->name }}</td>
+           <td class="text-right">{{ $supply->quantity }}</td>
+           <td class="text-center">{{ $supply->supply->measurementUse->code }}</td>
+           <td class="text-center">{{ $supply->excess }}</td>
+           <td class="text-right">{{ number_format(($supply->quantity + ($supply->quantity * ($supply->excess / 100))),4) }}</td>
+           <td class="text-center">{{ $supply->supply->measurementUse->code }}</td>
+           <td class="text-right">{{ number_format(((($supply->quantity + ($supply->quantity * ($supply->excess / 100))) * $order->quantity) / 1000),4)  }}</td>
+           <td class="text-center">gr</td>
+           <td class="text-center">{{ $supply->order_number == NULL ? "":sprintf("%05s", $supply->order_number)}}</td>
          </tr>
         @endforeach
       </tbody>
@@ -250,3 +247,4 @@
 
 </body>
 </html>
+
