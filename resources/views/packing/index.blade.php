@@ -25,6 +25,7 @@
                                 <th>Producto</th>
                                 <th>Tamaño del Lote</th>
                                 <th>Cliente</th>
+                                <th>Estatus</th>
                                 <th>Creado Por</th>
                                 <th></th>
                             </tr>
@@ -35,6 +36,7 @@
                                 <td>{{ $package->product->name }}</td>
                                 <td>{{ $package->quantity }}</td>
                                 <td>{{ $package->client->name }}</td>
+                                <td>{{ $package->status }}</td>
                                 <td>{{ $package->user->name }}</td>
                                 <td>
                                     @if(in_array(Auth::user()->role_id, [1,2,3]))
@@ -45,13 +47,15 @@
                                         <span class="text">PDF</span>
                                     </a>
                                     @endif
-                                    @if(in_array(Auth::user()->role_id, [1,2]))
+                                    @if(in_array(Auth::user()->role_id, [1,2,3]))
                                     <a href="{{ url('ordenes-de-acondicionamiento/'.$package->id.'/edit')}}" class="btn btn-warning btn-icon-split btn-sm">
                                         <span class="icon text-white-50">
                                             <i class="fas fa-pencil-alt"></i>
                                         </span>
                                         <span class="text">Modificar</span>
                                     </a>
+                                    @endif
+                                    @if(in_array(Auth::user()->role_id, [1,2]))
                                     <form method="post" action="{{ route('ordenes-de-acondicionamiento.destroy', $package->id) }}">
                                         @method('DELETE')
                                         @csrf

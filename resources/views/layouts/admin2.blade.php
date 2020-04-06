@@ -92,7 +92,7 @@
       <li class="nav-item {{ Request::is('recetas') ? 'active':'' }}">
         <a class="nav-link" href="{{ url('recetas') }}">
         <i class="fas fa-flask"></i>
-          <span>Productos Agranel</span></a>
+          <span>Productos a Granel</span></a>
       </li>
       @endif
       @if(in_array(Auth::user()->role_id, [1]))
