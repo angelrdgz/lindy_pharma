@@ -21,8 +21,8 @@
                             <label for="">Producto</label>
                             <select name="product" id="" class="form-control">
                                 <option value="">Seleccionar Producto</option>
-                                @foreach($products as $product)
-                                <option value="{{ $product->id }}" {{ $product->id == $departure->product_id ? "selected":""}} >{{ $product->name }}</option>
+                                @foreach($recipes as $recipe)
+                                <option value="{{ $recipe->id }}" {{ $recipe->id == $departure->recipe_id ? "selected":""}} >{{ $recipe->name }}</option>
                                 @endforeach
                             </select>
                         </div>

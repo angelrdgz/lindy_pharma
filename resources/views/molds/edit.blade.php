@@ -31,7 +31,7 @@
               </div>
             <div class="col-sm-4">
                 <label for="">Minimas</label>
-                <input type="text" name="minimals" value="{{ $mold->code }}" class="form-control number">
+                <input type="text" name="minimals" value="{{ $mold->minimals }}" class="form-control number">
               </div>
               <div class="col-sm-4">
                 <label for="">Largo (mm)</label>

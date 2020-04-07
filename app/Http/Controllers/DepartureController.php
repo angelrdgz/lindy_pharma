@@ -21,7 +21,7 @@ class DepartureController extends Controller
 {
     public function index()
     {
-        $orders = Departure::where('visible', true)->get();
+        $orders = Departure::where('visible', true)->where('status','!=', 'Cancelada')->get();
         return view('departures.index', ['orders' => $orders]);
     }
 
@@ -136,19 +136,20 @@ class DepartureController extends Controller
         $recipes = Recipe::all();
         $clients = Client::all();
         $departure = Departure::find($id);
-        
-        if(Auth::user()->role_id == 3){
 
-        }else{
-            return view('departures.edit_ware', ['departure'=>$departure, 'recipes' => $recipes, 'clients' => $clients]);
+        if (Auth::user()->role_id == 3) {
+            return view('departures.edit_ware', ['departure' => $departure, 'recipes' => $recipes, 'clients' => $clients]);
+        } else {
+            return view('departures.edit', ['departure' => $departure, 'recipes' => $recipes, 'clients' => $clients]);
         }
     }
 
-    public function updateItems(Request $request, $id){
+    public function updateItems(Request $request, $id)
+    {
         foreach ($request->id as $key => $value) {
-            if($request->orderNumber[$key] !== NULL){
-                DepartureItem::where('id', $request->id[$key])->update(["order_number"=>$request->orderNumber[$key]]);
-            }            
+            if ($request->orderNumber[$key] !== NULL) {
+                DepartureItem::where('id', $request->id[$key])->update(["order_number" => $request->orderNumber[$key]]);
+            }
         }
         return redirect('ordenes-de-fabricacion')->with('success', 'Orden actualizada correctamente');
     }
@@ -183,17 +184,17 @@ class DepartureController extends Controller
                 $newStatus = "Granel";
                 break;
             default:
-            $newStatus = "N/A";
+                $newStatus = "N/A";
                 break;
         }
 
-        if($newStatus == 'Pesado'){
+        if ($newStatus == 'Pesado') {
             foreach ($departure->recipe->items as $item) {
                 $supply = Supply::find($item->supply_id);
                 $supply->stock = $supply->stock - (($supply->quantity + ($supply->quantity * ($supply->excess / 100))) * $departure->quantity);
                 $supply->save();
             }
-            if($departure->type == 2){
+            if ($departure->type == 2) {
                 $departure->visible = false;
             }
         }
@@ -202,7 +203,7 @@ class DepartureController extends Controller
         $departure->save();
 
         try {
-            Mail::send('emails.departure_update', ["order_number" => $departure->order_number, "type"=>$departure->type, "user_name" => Auth::user()->name, "status" => $newStatus], function ($message) {
+            Mail::send('emails.departure_update', ["order_number" => $departure->order_number, "type" => $departure->type, "user_name" => Auth::user()->name, "status" => $newStatus], function ($message) {
                 $message->from('info@lindypharma.com', 'Lindy Pharma');
                 $message->to('angelrodriguez@ucol.mx');
                 $message->subject('Orden de Fabricación Actualizada');
@@ -228,11 +229,16 @@ class DepartureController extends Controller
         $logbook->created_by = Auth::user()->id;
         $logbook->save();
 
-        Mail::send('emails.departure_cancel', ["order_number" => $departure->order_number, "user_name" => Auth::user()->name], function ($message) {
-            $message->from('info@lindypharma.com', 'Lindy Pharma');
-            $message->to('angelrodriguez@ucol.mx');
-            $message->subject('Orden de Fabricación Cancelada');
-        });
+        try {
+
+            Mail::send('emails.departure_cancel', ["order_number" => $departure->order_number, "user_name" => Auth::user()->name], function ($message) {
+                $message->from('info@lindypharma.com', 'Lindy Pharma');
+                $message->to('angelrodriguez@ucol.mx');
+                $message->subject('Orden de Fabricación Cancelada');
+            });
+        } catch (\Throwable $th) {
+            //throw $th;
+        }
 
         return redirect('ordenes-de-fabricación')->with('success', 'Orden cancelada correctamente');
     }
