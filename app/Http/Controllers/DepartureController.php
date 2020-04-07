@@ -167,20 +167,22 @@ class DepartureController extends Controller
     {
         $departure = Departure::find($id);
 
-        if($request->status != NULL){
+        if($request->status !== NULL){
 
-            $departure->status = $request->status;
 
             if ($departure->status == 'Creada' && $request->status == 'Pesado') {
-                foreach ($departure->recipe->items as $item) {
-                    $supply = Supply::find($item->supply_id);
-                    $supply->stock = $supply->stock - (($supply->quantity + ($supply->quantity * ($supply->excess / 100))) * $departure->quantity);
-                    $supply->save();
-                }
+
+                    foreach ($departure->items as $item) {
+                        $supply = Supply::find($item->supplie_id);
+                        $supply->stock = $supply->stock - (($item->quantity + ($item->quantity * ($item->excess / 100))) * $departure->quantity);
+                        $supply->save();
+                    }
                 if ($departure->type == 2) {
                     $departure->visible = false;
                 }
             }
+
+            $departure->status = $request->status;
 
         }else{
 
@@ -206,11 +208,13 @@ class DepartureController extends Controller
             }
     
             if ($newStatus == 'Pesado') {
-                foreach ($departure->recipe->items as $item) {
-                    $supply = Supply::find($item->supply_id);
-                    $supply->stock = $supply->stock - (($supply->quantity + ($supply->quantity * ($supply->excess / 100))) * $departure->quantity);
+
+                foreach ($departure->items as $item) {
+                    $supply = Supply::find($item->supplie_id);
+                    $supply->stock = $supply->stock - (($item->quantity + ($item->quantity * ($item->excess / 100))) * $departure->quantity);
                     $supply->save();
                 }
+                
                 if ($departure->type == 2) {
                     $departure->visible = false;
                 }
