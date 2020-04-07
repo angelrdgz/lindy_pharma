@@ -18,9 +18,9 @@
                     @csrf
                     <div class="row">
                         <div class="col-sm-4">
-                            <label for="">Producto</label>
-                            <select name="product" id="" class="form-control">
-                                <option value="">Seleccionar Producto</option>
+                            <label for="">Receta</label>
+                            <select name="recipe" id="" class="form-control">
+                                <option value="">Seleccionar Receta</option>
                                 @foreach($recipes as $recipe)
                                 <option value="{{ $recipe->id }}" {{ $recipe->id == $departure->recipe_id ? "selected":""}}>{{ $recipe->name }}</option>
                                 @endforeach
@@ -48,6 +48,7 @@
                             <input type="text" name="line" value="{{ $departure->line }}" class="form-control">
                         </div>
                         <div class="col-sm-4">
+                            <input type="hidden" name="way" value="1">
                             <label for="">Estatus</label>
                             <select name="status" class="form-control" id="">
                                 <option value="">Seleccione una opción</option>

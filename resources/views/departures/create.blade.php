@@ -17,9 +17,9 @@
           @csrf
           <div class="row">
             <div class="col-sm-4">
-              <label for="">Producto</label>
+              <label for="">Receta</label>
               <select name="recipe" id="" class="form-control">
-                <option value="">Seleccionar Producto</option>
+                <option value="">Seleccionar Receta</option>
                 @foreach($recipes as $recipe)
                 <option value="{{ $recipe->id }}">{{ $recipe->name }}</option>
                 @endforeach

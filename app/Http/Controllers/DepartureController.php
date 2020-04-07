@@ -167,7 +167,7 @@ class DepartureController extends Controller
     {
         $departure = Departure::find($id);
 
-        if($request->status !== NULL){
+        if($request->way !== NULL){
 
 
             if ($departure->status == 'Creada' && $request->status == 'Pesado') {
@@ -182,7 +182,13 @@ class DepartureController extends Controller
                 }
             }
 
-            $departure->status = $request->status;
+            $departure->recipe_id = $request->recipe;
+            $departure->client_id = $request->client;
+            $departure->lot = $request->lot;
+            $departure->line = $request->line;
+            $departure->quantity = $request->quantity;
+
+            $departure->status = $request->status == NULL ? 'Creada':$request->status;
 
         }else{
 
