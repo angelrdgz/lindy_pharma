@@ -36,7 +36,7 @@
               </select>
             </div>
             <div class="col-sm-4">
-              <label for="">Requesición</label>
+              <label for="">Requisición</label>
               <input type="text" name="requisition" value="{{ $entrance->requisition }}" class="form-control">
             </div>
             <div class="col-sm-4">
@@ -88,7 +88,7 @@
                   <tr>
                     <th>Nombre</th>
                     <th>Cantidad</th>
-                    <th>Precio</th>
+                    <th>Precio (USD)</th>
                     <th>Medida de Uso</th>
                     <th></th>
                   </tr>
