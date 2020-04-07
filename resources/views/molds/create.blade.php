@@ -49,7 +49,7 @@
                 <input type="text" name="caps_circ" class="form-control number">
               </div>
               <div class="col-sm-4">
-                <label for="">Kilogramos</label>
+                <label for="">Kilogramos / 100,000 Caps.</label>
                 <input type="text" name="kilograms" class="form-control number">
               </div>
               <div class="col-sm-4">

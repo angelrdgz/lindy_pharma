@@ -50,7 +50,7 @@
                 <input type="text" name="caps_circ" value="{{ $mold->caps_circ }}" class="form-control number">
               </div>
               <div class="col-sm-4">
-                <label for="">Kilogramos</label>
+                <label for="">Kilogramos / 100,000 Caps.</label>
                 <input type="text" name="kilograms" value="{{ $mold->kilograms }}" class="form-control number">
               </div>
               <div class="col-sm-4">
