@@ -200,5 +200,9 @@
       }
     });
   })
+
+  $(document).on('click', '.removeRow', function(){
+    $(this).closest('tr').remove();
+  })
 </script>
 @stop
