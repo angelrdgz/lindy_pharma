@@ -37,10 +37,10 @@
                   @foreach($orders as $order)
     <tr>
       <td>{{ $order->recipe->name }}</td>
-      <td>{{ $order->quantity }}</td>      
+      <td>{{ number_format($order->quantity,0) }}</td>      
       <td>{{ $order->client->name }}</td>
       <td>{{ $order->user->name }}</td>
-      <td>{{ $order->type == 1 ? "Contenido":"Cobertura"}}</td>
+      <td>{{ $order->type == 1 ? "Mezcla de contenido":"Pasta de gelatina"}}</td>
       <td>{{ $order->status }}</td>
       <td>
       <!--<a href="{{ url('ordenes-de-fabricacion/'.$order->id.'/edit')}}" class="btn btn-warning btn-icon-split btn-sm">

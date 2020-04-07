@@ -34,7 +34,7 @@
                             @foreach($packages as $package)
                             <tr>
                                 <td>{{ $package->product->name }}</td>
-                                <td>{{ $package->quantity }}</td>
+                                <td>{{ number_format($package->quantity,0) }}</td>
                                 <td>{{ $package->client->name }}</td>
                                 <td>{{ $package->status }}</td>
                                 <td>{{ $package->user->name }}</td>
