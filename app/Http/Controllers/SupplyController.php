@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Supply;
 use App\SupplyType;
 use App\SupplyMeasurement;
+use App\Supplier;
 use App\Logbook;
 
 use Auth;
@@ -22,10 +23,12 @@ class SupplyController extends Controller
     public function create()
     {
         $types = SupplyType::all();
+        $suppliers = Supplier::all();
         $measurements = SupplyMeasurement::all();
         return view('supplies.create', [
             'types' => $types,
             'measurements' => $measurements,
+            'suppliers' => $suppliers,
         ]);
     }
 
@@ -34,7 +37,7 @@ class SupplyController extends Controller
         $request->validate(
             [
                 'name' => 'required',
-                'code' => 'required',
+                'code' => 'required|unique:supplies',
                 'type' => 'required',
                 'measurement_use' => 'required',
                 'measurement_buy' => 'required',
@@ -42,6 +45,7 @@ class SupplyController extends Controller
             [
                 'name.required' => 'El nombre es requerido',
                 'code.required' => 'El código es requerido',
+                'code.unique' => 'El código ya existe',
                 'type.required' => 'El tipo es requerido',
                 'measurement_use.required' => 'La medida de uso es requerida',
                 'measurement_buy.required' => 'La medida de compra es requerida',
@@ -53,6 +57,7 @@ class SupplyController extends Controller
         $supply->code = $request->code;
         $supply->type_id = $request->type;
         $supply->price = $request->price;
+        $supply->supplier_id = $request->supplier;
         $supply->measurement_use = $request->measurement_use;
         $supply->measurement_buy = $request->measurement_buy;
         $supply->save();
@@ -78,11 +83,13 @@ class SupplyController extends Controller
     {
         $supply = Supply::find($id);
         $types = SupplyType::all();
+        $suppliers = Supplier::all();
         $measurements = SupplyMeasurement::all();
         return view('supplies.edit', [
             'supply' => $supply,
             'types' => $types,
             'measurements' => $measurements,
+            'suppliers' => $suppliers,
         ]);
     }
 
@@ -111,6 +118,7 @@ class SupplyController extends Controller
         $supply->type_id = $request->type;
         $supply->stock = $request->stock;
         $supply->price = $request->price;
+        $supply->supplier_id = $request->supplier;
         $supply->measurement_use = $request->measurement_use;
         $supply->measurement_buy = $request->measurement_buy;
         $supply->save();
@@ -134,6 +142,7 @@ class SupplyController extends Controller
         // Register the hook before building
         $csvExporter->beforeEach(function ($supply) {
             $supply->type_id = $supply->type->name;
+            $supply->supplier_id = $supply->supplier->name;
             switch ($supply->measurement_use) {
                 case 5:
                     $supply->price = $supply->price * $supply->stock;
@@ -148,6 +157,6 @@ class SupplyController extends Controller
             }
         });
 
-        $csvExporter->build($supplies, ['code' => 'Código', 'name' => 'Nombre', 'type_id' => 'Tipo', 'stock' => 'En Almacen', 'price' => 'Valor En Stock'])->download('insumos_' . date('d_m_Y') . '.csv');
+        $csvExporter->build($supplies, ['code' => 'Código', 'name' => 'Nombre', 'type_id' => 'Tipo', 'stock' => 'En Almacen', 'price' => 'Valor En Stock', 'supplier_id'=>'Proveedor'])->download('insumos_' . date('d_m_Y') . '.csv');
     }
 }

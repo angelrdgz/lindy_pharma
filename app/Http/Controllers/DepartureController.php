@@ -122,7 +122,7 @@ class DepartureController extends Controller
     {
         $order = Departure::find($id);
         $recipe = Recipe::find($order->recipe_id);
-        $totals = DB::select('SELECT quantity + (quantity * (excess / 100)) as "Total" FROM recipe_supplies where recipe_id = :id AND type = :type', ["id" => $order->recipe_id, "type" => $order->type]);
+        $totals = DB::select('SELECT quantity + (quantity * (excess / 100)) as "Total" FROM recipe_supplies where recipe_id = :id AND type = 1', ["id" => $order->recipe_id]);
         $tt = 0;
         foreach ($totals as $total) {
             $tt += $total->Total;

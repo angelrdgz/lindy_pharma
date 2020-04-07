@@ -8,6 +8,10 @@ use Illuminate\Database\Eloquent\Model;
 
 class Supply extends Model
 {
+    public function supplier(){
+        return $this->belongsTo('App\Supplier');
+    }
+
     public function type(){
         return $this->hasOne('App\SupplyType', 'id', 'type_id');
     }
