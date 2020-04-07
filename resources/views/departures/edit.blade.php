@@ -22,7 +22,7 @@
                             <select name="product" id="" class="form-control">
                                 <option value="">Seleccionar Producto</option>
                                 @foreach($recipes as $recipe)
-                                <option value="{{ $recipe->id }}" {{ $recipe->id == $departure->recipe_id ? "selected":""}} >{{ $recipe->name }}</option>
+                                <option value="{{ $recipe->id }}" {{ $recipe->id == $departure->recipe_id ? "selected":""}}>{{ $recipe->name }}</option>
                                 @endforeach
                             </select>
                         </div>
@@ -46,6 +46,16 @@
                         <div class="col-sm-4">
                             <label for="">Linea</label>
                             <input type="text" name="line" value="{{ $departure->line }}" class="form-control">
+                        </div>
+                        <div class="col-sm-4">
+                            <label for="">Estatus</label>
+                            <select name="status" class="form-control" id="">
+                                <option value="">Seleccione una opción</option>
+                                <option value="Pesado" {{$departure->status == "Pesado" ? 'selected':''}}>Pesado</option>
+                                <option value="Preparación" {{$departure->status == "Preparación" ? 'selected':''}}>Preparación</option>
+                                <option value="Encapsulado" {{$departure->status == "Encapsulado" ? 'selected':''}}>Encapsulado</option>
+                                <option value="Secado" {{$departure->status == "Secado" ? 'selected':''}}>Secado</option>
+                            </select>
                         </div>
                     </div>
                     <br>

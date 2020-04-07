@@ -167,39 +167,60 @@ class DepartureController extends Controller
     {
         $departure = Departure::find($id);
 
-        switch ($departure->status) {
-            case "Creada":
-                $newStatus = "Pesado";
-                break;
-            case "Pesado":
-                $newStatus = "Preparación";
-                break;
-            case "Preparación":
-                $newStatus = "Encapsulado";
-                break;
-            case "Encapsulado":
-                $newStatus = "Secado";
-                break;
-            case "Secado":
-                $newStatus = "Granel";
-                break;
-            default:
-                $newStatus = "N/A";
-                break;
+        if($request->status != NULL){
+
+            $departure->status = $request->status;
+
+            if ($departure->status == 'Creada' && $request->status == 'Pesado') {
+                foreach ($departure->recipe->items as $item) {
+                    $supply = Supply::find($item->supply_id);
+                    $supply->stock = $supply->stock - (($supply->quantity + ($supply->quantity * ($supply->excess / 100))) * $departure->quantity);
+                    $supply->save();
+                }
+                if ($departure->type == 2) {
+                    $departure->visible = false;
+                }
+            }
+
+        }else{
+
+            switch ($departure->status) {
+                case "Creada":
+                    $newStatus = "Pesado";
+                    break;
+                case "Pesado":
+                    $newStatus = "Preparación";
+                    break;
+                case "Preparación":
+                    $newStatus = "Encapsulado";
+                    break;
+                case "Encapsulado":
+                    $newStatus = "Secado";
+                    break;
+                case "Secado":
+                    $newStatus = "Granel";
+                    break;
+                default:
+                    $newStatus = "N/A";
+                    break;
+            }
+    
+            if ($newStatus == 'Pesado') {
+                foreach ($departure->recipe->items as $item) {
+                    $supply = Supply::find($item->supply_id);
+                    $supply->stock = $supply->stock - (($supply->quantity + ($supply->quantity * ($supply->excess / 100))) * $departure->quantity);
+                    $supply->save();
+                }
+                if ($departure->type == 2) {
+                    $departure->visible = false;
+                }
+            }
+    
+            $departure->status = $newStatus;
+            
         }
 
-        if ($newStatus == 'Pesado') {
-            foreach ($departure->recipe->items as $item) {
-                $supply = Supply::find($item->supply_id);
-                $supply->stock = $supply->stock - (($supply->quantity + ($supply->quantity * ($supply->excess / 100))) * $departure->quantity);
-                $supply->save();
-            }
-            if ($departure->type == 2) {
-                $departure->visible = false;
-            }
-        }
-
-        $departure->status = $newStatus;
+        
         $departure->save();
 
         try {
