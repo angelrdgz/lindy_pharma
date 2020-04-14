@@ -116,7 +116,7 @@ class SupplyController extends Controller
         $supply->name = $request->name;
         $supply->code = $request->code;
         $supply->type_id = $request->type;
-        $supply->stock = $request->stock;
+        $supply->stock = $request->stock * 1000000;
         $supply->price = $request->price;
         $supply->supplier_id = $request->supplier;
         $supply->measurement_use = $request->measurement_use;
@@ -143,6 +143,7 @@ class SupplyController extends Controller
         $csvExporter->beforeEach(function ($supply) {
             $supply->type_id = $supply->type->name;
             $supply->supplier_id = $supply->supplier->name;
+            $supply->stock = $supply->stock / 1000000;
             switch ($supply->measurement_use) {
                 case 5:
                     $supply->price = $supply->price * $supply->stock;
@@ -157,6 +158,6 @@ class SupplyController extends Controller
             }
         });
 
-        $csvExporter->build($supplies, ['code' => 'Código', 'name' => 'Nombre', 'type_id' => 'Tipo', 'stock' => 'En Almacen', 'price' => 'Valor En Stock', 'supplier_id'=>'Proveedor'])->download('insumos_' . date('d_m_Y') . '.csv');
+        $csvExporter->build($supplies, ['code' => 'Código', 'name' => 'Nombre', 'type_id' => 'Tipo', 'stock' => 'En Almacen (Kg)', 'price' => 'Valor En Stock', 'supplier_id'=>'Proveedor'])->download('insumos_' . date('d_m_Y') . '.csv');
     }
 }

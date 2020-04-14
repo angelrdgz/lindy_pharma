@@ -80,7 +80,7 @@
             <div class="col-sm-4">
               <div class="form-group">
                 <label for="exampleFormControlInput1">Stock</label>
-                <input type="text" class="form-control number" value="{{ $supply->stock }}" name="stock">
+                <input type="text" class="form-control number" value="{{ $supply->stock / 1000000 }}" name="stock">
               </div>
             </div>
             <div class="col-sm-4">
