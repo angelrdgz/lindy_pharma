@@ -23,6 +23,7 @@
             <thead>
               <tr>
                 <th>ID</th>
+                <th>Código</th>
                 <th>Nombre</th>
                 <th>Stock</th>
                 <th></th>
@@ -32,6 +33,7 @@
               @foreach($recipes as $recipe)
               <tr>
                 <td>{{ $recipe->id }}</td>
+                <td>{{ $recipe->code }}</td>
                 <td>{{ $recipe->name }}</td>
                 <td>{{ $recipe->stock }}</td>
                 <td>

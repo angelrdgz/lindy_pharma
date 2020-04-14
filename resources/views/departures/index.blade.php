@@ -56,6 +56,7 @@
                     </span>
                     <span class="text">Modificar</span>
                   </a>
+                  @if($order->status === 'Creada')
                   <form method="post" action="{{ route('ordenes-de-fabricacion.destroy', $order->order_number) }}">
                     @method('DELETE')
                     @csrf
@@ -66,6 +67,7 @@
                       <span class="text">Cancelar</span>
 </button>
                   </form>
+                  @endif
                   @endif
                   @if(in_array(Auth::user()->role_id, [3]))
                   <a href="{{ url('ordenes-de-fabricacion/'.$order->id.'/edit')}}" class="btn btn-warning btn-icon-split btn-sm">

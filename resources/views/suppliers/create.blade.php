@@ -46,15 +46,15 @@
                         </div>
                         <div class="col-sm-4">
                             <label for="">RFC</label>
-                            <input type="text" name="rfc" class="form-control number">
+                            <input type="text" name="rfc" class="form-control">
                         </div>
                         <div class="col-sm-4">
                             <label for="">Teléfono</label>
-                            <input type="text" name="phone" class="form-control number">
+                            <input type="text" name="phone" class="form-control">
                         </div>
                         <div class="col-sm-4">
                             <label for="">Email</label>
-                            <input type="text" name="email" class="form-control number">
+                            <input type="text" name="email" class="form-control">
                         </div>            
             </div>
             <br>

@@ -248,9 +248,7 @@ class DepartureController extends Controller
 
     public function destroy($id)
     {
-        $departure = Departure::where("order_number", $id)->first();
-        $departure->status = 'Cancelada';
-        $departure->save();
+        $departure = Departure::where("order_number", $id)->update(['status'=>'Cancelada']);
 
         $logbook = new Logbook();
         $logbook->type_id = 3;
@@ -262,7 +260,7 @@ class DepartureController extends Controller
 
         try {
 
-            Mail::send('emails.departure_cancel', ["order_number" => $departure->order_number, "user_name" => Auth::user()->name], function ($message) {
+            Mail::send('emails.departure_cancel', ["order_number" => $id, "user_name" => Auth::user()->name], function ($message) {
                 $message->from('info@lindypharma.com', 'Lindy Pharma');
                 $message->to('angelrodriguez@ucol.mx');
                 $message->subject('Orden de Fabricación Cancelada');
@@ -271,6 +269,6 @@ class DepartureController extends Controller
             //throw $th;
         }
 
-        return redirect('ordenes-de-fabricación')->with('success', 'Orden cancelada correctamente');
+        return redirect('ordenes-de-fabricacion')->with('success', 'Orden cancelada correctamente');
     }
 }

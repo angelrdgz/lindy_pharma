@@ -37,12 +37,17 @@
                                         </span>
                                         <span class="text">Modificar</span>
                                     </a>
-                                    <a href="{{ url('proveedores/'.$supplier->id)}}" class="btn btn-danger btn-icon-split btn-sm">
-                                        <span class="icon text-white-50">
-                                            <i class="fas fa-trash"></i>
-                                        </span>
-                                        <span class="text">Eliminar</span>
-                                    </a>
+                                    <form method="post" action="{{ route('proveedores.destroy', $supplier->id) }}">
+                                        @method('DELETE')
+                                        @csrf
+                                        <button type="submit" class="btn btn-danger btn-icon-split btn-sm">
+                                            <span class="icon text-white-50">
+                                                <i class="fas fa-trash"></i>
+                                            </span>
+                                            <span class="text">Eliminar</span>
+                                        </button>
+                                    </form>
+
                                 </td>
                             </tr>
                             @endforeach

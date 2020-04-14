@@ -70,6 +70,7 @@
                     </span>
                     <span class="text">Modificar</span>
                   </a>
+                  @if($entrance->status !== 'Aprobada')
                   <form method="post" action="{{ route('ordenes-de-compra.destroy', $entrance->id) }}">
                     @method('DELETE')
                     @csrf
@@ -78,8 +79,9 @@
                         <i class="fas fa-trash"></i>
                       </span>
                       <span class="text">Cancelar</span>
-</button>
+                    </button>
                   </form>
+                  @endif
                   @endif
                 </td>
               </tr>

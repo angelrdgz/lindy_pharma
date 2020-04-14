@@ -62,4 +62,12 @@ class SupplierController extends Controller
 
         return redirect('proveedores')->with('success', 'Proveedor modificado correctamente');        
     }
+
+    public function destroy($id)
+    {
+        $supplier = Supplier::find($id);
+        $supplier->delete();
+
+        return redirect('proveedores')->with('success', 'Proveedor eliminado correctamente');        
+    }
 }
