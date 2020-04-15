@@ -22,6 +22,7 @@
                     <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                         <thead>
                             <tr>
+                            <th>Código de Producto</th>
                                 <th>Producto</th>
                                 <th>Tamaño del Lote</th>
                                 <th>Cliente</th>
@@ -33,6 +34,7 @@
                         <tbody>
                             @foreach($packages as $package)
                             <tr>
+                            <td>{{ $package->product->code }}</td>
                                 <td>{{ $package->product->name }}</td>
                                 <td>{{ number_format($package->quantity,0) }}</td>
                                 <td>{{ $package->client->name }}</td>
