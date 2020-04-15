@@ -22,6 +22,7 @@
                     <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                         <thead>
                             <tr>
+                                <th>Código</th>
                                 <th>Insumo</th>
                                 <th>Número de Entrada</th>
                                 <th>Cantidad</th>
@@ -33,6 +34,7 @@
                         <tbody>
                             @foreach($decreases as $decrease)
                             <tr>
+                                <td>{{ $decrease->supply->code }}</td>
                                 <td>{{ $decrease->supply->name }}</td>
                                 <td>#{{ $decrease->entrance_item_id }}</td>
                                 <td>{{ number_format($decrease->quantity,4) }}</td>

@@ -22,7 +22,7 @@
                             <select name="recipe" id="" class="form-control">
                                 <option value="">Seleccionar Receta</option>
                                 @foreach($recipes as $recipe)
-                                <option value="{{ $recipe->id }}" {{ $recipe->id == $departure->recipe_id ? "selected":""}}>{{ $recipe->name }}</option>
+                                <option value="{{ $recipe->id }}" {{ $recipe->id == $departure->recipe_id ? "selected":""}}>{{ $recipe->code.' - '.$recipe->name }}</option>
                                 @endforeach
                             </select>
                         </div>

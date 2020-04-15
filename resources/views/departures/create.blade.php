@@ -21,7 +21,7 @@
               <select name="recipe" id="" class="form-control">
                 <option value="">Seleccionar Receta</option>
                 @foreach($recipes as $recipe)
-                <option value="{{ $recipe->id }}">{{ $recipe->name }}</option>
+                <option value="{{ $recipe->id }}">{{ $recipe->code.' - '.$recipe->name }}</option>
                 @endforeach
               </select>
             </div>
