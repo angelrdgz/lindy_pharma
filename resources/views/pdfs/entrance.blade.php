@@ -253,7 +253,7 @@
       <tr>
         <td class="text-center">{{ $item->quantity }}</td>
         <td class="text-center">N/A</td>
-        <td class="text-center">{{ $item->supply->name }}</td>
+        <td class="text-center">{{ $item->supply->code.' - '.$item->supply->name }}</td>
         <td class="text-right">${{ number_format($item->price,2).' '.$item->currency->code }}</td>
         <td class="text-right">${{ number_format(($item->quantity * $item->price),2).' '.$item->currency->code }}</td>
       </tr>

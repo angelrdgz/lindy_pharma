@@ -41,7 +41,7 @@
     <td>{{ $order->recipe->code }}</td>
       <td>{{ $order->recipe->name }}</td>
       <td>{{ number_format($order->quantity,0) }}</td>  
-      <td>{{ $order->order_number }}</td>      
+      <td>{{ $order->lot }}</td>      
       <td>{{ $order->client->name }}</td>
       <td>{{ $order->user->name }}</td>
       <td>{{ $order->type == 1 ? "Mezcla de contenido":"Pasta de gelatina"}}</td>
