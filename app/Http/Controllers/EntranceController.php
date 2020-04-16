@@ -32,7 +32,8 @@ class EntranceController extends Controller
         $suppliers = Supplier::all();
         $costs = Cost::all();
         $codes = Catalog::where('type', 'cfdi')->get();
-        return view('entrances.create', ['supplies' => $supplies, "suppliers" => $suppliers, "codes" => $codes, "costs" => $costs]);
+        $currencies = Catalog::where('type', 'currency')->get();
+        return view('entrances.create', ['supplies' => $supplies, "suppliers" => $suppliers, "codes" => $codes, "currencies" => $currencies, "costs" => $costs]);
     }
 
     public function store(Request $request)
@@ -48,6 +49,7 @@ class EntranceController extends Controller
         $entrance->authorizer = $request->authorizer;
         $entrance->status = 'Creada';
         $entrance->cost_id = $request->costs;
+        $entrance->expected_date = $request->expected_date;
         $entrance->save();
 
 
@@ -61,6 +63,7 @@ class EntranceController extends Controller
                 $entranceItem->supply_id = $request->idItem[$key];
                 $entranceItem->quantity = $request->quantityItem[$key];
                 $entranceItem->price = $request->priceItem[$key];
+                $entranceItem->currency_id = $request->currencyItem[$key];
                 $entranceItem->save();
             }
         }
@@ -111,7 +114,8 @@ class EntranceController extends Controller
         $costs = Cost::all();
         $suppliers = Supplier::all();
         $codes = Catalog::where('type', 'cfdi')->get();
-        return view('entrances.edit', ['entrance' => $entrance, 'supplies' => $supplies, 'suppliers' => $suppliers, 'codes' => $codes, 'costs' => $costs]);
+        $currencies = Catalog::where('type', 'currency')->get();
+        return view('entrances.edit', ['entrance' => $entrance, 'supplies' => $supplies, 'suppliers' => $suppliers, 'codes' => $codes, 'currencies' => $currencies, 'costs' => $costs]);
     }
 
     public function update(Request $request, $id)
@@ -126,6 +130,7 @@ class EntranceController extends Controller
         $entrance->mader = $request->mader;
         $entrance->authorizer = $request->authorizer;
         $entrance->cost_id = $request->costs;
+        $entrance->expected_date = $request->expected_date;
 
         $entrance->items()->delete();
 
@@ -136,6 +141,7 @@ class EntranceController extends Controller
                 $entranceItem->supply_id = $request->idItem[$key];
                 $entranceItem->quantity = $request->quantityItem[$key];
                 $entranceItem->price = $request->priceItem[$key];
+                $entranceItem->currency_id = $request->currencyItem[$key];
                 $entranceItem->save();
             }
         }

@@ -55,6 +55,10 @@
               <input type="text" name="authorizer" class="form-control">
             </div>
             <div class="col-sm-4">
+              <label for="">Fecha Estimada de Entrega</label>
+              <input type="date" name="expected_date" class="form-control">
+            </div>
+            <div class="col-sm-4">
               <label for="">Cto. de Costos</label>
               <select name="costs" id="" class="form-control">
                 <option value="">Seleccionar Cto de Costos</option>
@@ -70,7 +74,7 @@
               <table class="table contentTable">
                 <thead>
                   <tr>
-                    <th colspan="3">Contenido de la orden</th>
+                    <th colspan="4">Contenido de la orden</th>
                     <th class="text-right">
                       <a class="btn btn-link addContentRow text-primary">Agregar Insumo</a>
                     </th>
@@ -78,7 +82,8 @@
                   <tr>
                     <th>Nombre</th>
                     <th>Cantidad</th>
-                    <th>Precio (USD)</th>
+                    <th>Precio</th>
+                    <th>Moneda</th>
                     <th>Medida de Compra</th>
                   </tr>
                 </thead>
@@ -129,6 +134,7 @@
 
 <script>
   var availableItems = [];
+  var currencyOptions = "";
 
   @foreach($supplies as $supply)
   availableItems.push({
@@ -137,6 +143,10 @@
     label: "{{$supply->code}} {{$supply->name}}",
     measurement: "{{$supply->measurementBuy->name}}"
   })
+  @endforeach
+
+  @foreach($currencies as $currency)
+   currencyOptions += '<option value="{{ $currency->id }}">{{ $currency->name }}</option>';
   @endforeach
 
   $(document).on('click', '.addContentRow', function() {
@@ -148,6 +158,7 @@
       '<td><input type="hidden" class="idItem" name="idItem[]"/> <input type="text" class="form-control itemContent' + idRow + '" /></td>' +
       '<td><input type="text" name="quantityItem[]" class="form-control number"/></td>' +
       '<td><input type="text" name="priceItem[]" class="form-control number"/></td>' +
+      '<td><select class="form-control" name="currencyItem[]">'+currencyOptions+'</select></td>' +
       '<td><span> - </span></td>' +
       '</tr>')
 

@@ -27,6 +27,7 @@
                     <th>Código de Producto</th>
                     <th>Producto</th>
                     <th>Tamaño del Lote</th>
+                    <th>No de Lote</th>
                     <th>Cliente</th>
                     <th>Creado Por</th> 
                     <th>Tipo</th>     
@@ -39,7 +40,8 @@
     <tr>
     <td>{{ $order->recipe->code }}</td>
       <td>{{ $order->recipe->name }}</td>
-      <td>{{ number_format($order->quantity,0) }}</td>      
+      <td>{{ number_format($order->quantity,0) }}</td>  
+      <td>{{ $order->order_number }}</td>      
       <td>{{ $order->client->name }}</td>
       <td>{{ $order->user->name }}</td>
       <td>{{ $order->type == 1 ? "Mezcla de contenido":"Pasta de gelatina"}}</td>

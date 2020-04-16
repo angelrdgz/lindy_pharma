@@ -225,9 +225,9 @@
     </thead>
     <tbody>
       <tr>
-        <td class="text-center">{{ $entrance->CFDI->code }}</td>
+        <td class="text-center">{{ $entrance->CFDI->code.' - '.$entrance->CFDI->name }}</td>
         <td class="text-center"></td>
-        <td class="text-center">{{ $entrance->CFDI->name}}</td>
+        <td class="text-center">{{ $days[date('N', strtotime($entrance->expected_date))].', '.date('d', strtotime($entrance->expected_date)).' de '.$months[date('n', strtotime($entrance->expected_date))].' de '.date('Y', strtotime($entrance->expected_date))}}</td>
       </tr>
     </tbody>
   </table>
@@ -238,7 +238,7 @@
         <th class="text-center box-blue font-10">CANTIDAD</th>
         <th class="text-center box-blue font-10">UNIDAD / CLAVE</th>
         <th class="text-center box-blue font-10">DESCRIPCION</th>
-        <th class="text-center box-blue font-10">PU MN</th>
+        <th class="text-center box-blue font-10">PU</th>
         <th class="text-center box-blue font-10">TOTAL</th>
       </tr>
     </thead>
@@ -246,32 +246,35 @@
       <?php
       $subtotal = 0;
       ?>
+      <?php $mainCurrency = ''; $x = 0;?>
       @foreach($entrance->items as $item)
+
+      <?php if($x == 0){ $mainCurrency = $item->currency->code;}?>
       <tr>
         <td class="text-center">{{ $item->quantity }}</td>
         <td class="text-center">N/A</td>
         <td class="text-center">{{ $item->supply->name }}</td>
-        <td class="text-right">${{ number_format($item->price,2) }}</td>
-        <td class="text-right">${{ number_format(($item->quantity * $item->price),2) }}</td>
+        <td class="text-right">${{ number_format($item->price,2).' '.$item->currency->code }}</td>
+        <td class="text-right">${{ number_format(($item->quantity * $item->price),2).' '.$item->currency->code }}</td>
       </tr>
-      <?php $subtotal += $item->quantity * $item->price; ?>
+      <?php $subtotal += $item->quantity * $item->price; $x++; ?>
       @endforeach
     </tbody>
     <tfoot>
       <tr>
         <td colspan="3"></td>
         <td>SUBTOTAL</td>
-        <td class="text-right subtotal">${{ number_format($subtotal, 2)}}</td>
+        <td class="text-right subtotal">${{ number_format($subtotal, 2).' '.$mainCurrency}}</td>
       </tr>
       <tr>
         <td colspan="3"></td>
         <td>IVA</td>
-        <td class="text-right">${{number_format(($subtotal * 0.16),2)}}</td>
+        <td class="text-right">${{number_format(($subtotal * 0.16),2).' '.$mainCurrency}}</td>
       </tr>
       <tr>
         <td colspan="3"></td>
         <td>TOTAL</td>
-        <td class="text-right total">${{ number_format($subtotal + ($subtotal * 0.16), 2)}}</td>
+        <td class="text-right total">${{ number_format($subtotal + ($subtotal * 0.16), 2).' '.$mainCurrency}}</td>
       </tr>
     </tfoot>
   </table>

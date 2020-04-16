@@ -25,6 +25,7 @@
                             <th>Código de Producto</th>
                                 <th>Producto</th>
                                 <th>Tamaño del Lote</th>
+                                <th>No del Lote</th>
                                 <th>Cliente</th>
                                 <th>Estatus</th>
                                 <th>Creado Por</th>
@@ -37,6 +38,7 @@
                             <td>{{ $package->product->code }}</td>
                                 <td>{{ $package->product->name }}</td>
                                 <td>{{ number_format($package->quantity,0) }}</td>
+                                <td>{{ $package->lot }}</td>
                                 <td>{{ $package->client->name }}</td>
                                 <td>{{ $package->status }}</td>
                                 <td>{{ $package->user->name }}</td>

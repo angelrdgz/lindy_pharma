@@ -65,6 +65,10 @@
               <input type="text" name="authorizer" value="{{ $entrance->authorizer }}" class="form-control">
             </div>
             <div class="col-sm-4">
+              <label for="">Fecha Estimada de Entrega</label>
+              <input type="date" name="expected_date" value="{{ $entrance->expected_date }}" class="form-control">
+            </div>
+            <div class="col-sm-4">
               <label for="">Cto. de Costos</label>
               <select name="costs" id="" class="form-control">
                 <option value="">Seleccionar Cto de Costos</option>
@@ -88,7 +92,8 @@
                   <tr>
                     <th>Nombre</th>
                     <th>Cantidad</th>
-                    <th>Precio (USD)</th>
+                    <th>Precio</th>
+                    <th>Moneda</th>
                     <th>Medida de Uso</th>
                     <th></th>
                   </tr>
@@ -99,6 +104,11 @@
                     <td><input type="hidden" value="{{ $item->supply_id}}" class="idItem" name="idItem[]" /> <input type="text" value="{{ $item->supply->name }}" class="form-control itemContentidRow+'" /></td>
                     <td><input type="text" name="quantityItem[]" value="{{ $item->quantity}}" class="form-control" /></td>
                     <td><input type="text" name="priceItem[]" value="{{ $item->price}}" class="form-control" /></td>
+                    <td><select class="form-control" name="currencyItem[]">
+                      @foreach($currencies as $currency)
+                       <option value="{{ $currency->id }}" {{$item->currency_id == $currency->id ? 'selected':''}}> {{$currency->name }} </option>
+                      @endforeach
+                    </select></td>
                     <td class="text-center"><span> {{ $item->supply->measurementBuy->name}} </span></td>
                     <td class="text-center">
                       <a class="btn btn-danger btn-circle removeRow">
