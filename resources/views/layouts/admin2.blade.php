@@ -55,27 +55,35 @@
         <i class="fas fa-user-friends"></i>
           <span>Usuarios</span></a>
       </li>
+      @endif
+      @if(in_array(Auth::user()->role_id, [1,4]))
       <li class="nav-item {{ Request::is('clientes') ? 'active':'' }}">
         <a class="nav-link" href="{{ url('clientes') }}">
         <i class="fas fa-user-tie"></i>
           <span>Clientes</span></a>
       </li>
+      @endif      
+      @if(in_array(Auth::user()->role_id, [1,4]))
       <li class="nav-item {{ Request::is('proveedores') ? 'active':'' }}">
         <a class="nav-link" href="{{ url('proveedores') }}">
         <i class="fas fa-users"></i>
           <span>Proveedores</span></a>
       </li>
+      @endif      
+      @if(in_array(Auth::user()->role_id, [1,2,3,4]))
       <li class="nav-item {{ Request::is('insumos') ? 'active':'' }}">
         <a class="nav-link" href="{{ url('insumos') }}">
         <i class="fas fa-capsules"></i>
           <span>Insumos</span></a>
       </li>
       @endif
+      @if(in_array(Auth::user()->role_id, [1,3]))      
       <li class="nav-item {{ Request::is('descargas') ? 'active':'' }}">
         <a class="nav-link" href="{{ url('descargas') }}">
         <i class="fas fa-angle-double-down"></i>
           <span>Descarga de Insumo</span></a>
       </li>
+      @endif
       <!--<li class="nav-item">
         <a class="nav-link" href="{{ url('recetas') }}">
         <i class="fas fa-flask"></i>
@@ -95,32 +103,34 @@
           <span>Productos a Granel</span></a>
       </li>
       @endif
-      @if(in_array(Auth::user()->role_id, [1]))
+      @if(in_array(Auth::user()->role_id, [1,2]))
       <li class="nav-item {{ Request::is('moldes') ? 'active':'' }}">
         <a class="nav-link" href="{{ url('moldes') }}">
         <i class="fas fa-dice-d20"></i>
           <span>Moldes</span></a>
       </li>
       @endif
-      @if(in_array(Auth::user()->role_id, [1,2,3]))
+      @if(in_array(Auth::user()->role_id, [1,2]))
       <li class="nav-item {{ Request::is('ordenes-de-fabricacion') ? 'active':'' }}">
         <a class="nav-link" href="{{ url('ordenes-de-fabricacion') }}">
         <i class="fas fa-clipboard"></i>
           <span>Ordenes de Fabricación</span></a>
       </li>
       @endif
-      @if(in_array(Auth::user()->role_id, [1,3,4]))
+      @if(in_array(Auth::user()->role_id, [1,4]))
       <li class="nav-item {{ Request::is('ordenes-de-compra') ? 'active':'' }}">
         <a class="nav-link" href="{{ url('ordenes-de-compra') }}">
         <i class="fas fa-cart-arrow-down"></i>
           <span>Ordenes de Compra</span></a>
       </li>
       @endif
+      @if(in_array(Auth::user()->role_id, [1,2]))
       <li class="nav-item {{ Request::is('ordenes-de-acondicionamiento') ? 'active':'' }}">
         <a class="nav-link" href="{{ url('ordenes-de-acondicionamiento') }}">
         <i class="fas fa-box"></i>
           <span>Acondicionamiento</span></a>
       </li>
+      @endif
       <!-- Divider -->
       <!--<hr class="sidebar-divider">-->
 
