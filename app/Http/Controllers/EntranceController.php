@@ -125,7 +125,7 @@ class EntranceController extends Controller
         $entrance->cfdi_id = $request->cfdi;
         $entrance->requisition = $request->requisition;
         $entrance->department = $request->department;
-        $entrance->status = $request->status;
+        $entrance->status = $request->status === NULL ? 'Creada':$request->status;
         $entrance->owner = $request->owner;
         $entrance->mader = $request->mader;
         $entrance->authorizer = $request->authorizer;
