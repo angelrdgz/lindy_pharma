@@ -46,6 +46,12 @@
                     </span>
                     <span class="text">Modificar</span>
                   </a>
+                  <a href="{{ url('ordenes-de-compra/'.$entrance->id)}}" target="_blank" class="btn btn-info btn-icon-split btn-sm">
+                    <span class="icon text-white-50">
+                      <i class="fas fa-file-pdf"></i>
+                    </span>
+                    <span class="text">PDF</span>
+                  </a>
                   @endif
                   @if(Auth::user()->role_id == 1)
                   <a href="{{ url('ordenes-de-compra/'.$entrance->id)}}" target="_blank" class="btn btn-info btn-icon-split btn-sm">
@@ -63,7 +69,7 @@
                     <span class="text">Revisar</span>
                   </a>
                   @endif
-                  @if(in_array(Auth::user()->role_id, [1,4]))
+                  @if(in_array(Auth::user()->role_id, [1]))
                   <a href="{{ url('ordenes-de-compra/'.$entrance->id.'/edit')}}" class="btn btn-warning btn-icon-split btn-sm">
                     <span class="icon text-white-50">
                       <i class="fas fa-pencil-alt"></i>
