@@ -184,7 +184,7 @@ class SupplyController extends Controller
             $supply->supply_id = $supply->supply->code;
             $supply->name = $supply->supply->name;
             $supply->supplier = $supply->entrance->supplier->name;
-            $supply->entrance_id = strval(sprintf("%05s", $supply->entrance_id));
+            $supply->entrance_id = '#'.strval(sprintf("%05s", $supply->entrance_id));
         });
 
         $csvExporter->build($supplies, ["created_at"=>"Fecha", 'supply_id'=>"Código Producto", "name"=>"Nombre Producto", "entrance_id"=>"Número de Entrada", "quantity"=>"Cantidad", "cups"=>"No de Envases", "expired_date"=>"Fecha de Caducidad", "reanalized_date"=>"Fecha de Reanalisis"] /**/)->download('insumo_'.$sup->code.'_'.$sup->name.'_'. date('d_m_Y') . '.csv');
