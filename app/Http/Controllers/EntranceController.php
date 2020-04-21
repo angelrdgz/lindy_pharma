@@ -120,7 +120,11 @@ class EntranceController extends Controller
 
     public function update(Request $request, $id)
     {
+        
         $entrance = Entrance::find($id);
+
+        $oldStatus = $entrance->status;
+
         $entrance->supplier_id = $request->supplier;
         $entrance->cfdi_id = $request->cfdi;
         $entrance->requisition = $request->requisition;
@@ -161,13 +165,10 @@ class EntranceController extends Controller
                 }
             }
 
-        }
+        }        
 
-        
-
-        if($entrance->status == "Cuarentena" && $request->status == "Aprobada"){
+        if($oldStatus == "Cuarentena" && $request->status == "Aprobada"){
             foreach($entrance->items as $item){
-
                 $supply = Supply::find($item->supply_id);
                 $supply->stock = $this->convert($supply->measurement_buy, $supply->measurement_use, $item->quantity);
                 $supply->save();
@@ -175,7 +176,6 @@ class EntranceController extends Controller
         }
 
         $entrance->save();
-
         
 
         $logbook = new Logbook();
@@ -216,6 +216,8 @@ class EntranceController extends Controller
             $total = $quantity * 1000;             
         }elseif($type1 == 2 && $type2 == 6){
             $total = $quantity * 1000000;
+        }elseif($type1 == 4 && $type2 == 6){
+            $total = $quantity * 1000;
         }elseif($type1 == 4 && $type2 == 3){
             $total = $quantity * 1000;
         }else{
