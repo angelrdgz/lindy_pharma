@@ -182,14 +182,20 @@
 
 <script>
   var availableItems = [];
+  var currencyOptions = "";
 
   @foreach($supplies as $supply)
   availableItems.push({
     id: "{{$supply->id}}",
     value: "{{$supply->name}}",
+    price: "{{$supply->price}}",
     label: "{{$supply->code}} {{$supply->name}}",
     measurement: "{{$supply->measurementBuy->name}}"
   })
+  @endforeach
+
+  @foreach($currencies as $currency)
+   currencyOptions += '<option value="{{ $currency->id }}">{{ $currency->name }}</option>';
   @endforeach
 
   $(document).on('click', '.addContentRow', function() {
@@ -200,7 +206,8 @@
     $('.contentTable').append('<tr class="activeRow">' +
       '<td><input type="hidden" class="idItem" name="idItem[]"/> <input type="text" class="form-control itemContent' + idRow + '" /></td>' +
       '<td><input type="text" name="quantityItem[]" class="form-control number"/></td>' +
-      '<td><input type="text" name="priceItem[]" class="form-control number"/></td>' +
+      '<td><input type="text" name="priceItem[]" class="form-control number price"/></td>' +
+      '<td><select class="form-control" name="currencyItem[]">'+currencyOptions+'</select></td>' +
       '<td><span> - </span></td>' +
       '</tr>')
 
@@ -209,6 +216,7 @@
       select: function(event, ui) {
         console.log(ui)
         $('.contentTable .activeRow .idItem').val(ui.item.id)
+        $('.contentTable .activeRow .price').val(ui.item.price)
         $('.contentTable .activeRow span').text(ui.item.measurement)
       }
     });
