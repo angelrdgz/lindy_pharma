@@ -117,7 +117,7 @@
           <span>Ordenes de Fabricación</span></a>
       </li>
       @endif
-      @if(in_array(Auth::user()->role_id, [1,4]))
+      @if(in_array(Auth::user()->role_id, [1,2,3,4]))
       <li class="nav-item {{ Request::is('ordenes-de-compra') ? 'active':'' }}">
         <a class="nav-link" href="{{ url('ordenes-de-compra') }}">
         <i class="fas fa-cart-arrow-down"></i>

@@ -19,7 +19,7 @@
           <div class="row">
             <div class="col-sm-4">
               <label for="">Proveedor</label>
-              <select name="supplier" id="" class="form-control">
+              <select name="supplier" id="" {{ Auth::user()->role_id == 2 ? 'readonly':''}} class="form-control">
                 <option value="">Seleccionar Proveedor</option>
                 @foreach($suppliers as $supplier)
                 <option value="{{ $supplier->id }}" {{ $entrance->supplier_id == $supplier->id ? "selected":"" }}>{{ $supplier->name }}</option>
@@ -28,7 +28,7 @@
             </div>
             <div class="col-sm-4">
               <label for="">CFDI</label>
-              <select name="cfdi" id="" class="form-control">
+              <select name="cfdi" id="" {{ Auth::user()->role_id == 2 ? 'readonly':''}} class="form-control">
                 <option value="">Seleccionar CFDI</option>
                 @foreach($codes as $code)
                 <option value="{{ $code->id }}" {{ $entrance->cfdi_id == $code->id ? "selected":"" }}>{{ $code->code.' - '.$code->name }}</option>
@@ -37,40 +37,45 @@
             </div>
             <div class="col-sm-4">
               <label for="">Requisición</label>
-              <input type="text" name="requisition" value="{{ $entrance->requisition }}" class="form-control">
+              <input type="text" name="requisition" {{ Auth::user()->role_id == 2 ? 'readonly':''}} value="{{ $entrance->requisition }}" class="form-control">
             </div>
             <div class="col-sm-4">
               <label for="">Departamento</label>
-              <input type="text" name="department" value="{{ $entrance->department }}" class="form-control">
+              <input type="text" name="department" {{ Auth::user()->role_id == 2 ? 'readonly':''}} value="{{ $entrance->department }}" class="form-control">
             </div>
             <div class="col-sm-4">
               <label for="">Estatus</label>
               <select name="status" id="" class="form-control">
                 <option value="">Seleccionar Estatus</option>
+                @if(Auth::user()->role_id == 2)
+                <option value="Aprobada" {{$entrance->status == "Aprobada" ? "selected":""}}>Aprobada</option>
+                <option value="Rechazada" {{$entrance->status == "Rechazada" ? "selected":""}}>Rechazada</option>
+                @else
                 <option value="Cuarentena" {{$entrance->status == "Cuarentena" ? "selected":""}}>Cuarentena</option>
                 <option value="Aprobada" {{$entrance->status == "Aprobada" ? "selected":""}}>Aprobada</option>
                 <option value="Rechazada" {{$entrance->status == "Rechazada" ? "selected":""}}>Rechazada</option>
+                @endif
               </select>
             </div>
             <div class="col-sm-4">
               <label for="">Elabora</label>
-              <input type="text" name="mader" value="{{ $entrance->mader }}" class="form-control">
+              <input type="text" name="mader" {{ Auth::user()->role_id == 2 ? 'readonly':''}} value="{{ $entrance->mader }}" class="form-control">
             </div>
             <div class="col-sm-4">
               <label for="">Solicita</label>
-              <input type="text" name="owner" value="{{ $entrance->owner }}" class="form-control">
+              <input type="text" name="owner" {{ Auth::user()->role_id == 2 ? 'readonly':''}} value="{{ $entrance->owner }}" class="form-control">
             </div>
             <div class="col-sm-4">
               <label for="">Autoriza</label>
-              <input type="text" name="authorizer" value="{{ $entrance->authorizer }}" class="form-control">
+              <input type="text" name="authorizer" {{ Auth::user()->role_id == 2 ? 'readonly':''}} value="{{ $entrance->authorizer }}" class="form-control">
             </div>
             <div class="col-sm-4">
               <label for="">Fecha Estimada de Entrega</label>
-              <input type="date" name="expected_date" value="{{ $entrance->expected_date }}" class="form-control">
+              <input type="date" name="expected_date" {{ Auth::user()->role_id == 2 ? 'readonly':''}} value="{{ $entrance->expected_date }}" class="form-control">
             </div>
             <div class="col-sm-4">
               <label for="">Cto. de Costos</label>
-              <select name="costs" id="" class="form-control">
+              <select name="costs" id="" {{ Auth::user()->role_id == 2 ? 'readonly':'' }} class="form-control">
                 <option value="">Seleccionar Cto de Costos</option>
                 @foreach($costs as $cost)
                  <option value="{{ $cost->id }}" {{$cost->id == $entrance->cost_id ? "selected":""}}>{{ $cost->name }}</option>
@@ -86,7 +91,9 @@
                   <tr>
                     <th colspan="4">Contenido de la orden</th>
                     <th class="text-right">
+                      @if(Auth::user()->role_id == 1)
                       <a class="btn btn-link addContentRow text-primary">Agregar Insumo</a>
+                      @endif
                     </th>
                   </tr>
                   <tr>
@@ -101,19 +108,21 @@
                 <tbody>
                   @foreach($entrance->items as $item)
                   <tr>
-                    <td><input type="hidden" value="{{ $item->supply_id}}" class="idItem" name="idItem[]" /> <input type="text" value="{{ $item->supply->name }}" class="form-control itemContentidRow+'" /></td>
-                    <td><input type="text" name="quantityItem[]" value="{{ $item->quantity}}" class="form-control" /></td>
-                    <td><input type="text" name="priceItem[]" value="{{ $item->price}}" class="form-control" /></td>
-                    <td><select class="form-control" name="currencyItem[]">
+                    <td><input type="hidden" value="{{ $item->supply_id}}" class="idItem" name="idItem[]" /> <input type="text" {{ Auth::user()->role_id == 2 ? 'readonly':''}} value="{{ $item->supply->name }}" class="form-control itemContentidRow+'" /></td>
+                    <td><input type="text" {{ Auth::user()->role_id == 2 ? 'readonly':''}} name="quantityItem[]" value="{{ $item->quantity}}" class="form-control" /></td>
+                    <td><input type="text" {{ Auth::user()->role_id == 2 ? 'readonly':''}} name="priceItem[]" value="{{ $item->price}}" class="form-control" /></td>
+                    <td><select class="form-control" {{ Auth::user()->role_id == 2 ? 'readonly':''}} name="currencyItem[]">
                       @foreach($currencies as $currency)
                        <option value="{{ $currency->id }}" {{$item->currency_id == $currency->id ? 'selected':''}}> {{$currency->name }} </option>
                       @endforeach
                     </select></td>
                     <td class="text-center"><span> {{ $item->supply->measurementBuy->name}} </span></td>
                     <td class="text-center">
+                    @if(Auth::user()->role_id == 1)
                       <a class="btn btn-danger btn-circle removeRow">
                         <i class="fas fa-trash" style="color: #fff;"></i>
                       </a>
+                      @endif
                     </td>
                   </tr>
                   @endforeach
@@ -129,7 +138,9 @@
                   <tr>
                     <th style="width: 80%;">Comentarios de la orden</th>
                     <th class="text-right">
+                    @if(Auth::user()->role_id == 1)
                       <a class="btn btn-link addCommentRow text-primary">Agregar Comentario</a>
+                      @endif
                     </th>
                   </tr>
                 </thead>

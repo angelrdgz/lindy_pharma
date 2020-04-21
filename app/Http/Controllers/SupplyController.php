@@ -8,6 +8,7 @@ use App\Supply;
 use App\SupplyType;
 use App\SupplyMeasurement;
 use App\Supplier;
+use App\EntranceItem;
 use App\Logbook;
 
 use Auth;
@@ -95,41 +96,52 @@ class SupplyController extends Controller
 
     public function update(Request $request, $id)
     {
-        $request->validate(
-            [
-                'name' => 'required',
-                'code' => 'required',
-                'type' => 'required',
-                'measurement_use' => 'required',
-                'measurement_buy' => 'required',
-            ],
-            [
-                'name.required' => 'El nombre es requerido',
-                'code.required' => 'El código es requerido',
-                'type.required' => 'El tipo es requerido',
-                'measurement_use.required' => 'La medida de uso es requerida',
-                'measurement_buy.required' => 'La medida de compra es requerida',
-            ]
-        );
+        if (Auth::user()->role_id == 3) {
 
-        $supply = Supply::find($id);
-        $supply->name = $request->name;
-        $supply->code = $request->code;
-        $supply->type_id = $request->type;
-        $supply->stock = $request->stock * 1000000;
-        $supply->price = $request->price;
-        $supply->supplier_id = $request->supplier;
-        $supply->measurement_use = $request->measurement_use;
-        $supply->measurement_buy = $request->measurement_buy;
-        $supply->save();
+            foreach ($request->idItems as $key => $supplie) {
+                $item =  EntranceItem::find($request->idItems[$key]);
+                $item->cups = $request->cupsItems[$key];
+                $item->expired_date = $request->expiredDateItems[$key];
+                $item->reanalized_date = $request->reanalizedDateItems[$key];
+                $item->save();
+            }
+        } else {
+            $request->validate(
+                [
+                    'name' => 'required',
+                    'code' => 'required',
+                    'type' => 'required',
+                    'measurement_use' => 'required',
+                    'measurement_buy' => 'required',
+                ],
+                [
+                    'name.required' => 'El nombre es requerido',
+                    'code.required' => 'El código es requerido',
+                    'type.required' => 'El tipo es requerido',
+                    'measurement_use.required' => 'La medida de uso es requerida',
+                    'measurement_buy.required' => 'La medida de compra es requerida',
+                ]
+            );
 
-        $logbook = new Logbook();
-        $logbook->type_id = 2;
-        $logbook->title = 'Insumo Modificado';
-        $logbook->content = 'El insumo con el código "' . $request->code . '" ha sido modificado';
-        $logbook->icon = 'fas fa-capsules';
-        $logbook->created_by = Auth::user()->id;
-        $logbook->save();
+            $supply = Supply::find($id);
+            $supply->name = $request->name;
+            $supply->code = $request->code;
+            $supply->type_id = $request->type;
+            $supply->stock = $request->stock * 1000000;
+            $supply->price = $request->price;
+            $supply->supplier_id = $request->supplier;
+            $supply->measurement_use = $request->measurement_use;
+            $supply->measurement_buy = $request->measurement_buy;
+            $supply->save();
+
+            $logbook = new Logbook();
+            $logbook->type_id = 2;
+            $logbook->title = 'Insumo Modificado';
+            $logbook->content = 'El insumo con el código "' . $request->code . '" ha sido modificado';
+            $logbook->icon = 'fas fa-capsules';
+            $logbook->created_by = Auth::user()->id;
+            $logbook->save();
+        }
 
         return redirect('insumos')->with('success', 'Insumo modificado correctamente');
     }
@@ -158,6 +170,24 @@ class SupplyController extends Controller
             }
         });
 
-        $csvExporter->build($supplies, ['code' => 'Código', 'name' => 'Nombre', 'type_id' => 'Tipo', 'stock' => 'En Almacen (Kg)', 'price' => 'Valor En Stock', 'supplier_id'=>'Proveedor'])->download('insumos_' . date('d_m_Y') . '.csv');
+        $csvExporter->build($supplies, ['code' => 'Código', 'name' => 'Nombre', 'type_id' => 'Tipo', 'stock' => 'En Almacen (Kg)', 'price' => 'Valor En Stock', 'supplier_id' => 'Proveedor'])->download('insumos_' . date('d_m_Y') . '.csv');
+    }
+
+    public function exportSupply($id){
+        $csvExporter = new \Laracsv\Export();
+        $sup = Supply::find($id);
+        $supplies = EntranceItem::where('supply_id', $id)->get();
+
+        // Register the hook before building
+        $csvExporter->beforeEach(function ($supply) {
+            $supply->created_at = $supply->entrance->created_at;
+            $supply->supply_id = $supply->supply->code;
+            $supply->name = $supply->supply->name;
+            $supply->supplier = $supply->entrance->supplier->name;
+            $supply->entrance_id = strval(sprintf("%05s", $supply->entrance_id));
+        });
+
+        $csvExporter->build($supplies, ["created_at"=>"Fecha", 'supply_id'=>"Código Producto", "name"=>"Nombre Producto", "entrance_id"=>"Número de Entrada", "quantity"=>"Cantidad", "cups"=>"No de Envases", "expired_date"=>"Fecha de Caducidad", "reanalized_date"=>"Fecha de Reanalisis"] /**/)->download('insumo_'.$sup->code.'_'.$sup->name.'_'. date('d_m_Y') . '.csv');
+
     }
 }

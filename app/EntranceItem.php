@@ -13,4 +13,8 @@ class EntranceItem extends Model
     public function currency(){
         return $this->belongsTo('App\Catalog','currency_id', 'id');
     }
+
+    public function entrance(){
+        return $this->belongsTo('App\Entrance', 'entrance_id', 'id');
+    }
 }

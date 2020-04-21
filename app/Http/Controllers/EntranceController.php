@@ -148,16 +148,22 @@ class EntranceController extends Controller
 
         $entrance->comments()->delete();
 
-        if (count($request->comments) > 0) {
-            foreach ($request->comments as $key => $comment) {
-                if ($comment != NULL) {
-                    $entranceComment = new EntranceComment();
-                    $entranceComment->entrance_id = $entrance->id;
-                    $entranceComment->comment = $comment;
-                    $entranceComment->save();
+        if($request->comments !== NULL){
+
+            if (count($request->comments) > 0) {
+                foreach ($request->comments as $key => $comment) {
+                    if ($comment != NULL) {
+                        $entranceComment = new EntranceComment();
+                        $entranceComment->entrance_id = $entrance->id;
+                        $entranceComment->comment = $comment;
+                        $entranceComment->save();
+                    }
                 }
             }
+
         }
+
+        
 
         if($entrance->status == "Cuarentena" && $request->status == "Aprobada"){
             foreach($entrance->items as $item){

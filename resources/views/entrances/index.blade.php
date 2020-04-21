@@ -69,14 +69,15 @@
                     <span class="text">Revisar</span>
                   </a>
                   @endif
-                  @if(in_array(Auth::user()->role_id, [1]))
+                  @if(in_array(Auth::user()->role_id, [1,2]))
                   <a href="{{ url('ordenes-de-compra/'.$entrance->id.'/edit')}}" class="btn btn-warning btn-icon-split btn-sm">
                     <span class="icon text-white-50">
                       <i class="fas fa-pencil-alt"></i>
                     </span>
                     <span class="text">Modificar</span>
                   </a>
-                  @if($entrance->status !== 'Aprobada')
+                  @endif
+                  @if(in_array(Auth::user()->role_id, [1]) && $entrance->status !== 'Aprobada')
                   <form method="post" action="{{ route('ordenes-de-compra.destroy', $entrance->id) }}">
                     @method('DELETE')
                     @csrf
@@ -87,7 +88,6 @@
                       <span class="text">Cancelar</span>
                     </button>
                   </form>
-                  @endif
                   @endif
                 </td>
               </tr>
