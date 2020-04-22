@@ -44,7 +44,25 @@
       <td>{{ $order->lot }}</td>      
       <td>{{ $order->client->name }}</td>
       <td>{{ $order->user->name }}</td>
-      <td>{{ $order->type == 1 ? "Mezcla de contenido":"Pasta de gelatina"}}</td>
+      <td>
+        <?php
+        switch ($order->type) {
+          case 1:
+            echo "Mezcla de contenido";
+            break;
+            case 2:
+              echo "Pasta de gelatina";
+              break;
+              case 3:
+                echo "Pasta de gelatina 2";
+                break;
+          
+          default:
+            # code...
+            break;
+        }
+        ?>
+      </td>
       <td>{{ $order->status }}</td>
       <td>
       <!--<a href="{{ url('ordenes-de-fabricacion/'.$order->id.'/edit')}}" class="btn btn-warning btn-icon-split btn-sm">

@@ -97,6 +97,28 @@
             </div>
           </div>
           <div class="row">
+            <div class="col-sm-12">
+              <table class="table coverSecondTable">
+                <thead>
+                  <tr>
+                    <th colspan="3">Segundo Envolvente de la Capsula</th>
+                    <th class="text-right">
+                      <a class="btn btn-link addCoverSecondRow">Agregar Insumo</a>
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>Nombre</td>
+                    <td>Cantidad</td>
+                    <th>Exceso</th>
+                    <td>Medida de Uso</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <div class="row">
             <div class="col-sm-3 offset-sm-3">
               <button type="submit" class="btn btn-primary btn-block">Guardar</button>
             </div>
@@ -170,5 +192,27 @@
       }
     });
   })
+
+  $(document).on('click', '.addCoverSecondRow', function() {
+
+$('.coverSecondTable tbody tr').removeClass('activeRow')
+
+let idRow = $('.tableCoverSecond tbody tr').length + 1;
+$('.coverSecondTable').append('<tr class="activeRow">' +
+  '<td><input type="hidden" class="idItem" name="idItemCoverSecond[]"/> <input type="text" class="form-control itemCoverSecond' + idRow + '" /></td>' +
+  '<td><input type="text" name="quantityItemCoverSecond[]" class="form-control number" /></td>' +
+  '<td><input type="text" name="excessItemCoverSecond[]" class="form-control number" value="0.0"/></td>' +
+  '<td><span> - </span></td>' +
+  '</tr>')
+
+$(".itemCoverSecond" + idRow).autocomplete({
+  source: availableItems,
+  select: function(event, ui) {
+    console.log(ui)
+    $('.coverSecondTable .activeRow .idItem').val(ui.item.id)
+    $('.coverSecondTable .activeRow span').text(ui.item.measurement)
+  }
+});
+})
 </script>
 @stop

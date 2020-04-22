@@ -37,6 +37,18 @@ class RecipeController extends Controller
         $recipe->mold_id = $request->mold;
         $recipe->save();
 
+        foreach ($request->idItemCoverSecond as $key => $item) {
+            if ($request->idItemCoverSecond[$key] != NULL) {
+                $prodSupply = new RecipeSupply();
+                $prodSupply->recipe_id = $recipe->id;
+                $prodSupply->supply_id = $request->idItemCoverSecond[$key];
+                $prodSupply->quantity = $request->quantityItemCoverSecond[$key];
+                $prodSupply->excess = $request->excessItemCoverSecond[$key];
+                $prodSupply->type = 3;
+                $prodSupply->save();
+            }
+        }
+
         foreach ($request->idItemCover as $key => $item) {
             if ($request->idItemCover[$key] != NULL) {
                 $prodSupply = new RecipeSupply();

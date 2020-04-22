@@ -107,6 +107,32 @@ class DepartureController extends Controller
             QrCode::size(150)->format('png')->generate(env('APP_URL') . 'ordenes-de-fabricacion/' . $departure->id . '/escanear', public_path('images/qrcode/qrcode_' . $departure->id . '.png'));
         }
 
+        if ($recipe->suppliesSecondCover->count() > 0) {
+
+            $departure = new Departure();
+            $departure->order_number = $order_number;
+            $departure->recipe_id = $request->recipe;
+            $departure->client_id = $request->client;
+            $departure->lot = $request->lot;
+            $departure->line = $request->line;
+            $departure->status = "Creada";
+            $departure->quantity = $request->quantity;
+            $departure->created_by = Auth::user()->id;
+            $departure->type = 3;
+            $departure->save();
+
+            foreach ($recipe->suppliesSecondCover as $supplie) {
+                $item = new DepartureItem();
+                $item->departure_id = $departure->id;
+                $item->supplie_id = $supplie->supply_id;
+                $item->quantity = $supplie->quantity;
+                $item->excess = $supplie->excess;
+                $item->save();
+            }
+
+            QrCode::size(150)->format('png')->generate(env('APP_URL') . 'ordenes-de-fabricacion/' . $departure->id . '/escanear', public_path('images/qrcode/qrcode_' . $departure->id . '.png'));
+        }
+
         $logbook = new Logbook();
         $logbook->type_id = 1;
         $logbook->title = 'Orden de Fabricació Creada';

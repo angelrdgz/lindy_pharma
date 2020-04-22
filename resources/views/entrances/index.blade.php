@@ -77,7 +77,7 @@
                     <span class="text">Modificar</span>
                   </a>
                   @endif
-                  @if(in_array(Auth::user()->role_id, [1]) && $entrance->status !== 'Aprobada')
+                  @if(in_array(Auth::user()->role_id, [1, 4]) && $entrance->status !== 'Aprobada')
                   <form method="post" action="{{ route('ordenes-de-compra.destroy', $entrance->id) }}">
                     @method('DELETE')
                     @csrf

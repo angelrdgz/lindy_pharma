@@ -57,7 +57,7 @@ class EntranceController extends Controller
 
 
         foreach ($request->idItem as $key => $item) {
-            if ($request->idItem[$key] != NULL) {
+            if ($request->idItem[$key] !== NULL) {
                 $entranceItem = new EntranceItem();
                 $entranceItem->entrance_id = $entrance->id;
                 $entranceItem->supply_id = $request->idItem[$key];
@@ -136,23 +136,27 @@ class EntranceController extends Controller
         $entrance->cost_id = $request->costs;
         $entrance->expected_date = $request->expected_date;
 
-        $entrance->items()->delete();
+        if($request->idItem !== NULL){
+            if(count($request->idItem) > 0){
+                $entrance->items()->delete();
 
-        foreach ($request->idItem as $key => $item) {
-            if ($request->idItem[$key] != NULL) {
-                $entranceItem = new EntranceItem();
-                $entranceItem->entrance_id = $entrance->id;
-                $entranceItem->supply_id = $request->idItem[$key];
-                $entranceItem->quantity = $request->quantityItem[$key];
-                $entranceItem->price = $request->priceItem[$key];
-                $entranceItem->currency_id = $request->currencyItem[$key];
-                $entranceItem->save();
+                foreach ($request->idItem as $key => $item) {
+                    if ($request->idItem[$key] != NULL) {
+                        $entranceItem = new EntranceItem();
+                        $entranceItem->entrance_id = $entrance->id;
+                        $entranceItem->supply_id = $request->idItem[$key];
+                        $entranceItem->quantity = $request->quantityItem[$key];
+                        $entranceItem->price = $request->priceItem[$key];
+                        $entranceItem->currency_id = $request->currencyItem[$key];
+                        $entranceItem->save();
+                    }
+                }
             }
         }
 
-        $entrance->comments()->delete();
-
         if($request->comments !== NULL){
+
+            $entrance->comments()->delete();
 
             if (count($request->comments) > 0) {
                 foreach ($request->comments as $key => $comment) {

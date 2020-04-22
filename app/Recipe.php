@@ -14,6 +14,10 @@ class Recipe extends Model
         return $this->hasMany('App\RecipeSupply')->where('type', 2);
     }
 
+    public function suppliesSecondCover(){
+        return $this->hasMany('App\RecipeSupply')->where('type', 3);
+    }
+
     public function mold(){
         return $this->belongsTo('App\Mold');
     }

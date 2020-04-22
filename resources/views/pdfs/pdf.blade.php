@@ -192,8 +192,10 @@
     </table>
     @if($order->type == 1)
     <h4 class="text-center" style="margin-top:45px; margin-bottom: 0px;">CONTENIDO DE LA CAPSULA</h4>
+    @elseif($order->type == 2)
+    <h4 class="text-center" style="margin-top:45px; margin-bottom: 0px;">ENVOLVENTE DE LA CAPSULA 1</h4>
     @else
-    <h4 class="text-center" style="margin-top:45px; margin-bottom: 0px;">ENVOLVENTE DE LA CAPSULA</h4>
+    <h4 class="text-center" style="margin-top:45px; margin-bottom: 0px;">ENVOLVENTE DE LA CAPSULA 2</h4>
     @endif
     <table class="item" width="100%" class="bordered" border="0">
       <thead>
