@@ -149,10 +149,20 @@ class SupplyController extends Controller
     public function export()
     {
         $csvExporter = new \Laracsv\Export();
-        $supplies = Supply::orderBy('code', 'ASC')->get();
+        $items = EntranceItem::orderBy('supply_id', 'ASC')->get();
+
+        $csvExporter->beforeEach(function ($supply) {
+            $supply->created_at = $supply->entrance->created_at;
+            $supply->supply_id = $supply->supply->code;
+            $supply->name = $supply->supply->name;
+            $supply->supplier = $supply->entrance->supplier->name;
+            $supply->entrance_id = '#'.strval(sprintf("%05s", $supply->entrance_id));
+        });
+
+        $csvExporter->build($items, ["created_at"=>"Fecha", 'supply_id'=>"Código Producto", "name"=>"Nombre Producto", "entrance_id"=>"Número de Entrada", "quantity"=>"Cantidad Kg", "cups"=>"No de Envases", "expired_date"=>"Fecha de Caducidad", "reanalized_date"=>"Fecha de Reanalisis", "supplier"=>"Proveedor"] /**/)->download('insumos_'. date('d_m_Y') . '.csv');
 
         // Register the hook before building
-        $csvExporter->beforeEach(function ($supply) {
+        /*$csvExporter->beforeEach(function ($supply) {
             $supply->type_id = $supply->type->name;
             $supply->supplier_id = $supply->supplier->name;
             $supply->stock = $supply->stock / 1000000;
@@ -170,7 +180,7 @@ class SupplyController extends Controller
             }
         });
 
-        $csvExporter->build($supplies, ['code' => 'Código', 'name' => 'Nombre', 'type_id' => 'Tipo', 'stock' => 'En Almacen (Kg)', 'price' => 'Valor En Stock', 'supplier_id' => 'Proveedor'])->download('insumos_' . date('d_m_Y') . '.csv');
+        $csvExporter->build($items, ['code' => 'Código', 'name' => 'Nombre', 'type_id' => 'Tipo', 'stock' => 'En Almacen (Kg)', 'price' => 'Valor En Stock', 'supplier_id' => 'Proveedor'])->download('insumos_' . date('d_m_Y') . '.csv');*/
     }
 
     public function exportSupply($id){
