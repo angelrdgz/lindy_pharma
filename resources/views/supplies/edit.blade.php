@@ -126,7 +126,7 @@
                   </tr>
                 </thead>
                 <tbody>
-                  @foreach($supply->entranceNumbers($supply->id) as $order)
+                  @foreach($supply->entrances as $order)
                   <tr>
                      <input type="hidden" name="idItems[]" value="{{ $order->id }}" class="form-control number">
                     <td>{{ $order->id }}</td>

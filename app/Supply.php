@@ -24,6 +24,10 @@ class Supply extends Model
         return $this->hasOne('App\SupplyMeasurement', 'id', 'measurement_buy');
     }
 
+    public function entrances(){
+        return $this->hasMany('App\EntranceItem', 'supply_id', 'id');
+    }
+
     public function entranceNumbers($id){
         $entrances = \DB::select("select entrance_items.* from entrance_items INNER JOIN entrances ON entrance_items.entrance_id = entrances.id WHERE entrance_items.supply_id = :id AND entrances.status = 'Aprobada'", ["id"=>$id]);
         return $entrances;
