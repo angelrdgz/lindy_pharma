@@ -25,16 +25,6 @@
           <input type="hidden" name="authorizer" value="{{$entrance->authorizer}}" />
           <input type="hidden" name="expected_date" value="{{$entrance->expected_date}}" />
           <input type="hidden" name="costs" value="{{$entrance->cost_id}}" />
-          <input type="hidden">
-          <div class="row">
-            <div class="col-sm-4">
-              <label for="">Estatus</label>
-              <select name="status" id="" class="form-control">
-                <option value="">Seleccione una opción</option>
-                <option value="Cuarentena">Cuarentena</option>
-              </select>
-            </div>
-          </div>
           <div class="row">
             <div class="col-sm-12">
               <table class="table contentTable">
@@ -45,14 +35,25 @@
                   <tr>
                     <th>Nombre</th>
                     <th>Cantidad</th>
+                    <th>Estatus</th>
                     <th>Comentarios</th>
                   </tr>
                 </thead>
                 <tbody>
                   @foreach($entrance->items as $item)
                   <tr>
-                    <td><input type="hidden" value="{{ $item->supply_id}}" class="idItem" name="idItem[]" /> <input type="text" value="{{ $item->supply->name }}" class="form-control itemContentidRow+'" /></td>
+                  <input type="hidden" name="updated[]" value="0">
+                    <td>
+                      <input type="hidden" value="{{ $item->id }}" class="idItem" name="idItem[]" />
+                      <input type="text" value="{{ $item->supply->name }}" class="form-control itemContentidRow+'" readonly/></td>
                     <td><input type="text" name="quantityItem[]" value="{{ $item->quantity}}" class="form-control" /></td>
+                    <td>
+                      <select name="statusItem[]" id="" class="form-control">
+                        <option value="">Seleccione una opción</option>
+                        <option value="Cuarentena" {{$item->status == "Cuarentena" ? "selected":""}}>Cuarentena</option>
+                        <option value="Rechazada" {{$item->status == "Rechazada" ? "selected":""}}>Rechazada</option>
+                      </select>
+                    </td>
                     <td class="text-center">
                       <input type="text" name="commentsItem[]" value="" class="form-control" />
                     </td>

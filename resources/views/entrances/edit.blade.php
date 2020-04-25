@@ -44,20 +44,6 @@
               <input type="text" name="department" {{ Auth::user()->role_id == 2 ? 'readonly':''}} value="{{ $entrance->department }}" class="form-control">
             </div>
             <div class="col-sm-4">
-              <label for="">Estatus</label>
-              <select name="status" id="" class="form-control">
-                <option value="">Seleccionar Estatus</option>
-                @if(Auth::user()->role_id == 2)
-                <option value="Aprobada" {{$entrance->status == "Aprobada" ? "selected":""}}>Aprobada</option>
-                <option value="Rechazada" {{$entrance->status == "Rechazada" ? "selected":""}}>Rechazada</option>
-                @else
-                <option value="Cuarentena" {{$entrance->status == "Cuarentena" ? "selected":""}}>Cuarentena</option>
-                <option value="Aprobada" {{$entrance->status == "Aprobada" ? "selected":""}}>Aprobada</option>
-                <option value="Rechazada" {{$entrance->status == "Rechazada" ? "selected":""}}>Rechazada</option>
-                @endif
-              </select>
-            </div>
-            <div class="col-sm-4">
               <label for="">Elabora</label>
               <input type="text" name="mader" {{ Auth::user()->role_id == 2 ? 'readonly':''}} value="{{ $entrance->mader }}" class="form-control">
             </div>
@@ -78,7 +64,7 @@
               <select name="costs" id="" {{ Auth::user()->role_id == 2 ? 'readonly':'' }} class="form-control">
                 <option value="">Seleccionar Cto de Costos</option>
                 @foreach($costs as $cost)
-                 <option value="{{ $cost->id }}" {{$cost->id == $entrance->cost_id ? "selected":""}}>{{ $cost->name }}</option>
+                <option value="{{ $cost->id }}" {{$cost->id == $entrance->cost_id ? "selected":""}}>{{ $cost->name }}</option>
                 @endforeach
               </select>
             </div>
@@ -102,23 +88,37 @@
                     <th>Precio</th>
                     <th>Moneda</th>
                     <th>Medida de Uso</th>
+                    <th>Estatus</th>
                     <th></th>
                   </tr>
                 </thead>
                 <tbody>
                   @foreach($entrance->items as $item)
                   <tr>
+                    <input type="hidden" name="updated[]" value="{{$item->status == 'Aprobada' ? 1:0}}">
                     <td><input type="hidden" value="{{ $item->supply_id}}" class="idItem" name="idItem[]" /> <input type="text" {{ Auth::user()->role_id == 2 ? 'readonly':''}} value="{{ $item->supply->name }}" class="form-control itemContentidRow+'" /></td>
                     <td><input type="text" {{ Auth::user()->role_id == 2 ? 'readonly':''}} name="quantityItem[]" value="{{ $item->quantity}}" class="form-control" /></td>
                     <td><input type="text" {{ Auth::user()->role_id == 2 ? 'readonly':''}} name="priceItem[]" value="{{ $item->price}}" class="form-control" /></td>
                     <td><select class="form-control" {{ Auth::user()->role_id == 2 ? 'readonly':''}} name="currencyItem[]">
-                      @foreach($currencies as $currency)
-                       <option value="{{ $currency->id }}" {{$item->currency_id == $currency->id ? 'selected':''}}> {{$currency->name }} </option>
-                      @endforeach
-                    </select></td>
+                        @foreach($currencies as $currency)
+                        <option value="{{ $currency->id }}" {{$item->currency_id == $currency->id ? 'selected':''}}> {{$currency->name }} </option>
+                        @endforeach
+                      </select></td>
                     <td class="text-center"><span> {{ $item->supply->measurementBuy->name}} </span></td>
+                    <td>
+                      @if($item->status == 'Aprobada')
+                      <input type="hidden" name="statusItem[]" value="Aprobada">
+                       <span>Aprobada</span>
+                      @else
+                      <select name="statusItem[]" id="" class="form-control">
+                        <option value="">Seleccione una opción</option>
+                        <option value="Aprobada" {{$item->status == 'Aprobada' ? 'selected':''}}>Aprobada</option>
+                        <option value="Rechazada" {{$item->status == 'Rechazada' ? 'selected':''}}>Rechazada</option>
+                      </select>
+                      @endif
+                    </td>
                     <td class="text-center">
-                    @if(Auth::user()->role_id == 1)
+                      @if(Auth::user()->role_id == 1)
                       <a class="btn btn-danger btn-circle removeRow">
                         <i class="fas fa-trash" style="color: #fff;"></i>
                       </a>
@@ -138,7 +138,7 @@
                   <tr>
                     <th style="width: 80%;">Comentarios de la orden</th>
                     <th class="text-right">
-                    @if(Auth::user()->role_id == 1)
+                      @if(Auth::user()->role_id == 1)
                       <a class="btn btn-link addCommentRow text-primary">Agregar Comentario</a>
                       @endif
                     </th>
@@ -147,11 +147,13 @@
                 <tbody>
                   @foreach($entrance->comments as $comment)
                   <tr>
-                    <td><input type="text" value="{{ $comment->comment }}" name="comments[]" class="form-control itemCommentRow+'" /></td>
+                    <td><input type="text" {{ Auth::user()->role_id == 2 ? 'readonly':''}} value="{{ $comment->comment }}" name="comments[]" class="form-control itemCommentRow+'" /></td>
                     <td class="text-center">
+                      @if(Auth::user()->role_id == 1)
                       <a class="btn btn-danger btn-circle removeCommentRow">
                         <i class="fas fa-trash" style="color: #fff;"></i>
                       </a>
+                      @endif
                     </td>
                   </tr>
                   @endforeach
@@ -195,7 +197,7 @@
   @endforeach
 
   @foreach($currencies as $currency)
-   currencyOptions += '<option value="{{ $currency->id }}">{{ $currency->name }}</option>';
+  currencyOptions += '<option value="{{ $currency->id }}">{{ $currency->name }}</option>';
   @endforeach
 
   $(document).on('click', '.addContentRow', function() {
@@ -207,7 +209,7 @@
       '<td><input type="hidden" class="idItem" name="idItem[]"/> <input type="text" class="form-control itemContent' + idRow + '" /></td>' +
       '<td><input type="text" name="quantityItem[]" class="form-control number"/></td>' +
       '<td><input type="text" name="priceItem[]" class="form-control number price"/></td>' +
-      '<td><select class="form-control" name="currencyItem[]">'+currencyOptions+'</select></td>' +
+      '<td><select class="form-control" name="currencyItem[]">' + currencyOptions + '</select></td>' +
       '<td><span> - </span></td>' +
       '</tr>')
 
@@ -251,18 +253,16 @@
     let idRow = $('.tableCover tbody tr').length + 1;
     $('.commentsTable').append('<tr class="activeRow">' +
       '<td><input name="comments[]" type="text" class="form-control commentCover' + idRow + '" /></td>' +
-      '<td class="text-center"><a class="btn btn-danger btn-circle removeCommentRow"><i class="fas fa-trash" style="color: #fff;"></i></a></td>'+
+      '<td class="text-center"><a class="btn btn-danger btn-circle removeCommentRow"><i class="fas fa-trash" style="color: #fff;"></i></a></td>' +
       '</tr>')
   })
 
-  $(document).on('click', '.removeCommentRow',function(){
+  $(document).on('click', '.removeCommentRow', function() {
     $(this).closest('tr').remove();
   })
 
-  $(document).on('click', '.removeRow',function(){
+  $(document).on('click', '.removeRow', function() {
     $(this).closest('tr').remove();
   })
-
-
 </script>
 @stop

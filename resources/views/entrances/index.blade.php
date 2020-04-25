@@ -24,20 +24,20 @@
           <table class="table table-bentranceed" id="dataTable" width="100%" cellspacing="0">
             <thead>
               <tr>
+                <th>No de Orden</th>
                 <th>Creado Por</th>
                 <th>Fecha de creación</th>
                 <th># de Insumos</th>
-                <th>Estatus</th>
                 <th></th>
               </tr>
             </thead>
             <tbody>
               @foreach($entrances as $entrance)
               <tr>
+                <td>#{{ $entrance->id }}</td>
                 <td>{{ $entrance->user->name }}</td>
                 <td>{{ date('d/m/Y', strtotime($entrance->created_at))}}</td>
                 <td>{{ count($entrance->items) }}</td>
-                <td>{{ $entrance->status }}</td>
                 <td>
                   @if(Auth::user()->role_id == 4)
                   <a href="{{ url('ordenes-de-compra/'.$entrance->id.'/edit')}}" class="btn btn-warning btn-icon-split btn-sm">
@@ -77,7 +77,7 @@
                     <span class="text">Modificar</span>
                   </a>
                   @endif
-                  @if(in_array(Auth::user()->role_id, [1, 4]) && $entrance->status !== 'Aprobada')
+                  @if(in_array(Auth::user()->role_id, [1, 4]))
                   <form method="post" action="{{ route('ordenes-de-compra.destroy', $entrance->id) }}">
                     @method('DELETE')
                     @csrf

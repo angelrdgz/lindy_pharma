@@ -47,7 +47,6 @@ class EntranceController extends Controller
         $entrance->owner = $request->owner;
         $entrance->mader = $request->mader;
         $entrance->authorizer = $request->authorizer;
-        $entrance->status = 'Creada';
         $entrance->cost_id = $request->costs;
         $entrance->expected_date = $request->expected_date;
         $entrance->save();
@@ -64,6 +63,7 @@ class EntranceController extends Controller
                 $entranceItem->quantity = $request->quantityItem[$key];
                 $entranceItem->price = $request->priceItem[$key];
                 $entranceItem->currency_id = $request->currencyItem[$key];
+                $entranceItem->status = 'Creada';
                 $entranceItem->save();
             }
         }
@@ -129,7 +129,6 @@ class EntranceController extends Controller
         $entrance->cfdi_id = $request->cfdi;
         $entrance->requisition = $request->requisition;
         $entrance->department = $request->department;
-        $entrance->status = $request->status === NULL ? 'Creada':$request->status;
         $entrance->owner = $request->owner;
         $entrance->mader = $request->mader;
         $entrance->authorizer = $request->authorizer;
@@ -148,7 +147,14 @@ class EntranceController extends Controller
                         $entranceItem->quantity = $request->quantityItem[$key];
                         $entranceItem->price = $request->priceItem[$key];
                         $entranceItem->currency_id = $request->currencyItem[$key];
+                        $entranceItem->status = $request->statusItem[$key] !== NULL ? $request->statusItem[$key]:NULL;
                         $entranceItem->save();
+
+                        if($request->statusItem[$key] == 'Aprobada' && $request->updated[$key] == 0){
+                            $supply = Supply::find($request->idItem[$key]);
+                            $supply->stock = $this->convert($supply->measurement_buy, $supply->measurement_use, $request->quantityItem[$key]);
+                            $supply->save();
+                        }
                     }
                 }
             }
@@ -169,14 +175,6 @@ class EntranceController extends Controller
                 }
             }
 
-        }        
-
-        if($oldStatus == "Cuarentena" && $request->status == "Aprobada"){
-            foreach($entrance->items as $item){
-                $supply = Supply::find($item->supply_id);
-                $supply->stock = $this->convert($supply->measurement_buy, $supply->measurement_use, $item->quantity);
-                $supply->save();
-            }
         }
 
         $entrance->save();
