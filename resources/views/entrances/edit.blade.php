@@ -213,6 +213,7 @@
       '<td><input type="text" name="quantityItem[]" class="form-control number"/></td>' +
       '<td><input type="text" name="priceItem[]" class="form-control number price"/></td>' +
       '<td><select class="form-control" name="currencyItem[]">' + currencyOptions + '</select></td>' +
+      '<input type="hidden" name="statusItem[]" value="Creada" />'+
       '<td><span> - </span></td>' +
       '</tr>')
 

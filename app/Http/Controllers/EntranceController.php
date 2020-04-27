@@ -147,7 +147,7 @@ class EntranceController extends Controller
                         $entranceItem->quantity = $request->quantityItem[$key];
                         $entranceItem->price = $request->priceItem[$key];
                         $entranceItem->currency_id = $request->currencyItem[$key];
-                        $entranceItem->status = $request->statusItem[$key] !== NULL ? $request->statusItem[$key]:"Creada";
+                        $entranceItem->status = $request->statusItem[$key] !== NULL ? $request->statusItem[$key]:NULL;
                         $entranceItem->save();
 
                         if($request->statusItem[$key] == 'Aprobada' && $request->updated[$key] == 0){
