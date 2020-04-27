@@ -44,7 +44,7 @@ class AuthController extends Controller
                     break;
             }
         } else {
-            return redirect()->back()->with('error', 'Email y/o contrasela incorrectos');
+            return redirect()->back()->with('error', 'Email y/o contraseña incorrectos');
         }
     }
 

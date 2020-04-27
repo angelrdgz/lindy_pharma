@@ -44,7 +44,7 @@
                   <tr>
                   <input type="hidden" name="updated[]" value="0">
                     <td>
-                      <input type="hidden" value="{{ $item->id }}" class="idItem" name="idItem[]" />
+                      <input type="hidden" value="{{ $item->supply_id }}" class="idItem" name="idItem[]" />
                       <input type="text" value="{{ $item->supply->name }}" class="form-control itemContentidRow+'" readonly/></td>
                     <td><input type="text" name="quantityItem[]" value="{{ $item->quantity}}" class="form-control" /></td>
                     <td>
