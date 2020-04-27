@@ -31,6 +31,16 @@ class RecipeController extends Controller
 
     public function store(Request $request)
     {
+
+        $request->validate(
+            [
+                'code' => 'required|unique:recipes',
+            ],
+            [
+                'code.unique' => 'El código ya existe',
+            ]
+        );
+        
         $recipe = new Recipe();
         $recipe->code = $request->code;
         $recipe->name = $request->name;

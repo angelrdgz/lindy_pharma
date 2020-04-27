@@ -23,6 +23,7 @@
             <thead>
               <tr>
                 <th>ID</th>
+                <th>Código</th>
                 <th>Nombre</th>
                 <th>Stock</th>
                 <th></th>
@@ -32,6 +33,7 @@
               @foreach($products as $product)
               <tr>
                 <td>{{ $product->id }}</td>
+                <td>{{ $product->code }}</td>
                 <td>{{ $product->name }}</td>
                 <td>{{ $product->stock }}</td>
                 <td>

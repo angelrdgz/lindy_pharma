@@ -109,6 +109,9 @@
                       @if($item->status == 'Aprobada')
                       <input type="hidden" name="statusItem[]" value="Aprobada">
                        <span>Aprobada</span>
+                      @elseif($item->status == 'Creada')
+                      <input type="hidden" name="statusItem[]" value="Creada">
+                       <span>Pendiente</span>
                       @else
                       <select name="statusItem[]" id="" class="form-control">
                         <option value="">Seleccione una opción</option>

@@ -33,6 +33,16 @@ class ProductController extends Controller
 
     public function store(Request $request)
     {
+
+        $request->validate(
+            [
+                'code' => 'required|unique:products',
+            ],
+            [
+                'code.unique' => 'El código ya existe',
+            ]
+        );
+
         $product = new Product();
         $product->code = $request->code;
         $product->name = $request->name;
