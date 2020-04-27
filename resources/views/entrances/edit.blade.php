@@ -77,7 +77,7 @@
                   <tr>
                     <th colspan="4">Contenido de la orden</th>
                     <th class="text-right">
-                      @if(Auth::user()->role_id == 1)
+                      @if(in_array(Auth::user()->role_id, [1,4]))
                       <a class="btn btn-link addContentRow text-primary">Agregar Insumo</a>
                       @endif
                     </th>
