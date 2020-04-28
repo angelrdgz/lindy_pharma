@@ -247,7 +247,7 @@
           <td></td>
           <td><b>{{ number_format($totalSecond,4) }}</b></td>
           <td></td>
-          <td><b>{{ number_format($totalThird,4) }}</b></td>
+          <td><b>{{ number_format(($totalThird/ 1000),4) }}</b></td>
           <td></td>
           <td></td>
         </tr>
