@@ -75,7 +75,7 @@
               <table class="table contentTable">
                 <thead>
                   <tr>
-                    <th colspan="4">Contenido de la orden</th>
+                    <th colspan="6">Contenido de la orden</th>
                     <th class="text-right">
                       @if(in_array(Auth::user()->role_id, [1,4]))
                       <a class="btn btn-link addContentRow text-primary">Agregar Insumo</a>
@@ -96,7 +96,11 @@
                   @foreach($entrance->items as $item)
                   <tr>
                     <input type="hidden" name="updated[]" value="{{$item->status == 'Aprobada' ? 1:0}}">
-                    <td><input type="hidden" value="{{ $item->supply_id}}" class="idItem" name="idItem[]" /> <input type="text" {{ Auth::user()->role_id == 2 ? 'readonly':''}} value="{{ $item->supply->name }}" class="form-control itemContentidRow+'" /></td>
+                    <td>
+                      <input type="hidden" name="idItem[]" value="{{ $item->id }}">
+                      <input type="hidden" name="deletedItem[]" value="0" class="deleteInput">
+                      <input type="hidden" value="{{ $item->supply_id}}" class="idItem" name="idSupplyItem[]" />
+                      <input type="text" {{ Auth::user()->role_id == 2 ? 'readonly':''}} value="{{ $item->supply->name }}" class="form-control itemContentidRow+'" /></td>
                     <td><input type="text" {{ Auth::user()->role_id == 2 ? 'readonly':''}} name="quantityItem[]" value="{{ $item->quantity}}" class="form-control" /></td>
                     <td><input type="text" {{ Auth::user()->role_id == 2 ? 'readonly':''}} name="priceItem[]" value="{{ $item->price}}" class="form-control" /></td>
                     <td><select class="form-control" {{ Auth::user()->role_id == 2 ? 'readonly':''}} name="currencyItem[]">
@@ -106,18 +110,15 @@
                       </select></td>
                     <td class="text-center"><span> {{ $item->supply->measurementBuy->name}} </span></td>
                     <td>
-                      @if($item->status == 'Aprobada')
-                      <input type="hidden" name="statusItem[]" value="Aprobada">
-                       <span>Aprobada</span>
-                      @elseif($item->status == 'Creada')
-                      <input type="hidden" name="statusItem[]" value="Creada">
-                       <span>Pendiente</span>
-                      @else
+                      @if($item->status == 'Cuarentena')
                       <select name="statusItem[]" id="" class="form-control">
                         <option value="">Seleccione una opción</option>
                         <option value="Aprobada" {{$item->status == 'Aprobada' ? 'selected':''}}>Aprobada</option>
                         <option value="Rechazada" {{$item->status == 'Rechazada' ? 'selected':''}}>Rechazada</option>
                       </select>
+                      @else
+                      <input type="hidden" name="statusItem[]" value="{{$item->status}}">
+                      <span>{{$item->status}}</span>
                       @endif
                     </td>
                     <td class="text-center">
@@ -188,6 +189,8 @@
 <script>
   var availableItems = [];
   var currencyOptions = "";
+  let idToRemove = 0;
+  let row = null;
 
   @foreach($supplies as $supply)
   availableItems.push({
@@ -209,11 +212,11 @@
 
     let idRow = $('.tableContent tbody tr').length + 1;
     $('.contentTable').append('<tr class="activeRow">' +
-      '<td><input type="hidden" class="idItem" name="idItem[]"/> <input type="text" class="form-control itemContent' + idRow + '" /></td>' +
+      '<td><input type="hidden" name="deletedItem[]" value="0" class="deleteInput"><input type="hidden" name="idItem[]" value=""><input type="hidden" class="idItem" name="idSupplyItem[]"/> <input type="text" class="form-control itemContent' + idRow + '" /></td>' +
       '<td><input type="text" name="quantityItem[]" class="form-control number"/></td>' +
       '<td><input type="text" name="priceItem[]" class="form-control number price"/></td>' +
       '<td><select class="form-control" name="currencyItem[]">' + currencyOptions + '</select></td>' +
-      '<input type="hidden" name="statusItem[]" value="Creada" />'+
+      '<input type="hidden" name="statusItem[]" value="Creada" />' +
       '<td><span> - </span></td>' +
       '</tr>')
 
@@ -266,7 +269,29 @@
   })
 
   $(document).on('click', '.removeRow', function() {
-    $(this).closest('tr').remove();
+     row = $(this)
+    $.confirm({
+      title: '¿Estas seguro?',
+      content: 'Se eliminara el número de entrada',
+      buttons: {
+        confirm: {
+          text: 'Si, Eliminar',
+          btnClass: 'btn-danger',
+          action: function(confirm) {
+            row.closest('tr').find('.deleteInput').val(1)
+            row.closest('tr').hide()
+          }
+          
+        },
+        cancel:{
+          text: 'No, Cancelar',
+          btnClass: 'btn-secondary',
+          action: function(cancel) {
+            $.alert('Canceled!');
+          }
+        }
+      }
+    });
   })
 </script>
 @stop

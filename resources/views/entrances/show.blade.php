@@ -42,10 +42,14 @@
                 <tbody>
                   @foreach($entrance->items as $item)
                   <tr>
-                  <input type="hidden" name="updated[]" value="0">
+                    <input type="hidden" name="updated[]" value="{{$item->status == 'Aprobada' ? 1:0}}">
+                    <input type="hidden" name="idItem[]" value="{{ $item->id }}">
+                    <input type="hidden" name="deletedItem[]" value="0" class="deleteInput">
+                    <input type="hidden" value="{{ $item->supply_id}}" class="idItem" name="idSupplyItem[]" />
+                    <input type="hidden" name="priceItem[]" value="{{ $item->price}}" class="form-control" /></td>
+                    <input type="hidden" name="currencyItem[]" value="{{ $item->currency_id}}" class="form-control" /></td>
                     <td>
-                      <input type="hidden" value="{{ $item->supply_id }}" class="idItem" name="idItem[]" />
-                      <input type="text" value="{{ $item->supply->name }}" class="form-control itemContentidRow+'" readonly/></td>
+                      <input type="text" value="{{ $item->supply->name }}" class="form-control itemContentidRow+'" readonly /></td>
                     <td><input type="text" name="quantityItem[]" value="{{ $item->quantity}}" class="form-control" /></td>
                     <td>
                       <select name="statusItem[]" id="" class="form-control">

@@ -94,7 +94,7 @@ class EntranceController extends Controller
     {
         $entrance = Entrance::find($id);
         $supplies = Supply::all();
-        $buyer = User::where('role_id',4 )->first();
+        $buyer = User::where('role_id', 4)->first();
 
         if (Auth::user()->role_id == 3) {
             return view('entrances.show', ['entrance' => $entrance, 'supplies' => $supplies]);
@@ -120,7 +120,7 @@ class EntranceController extends Controller
 
     public function update(Request $request, $id)
     {
-        
+
         $entrance = Entrance::find($id);
 
         $oldStatus = $entrance->status;
@@ -135,32 +135,52 @@ class EntranceController extends Controller
         $entrance->cost_id = $request->costs;
         $entrance->expected_date = $request->expected_date;
 
-        if($request->idItem !== NULL){
-            if(count($request->idItem) > 0){
-                $entrance->items()->delete();
+        if ($request->idSupplyItem !== NULL) {
+            if (count($request->idSupplyItem) > 0) {
+                //$entrance->items()->delete();
 
-                foreach ($request->idItem as $key => $item) {
-                    if ($request->idItem[$key] != NULL) {
-                        $entranceItem = new EntranceItem();
-                        $entranceItem->entrance_id = $entrance->id;
-                        $entranceItem->supply_id = $request->idItem[$key];
-                        $entranceItem->quantity = $request->quantityItem[$key];
-                        $entranceItem->price = $request->priceItem[$key];
-                        $entranceItem->currency_id = $request->currencyItem[$key];
-                        $entranceItem->status = $request->statusItem[$key] !== NULL ? $request->statusItem[$key]:NULL;
-                        $entranceItem->save();
+                foreach ($request->idSupplyItem as $key => $item) {
+                    if ($request->idSupplyItem[$key] != NULL) {
+                        if ($request->idItem[$key] == NULL) {
+                            dd('tercero');
 
-                        if($request->statusItem[$key] == 'Aprobada' && $request->updated[$key] == 0){
-                            $supply = Supply::find($request->idItem[$key]);
-                            $supply->stock = $this->convert($supply->measurement_buy, $supply->measurement_use, $request->quantityItem[$key]);
-                            $supply->save();
+                            $entranceItem = new EntranceItem();
+                            $entranceItem->entrance_id = $entrance->id;
+                            $entranceItem->supply_id = $request->idSupplyItem[$key];
+                            $entranceItem->quantity = $request->quantityItem[$key];
+                            $entranceItem->price = $request->priceItem[$key];
+                            $entranceItem->currency_id = $request->currencyItem[$key];
+                            $entranceItem->status = 'Creada';
+                            $entranceItem->save();
+                        } else {
+
+                            if ($request->deletedItem[$key] == 1) {
+                                $entranceItem = EntranceItem::find($request->idItem[$key]);
+                                $entranceItem->delete();
+                            } else {
+
+                                $entranceItem = EntranceItem::find($request->idItem[$key]);
+                                
+                                $entranceItem->supply_id = $request->idSupplyItem[$key];
+                                $entranceItem->quantity = $request->quantityItem[$key];
+                                $entranceItem->price = $request->priceItem[$key];
+                                $entranceItem->currency_id = $request->currencyItem[$key];
+                                $entranceItem->status = $request->statusItem[$key] !== NULL ? $request->statusItem[$key] : 'Creada';
+                                $entranceItem->save();
+
+                                if ($request->statusItem[$key] == 'Aprobada' && $request->updated[$key] == 0) {
+                                    $supply = Supply::find($request->idItem[$key]);
+                                    $supply->stock = $this->convert($supply->measurement_buy, $supply->measurement_use, $request->quantityItem[$key]);
+                                    $supply->save();
+                                }
+                            }
                         }
                     }
                 }
             }
         }
 
-        if($request->comments !== NULL){
+        if ($request->comments !== NULL) {
 
             $entrance->comments()->delete();
 
@@ -174,11 +194,10 @@ class EntranceController extends Controller
                     }
                 }
             }
-
         }
 
         $entrance->save();
-        
+
 
         $logbook = new Logbook();
         $logbook->type_id = 2;
@@ -215,14 +234,14 @@ class EntranceController extends Controller
         $total = 0;
 
         if ($type1 == 2 && $type2 == 1) {
-            $total = $quantity * 1000;             
-        }elseif($type1 == 2 && $type2 == 6){
+            $total = $quantity * 1000;
+        } elseif ($type1 == 2 && $type2 == 6) {
             $total = $quantity * 1000000;
-        }elseif($type1 == 4 && $type2 == 6){
+        } elseif ($type1 == 4 && $type2 == 6) {
             $total = $quantity * 1000;
-        }elseif($type1 == 4 && $type2 == 3){
+        } elseif ($type1 == 4 && $type2 == 3) {
             $total = $quantity * 1000;
-        }else{
+        } else {
             $total = $quantity;
         }
 
