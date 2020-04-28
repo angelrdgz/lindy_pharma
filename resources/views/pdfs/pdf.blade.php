@@ -228,7 +228,7 @@
            <td class="text-right">{{ number_format(($supply->quantity + ($supply->quantity * ($supply->excess / 100))),4) }}</td>
            <td class="text-center">{{ $supply->supply->measurementUse->code }}</td>
            <td class="text-right">{{ number_format(((($supply->quantity + ($supply->quantity * ($supply->excess / 100))) * $order->quantity) / 1000),4)  }}</td>
-           <td class="text-center">gr</td>
+           <td class="text-center">g</td>
            <td class="text-center">{{ $supply->order_number == NULL ? "":sprintf("%05s", $supply->order_number)}}</td>
          </tr>
          @php
@@ -242,13 +242,13 @@
         <tr>
           <td></td>
           <td><b>Total</b></td>
-          <td><b>{{ number_format($totalFirst,4) }}</b></td>
+          <td class="text-right"><b>{{ number_format($totalFirst,4) }}</b></td>
           <td></td>
           <td></td>
-          <td><b>{{ number_format($totalSecond,4) }}</b></td>
+          <td class="text-right"><b>{{ number_format($totalSecond,4) }}</b></td>
           <td></td>
-          <td><b>{{ number_format(($totalThird/ 1000),4) }}</b></td>
-          <td></td>
+          <td class="text-right"><b>{{ number_format(($totalThird/ 1000),1) }}</b></td>
+          <td class="text-center">g</td>
           <td></td>
         </tr>
       </tfoot>
