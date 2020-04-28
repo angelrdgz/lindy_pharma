@@ -142,7 +142,6 @@ class EntranceController extends Controller
                 foreach ($request->idSupplyItem as $key => $item) {
                     if ($request->idSupplyItem[$key] != NULL) {
                         if ($request->idItem[$key] == NULL) {
-                            dd('tercero');
 
                             $entranceItem = new EntranceItem();
                             $entranceItem->entrance_id = $entrance->id;
