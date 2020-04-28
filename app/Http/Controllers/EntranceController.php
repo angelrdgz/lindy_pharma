@@ -168,7 +168,7 @@ class EntranceController extends Controller
                                 $entranceItem->save();
 
                                 if ($request->statusItem[$key] == 'Aprobada' && $request->updated[$key] == 0) {
-                                    $supply = Supply::find($request->idItem[$key]);
+                                    $supply = Supply::find($request->idSupplyItem[$key]);
                                     $supply->stock = $this->convert($supply->measurement_buy, $supply->measurement_use, $request->quantityItem[$key]);
                                     $supply->save();
                                 }
