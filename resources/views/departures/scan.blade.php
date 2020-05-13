@@ -32,35 +32,60 @@
             <div class="modal-body">
                 @switch($departure->status)
                 @case("Creada")
-                 <?php $newStatus = "Pesado";; ?>
+                <?php $newStatus = "Pesado";; ?>
                 @break
 
                 @case("Pesado")
-                  <?php $newStatus = "Preparación";; ?>
+                <?php $newStatus = "Preparación";; ?>
                 @break
 
                 @case("Preparación")
-                  <?php $newStatus = "Encapsulado";; ?>
+                <?php $newStatus = "Encapsulado";; ?>
                 @break
 
                 @case("Encapsulado")
-                  <?php $newStatus = "Secado";; ?>
+                <?php $newStatus = "Secado";; ?>
                 @break
 
                 @case("Secado")
-                  <?php $newStatus = "Granel";; ?>
+                <?php $newStatus = "Granel";; ?>
+                @break
+
+                @case("Granel")
+                <?php $newStatus = "Inspección";; ?>
                 @break
 
                 @default
-                 <?php $newStatus = "Nada"; ?>
+                <?php $newStatus = "Nada"; ?>
                 @endswitch
-                <h5>¿Desea cambiar el estatus de la order?</h5>
-                <p><b>Estatus actual:</b> {{ ucfirst($departure->status) }}</p>
-                <p><b>Siguiente estatus:</b> {{ ucfirst($newStatus) }}</p>
+                <table class="table">
+                    <tbody>
+                        <tr>
+                            <td colspan="2" class="text-center">
+                                <h5>¿Desea cambiar el estatus de la order?</h5>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><b>Estatus actual:</b></td>
+                            <td>{{ ucfirst($departure->status) }}</td>
+                        </tr>
+                        @if($departure->status == "Granel")
+                        <tr>
+                            <td><b>Cantidad :</b></td>
+                            <td><input type="text" class="form-control number listenTotal" value='{{ $departure->status == "Granel" ? $departure->quantity:"0"}}'></td>
+                        </tr>
+                        @endif
+                        <tr>
+                            <td><b>Siguiente estatus:</b></td>
+                            <td>{{ ucfirst($newStatus) }}</td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
             <div class="modal-footer">
                 <a href="{{ url('ordenes-de-fabricacion') }}" class="btn btn-secondary">No</a>
                 <form method="post" action="{{ route('ordenes-de-fabricacion.update', $departure->id) }}">
+                    <input type="hidden" name="total" value='{{ $departure->status == "Granel" ? $departure->quantity:"0"}}'>
                     @method('PATCH')
                     @csrf
                     <button type="submit" class="btn btn-primary">Sí</button>
@@ -78,5 +103,9 @@
         backdrop: 'static',
         keyboard: false
     });
+
+    $(document).on('keyup', '.listenTotal', function(){
+        $('input[name="total"]').val($(this).val())
+    })
 </script>
 @endsection

@@ -19,6 +19,34 @@
             </div>
             <div class="card-body">
                 <div class="table-responsive">
+                    @if(Auth::user()->role_id == 3)
+                    <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                        <thead>
+                            <tr>
+                            <th>Código de Producto</th>
+                                <th>Producto</th>
+                                <th>Tamaño del Lote</th>
+                                <th>No del Lote</th>
+                                <th>Cliente</th>
+                                <th>Estatus</th>
+                                <th>Creado Por</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach($packages as $package)
+                            <tr>
+                            <td>{{ $package->product->code }}</td>
+                                <td>{{ $package->product->name }}</td>
+                                <td>{{ number_format($package->quantity,0) }}</td>
+                                <td>{{ $package->lot }}</td>
+                                <td>{{ $package->client->name }}</td>
+                                <td>{{ $package->status }}</td>
+                                <td>{{ $package->user->name }}</td>
+                            </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                    @else
                     <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                         <thead>
                             <tr>
@@ -76,6 +104,7 @@
                             @endforeach
                         </tbody>
                     </table>
+                    @endif
                 </div>
             </div>
         </div>

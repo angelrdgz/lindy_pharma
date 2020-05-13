@@ -12,6 +12,7 @@ use App\EntranceItem;
 use App\Logbook;
 
 use Auth;
+use PDF;
 
 class SupplyController extends Controller
 {
@@ -149,17 +150,19 @@ class SupplyController extends Controller
     public function export()
     {
         $csvExporter = new \Laracsv\Export();
-        $items = EntranceItem::orderBy('supply_id', 'ASC')->get();
+        $items = EntranceItem::orderBy('supply_id', 'ASC')->where('status', '!=', 'Rechazada')->get();
 
         $csvExporter->beforeEach(function ($supply) {
             $supply->created_at = $supply->entrance->created_at;
             $supply->supply_id = $supply->supply->code;
             $supply->name = $supply->supply->name;
             $supply->supplier = $supply->entrance->supplier->name;
-            $supply->entrance_id = '#'.strval(sprintf("%05s", $supply->id));
+            $supply->entrance_id = '#' . strval(sprintf("%05s", $supply->entrance_id));
+            $supply->idx = '#' . strval(sprintf("%05s", $supply->id));
+            
         });
 
-        $csvExporter->build($items, ["created_at"=>"Fecha", 'supply_id'=>"Código Producto", "name"=>"Nombre Producto", "entrance_id"=>"Número de Entrada", "quantity"=>"Cantidad Kg", "cups"=>"No de Envases", "expired_date"=>"Fecha de Caducidad", "reanalized_date"=>"Fecha de Reanalisis", "supplier"=>"Proveedor"] /**/)->download('insumos_'. date('d_m_Y') . '.csv');
+        $csvExporter->build($items, ["created_at" => "Fecha", 'supply_id' => "Codigo Producto", "name" => "Nombre Producto", "entrance_id"=>"No Orden de Entrada", "idx" => "Numero de Entrada", "quantity" => "Cantidad Kg", "cups" => "No de Envases", "expired_date" => "Fecha de Caducidad", "reanalized_date" => "Fecha de Reanalisis", "supplier" => "Proveedor"] /**/)->download('insumos_' . date('d_m_Y') . '.csv');
 
         // Register the hook before building
         /*$csvExporter->beforeEach(function ($supply) {
@@ -183,21 +186,49 @@ class SupplyController extends Controller
         $csvExporter->build($items, ['code' => 'Código', 'name' => 'Nombre', 'type_id' => 'Tipo', 'stock' => 'En Almacen (Kg)', 'price' => 'Valor En Stock', 'supplier_id' => 'Proveedor'])->download('insumos_' . date('d_m_Y') . '.csv');*/
     }
 
-    public function exportSupply($id){
-        $csvExporter = new \Laracsv\Export();
-        $sup = Supply::find($id);
-        $supplies = EntranceItem::where('supply_id', $id)->get();
+    public function exportStock()
+    {
 
-        // Register the hook before building
+        $items = Supply::all();
+        $csvExporter = new \Laracsv\Export();
+
         $csvExporter->beforeEach(function ($supply) {
-            $supply->created_at = $supply->entrance->created_at;
-            $supply->supply_id = $supply->supply->code;
-            $supply->name = $supply->supply->name;
-            $supply->supplier = $supply->entrance->supplier->name;
-            $supply->entrance_id = '#'.strval(sprintf("%05s", $supply->id));
+            $supply->type_id = $supply->type->name;
+            $supply->supplier_id = $supply->supplier->name;
+            $supply->stock = $supply->stock / 1000000;
+            switch ($supply->measurement_use) {
+                case 5:
+                    $supply->price = $supply->price * $supply->stock;
+                    break;
+                case 6:
+                    $supply->price = $supply->price * ($supply->stock / 1000);
+                    break;
+
+                default:
+                    $supply->price = $supply->price * ($supply->stock / 1000);
+                    break;
+            }
         });
 
-        $csvExporter->build($supplies, ["created_at"=>"Fecha", 'supply_id'=>"Código Producto", "name"=>"Nombre Producto", "entrance_id"=>"Número de Entrada", "quantity"=>"Cantidad Kg", "cups"=>"No de Envases", "expired_date"=>"Fecha de Caducidad", "reanalized_date"=>"Fecha de Reanalisis", "supplier"=>"Proveedor"] /**/)->download('insumo_'.$sup->code.'_'.str_replace(array("/", "-"), "_", $sup->name).'_'. date('d_m_Y') . '.csv');
+        $csvExporter->build($items, ['code' => 'Código', 'name' => 'Nombre', 'type_id' => 'Tipo', 'stock' => 'En Almacen (Kg)', 'price' => 'Valor En Stock', 'supplier_id' => 'Proveedor'])->download('insumos_' . date('d_m_Y') . '.csv');        
+    }
 
+    public function exportSupply($id)
+    {
+        //$csvExporter = new \Laracsv\Export();
+        //$sup = Supply::find($id);
+        $supply = EntranceItem::find($id);
+
+        $pdf = PDF::setOptions(['isHtml5ParserEnabled' => true, 'isRemoteEnabled' => true])->setPaper('a4', 'landscape')->loadView('pdfs.entrance_report', ["supply" => $supply]);
+        return $pdf->stream('reporte_de_arribo_' . $id . '.pdf');
+
+        // Register the hook before building
+        /*$supply->created_at = $supply->entrance->created_at;
+        $supply->supply_id = $supply->supply->code;
+        $supply->name = $supply->supply->name;
+        $supply->supplier = $supply->entrance->supplier->name;
+        $supply->entrance_id = '#' . strval(sprintf("%05s", $supply->id));
+
+        $csvExporter->build($supply, ["created_at" => "Fecha", 'supply_id' => "Código Producto", "name" => "Nombre Producto", "entrance_id" => "Número de Entrada", "quantity" => "Cantidad Kg", "cups" => "No de Envases", "expired_date" => "Fecha de Caducidad", "reanalized_date" => "Fecha de Reanalisis", "supplier" => "Proveedor"] )->download('insumo_' . $sup->code . '_' . str_replace(array("/", "-"), "_", $sup->name) . '_' . date('d_m_Y') . '.csv');*/
     }
 }

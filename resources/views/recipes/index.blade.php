@@ -6,8 +6,14 @@
     <div class="card shadow mb-4">
       <div class="card-header">
         <div class="row">
-          <div class="col-sm-10 pt-2">
+          <div class="col-sm-8 pt-2">
             <h5 class="m-0 font-weight-bold text-primary">Recetas</h5>
+          </div>
+          <div class="col-sm-2">
+            <a href="{{ url('exportar/recetas') }}" class="btn btn-primary btn-block">
+              <i class="far fa-file-excel"></i>
+              Reporte Stock
+            </a>
           </div>
           <div class="col-sm-2">
             <a href="{{ url('recetas/create') }}" class="btn btn-link">

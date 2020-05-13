@@ -21,7 +21,7 @@ class DepartureController extends Controller
 {
     public function index()
     {
-        $orders = Departure::where('visible', true)->where('status','!=', 'Cancelada')->get();
+        $orders = Departure::where('visible', true)->where('status', '!=', 'Cancelada')->get();
         return view('departures.index', ['orders' => $orders]);
     }
 
@@ -172,6 +172,9 @@ class DepartureController extends Controller
 
     public function updateItems(Request $request, $id)
     {
+        $departure = Departure::find($id);
+        Departure::where('order_number', $departure->order_number)->update(["expired_date"=>$request->expired_date,"quantity_real"=>$request->quantity_real]);
+
         foreach ($request->id as $key => $value) {
             if ($request->orderNumber[$key] !== NULL) {
                 DepartureItem::where('id', $request->id[$key])->update(["order_number" => $request->orderNumber[$key]]);
@@ -183,7 +186,7 @@ class DepartureController extends Controller
     public function scan($id)
     {
         $departure = Departure::find($id);
-        if ($departure->status == 'Granel') {
+        if ($departure->status == 'Inspección') {
             return redirect('ordenes-de-fabricacion')->with('success', 'La orden de fabricación ya ha finalizado');
         }
         return view('departures.scan', ["departure" => $departure]);
@@ -193,17 +196,17 @@ class DepartureController extends Controller
     {
         $departure = Departure::find($id);
 
-        if($request->way !== NULL){
+        if ($request->way !== NULL) {
 
 
             if ($departure->status == 'Creada' && $request->status == 'Pesado') {
 
-                    foreach ($departure->items as $item) {
-                        $supply = Supply::find($item->supplie_id);
-                        $supply->stock = $supply->stock - (($item->quantity + ($item->quantity * ($item->excess / 100))) * $departure->quantity);
-                        $supply->save();
-                    }
-                if ($departure->type == 2) {
+                foreach ($departure->items as $item) {
+                    $supply = Supply::find($item->supplie_id);
+                    $supply->stock = $supply->stock - (($item->quantity + ($item->quantity * ($item->excess / 100))) * $departure->quantity);
+                    $supply->save();
+                }
+                if ($departure->type == 2 || $departure->type == 3) {
                     $departure->visible = false;
                 }
             }
@@ -214,9 +217,8 @@ class DepartureController extends Controller
             $departure->line = $request->line;
             $departure->quantity = $request->quantity;
 
-            $departure->status = $request->status == NULL ? 'Creada':$request->status;
-
-        }else{
+            $departure->status = $request->status == NULL ? 'Creada' : $request->status;
+        } else {
 
             switch ($departure->status) {
                 case "Creada":
@@ -234,11 +236,18 @@ class DepartureController extends Controller
                 case "Secado":
                     $newStatus = "Granel";
                     break;
+                case "Granel":
+                    $newStatus = "Inspección";
+                    break;
                 default:
                     $newStatus = "N/A";
                     break;
             }
-    
+
+            if ($newStatus == 'Inspección') {
+                Departure::where('order_number', $departure->order_number)->update(["quantity_real" => $request->total]);
+            }
+
             if ($newStatus == 'Pesado') {
 
                 foreach ($departure->items as $item) {
@@ -246,17 +255,16 @@ class DepartureController extends Controller
                     $supply->stock = $supply->stock - (($item->quantity + ($item->quantity * ($item->excess / 100))) * $departure->quantity);
                     $supply->save();
                 }
-                
-                if ($departure->type == 2) {
+
+                if ($departure->type == 2 || $departure->type == 3) {
                     $departure->visible = false;
                 }
             }
-    
+
             $departure->status = $newStatus;
-            
         }
 
-        
+
         $departure->save();
 
         try {
@@ -274,7 +282,7 @@ class DepartureController extends Controller
 
     public function destroy($id)
     {
-        $departure = Departure::where("order_number", $id)->update(['status'=>'Cancelada']);
+        $departure = Departure::where("order_number", $id)->update(['status' => 'Cancelada']);
 
         $logbook = new Logbook();
         $logbook->type_id = 3;

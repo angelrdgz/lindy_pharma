@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Departure;
 use App\Recipe;
 use App\RecipeSupply;
 use App\Supply;
@@ -9,6 +10,7 @@ use App\Mold;
 use App\Logbook;
 
 use Auth;
+use DB;
 use Illuminate\Http\Request;
 
 
@@ -154,5 +156,34 @@ class RecipeController extends Controller
         $logbook->save();
 
         return redirect('recetas')->with('success', 'Receta guardada correctamente');
+    }
+
+    public function export()
+    {
+        $departures = Departure::where("status", 'Inspección')->distinct("order_number")->get();
+        $csvExporter = new \Laracsv\Export();
+
+        $csvExporter->beforeEach(function ($departure) {
+            $departure->expired_date = $departure->expired_date == NULL ? "No definida":date("d/m/Y", strtotime($departure->expired_date));
+            $departure->name = $departure->recipe->name;
+            $departure->code = $departure->recipe->code;
+        });
+
+        $csvExporter->build($departures, ["order_number"=>"OT", "name"=>"Nombre", "code"=>"Código", "quantity"=>"Cantidad", "quantity_real"=>"Cantidad Real","lot"=>"Lote", "expired_date"=>"Fecha de Caducidad"])->download('insumos_' . date('d_m_Y') . '.csv');        
+    }
+
+    public function exportRecipe($id)
+    {
+        $departures = Departure::where("status", 'Inspección')->where("recipe_id", $id)->distinct("order_number")->get();
+        $csvExporter = new \Laracsv\Export();
+
+        $csvExporter->beforeEach(function ($departure) {
+            $departure->expired_date = $departure->expired_date == NULL ? "No definida":date("d/m/Y", strtotime($departure->expired_date));
+            $departure->name = $departure->recipe->name;
+            $departure->code = $departure->recipe->code;
+        });
+
+        $csvExporter->build($departures, ["order_number"=>"OT", "name"=>"Nombre", "code"=>"Código", "quantity"=>"Cantidad", "quantity_real"=>"Cantidad Real","lot"=>"Lote", "expired_date"=>"Fecha de Caducidad"])->download('insumos_' . date('d_m_Y') . '.csv');        
+        
     }
 }

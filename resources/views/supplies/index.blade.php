@@ -6,8 +6,14 @@
     <div class="card shadow mb-4">
       <div class="card-header">
         <div class="row">
-          <div class="col-sm-8 pt-2">
+          <div class="col-sm-6 pt-2">
             <h5 class="m-0 font-weight-bold text-primary">Insumos</h5>
+          </div>
+          <div class="col-sm-2 pt-2">
+            <a href="{{ url('exportar/insumos-stock') }}" target="_blank" class="btn btn-primary btn-block">Exportar Stock</a>
+          </div>          
+          <div class="col-sm-2 pt-2">
+            <a href="{{ url('exportar/insumos') }}" target="_blank" class="btn btn-primary btn-block">Exportar CSV</a>
           </div>
           <div class="col-sm-2">
             @if(Auth::user()->role_id !== 3)
@@ -16,9 +22,6 @@
               Nuevo Insumo
             </a>
             @endif
-          </div>
-          <div class="col-sm-2 pt-2">
-            <a href="{{ url('exportar/insumos') }}" target="_blank" class="btn btn-primary btn-block">Exportar CSV</a>
           </div>
         </div>
       </div>

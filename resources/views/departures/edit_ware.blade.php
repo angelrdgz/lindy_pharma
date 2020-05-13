@@ -17,6 +17,36 @@
                     @method('PUT')
                     @csrf
                     <div class="row">
+                        <div class="col-sm-4">
+                            <label for="">Receta</label>
+                            <input type="text" class="form-control" readonly value="{{ $departure->recipe->code.' - '.$departure->recipe->name}}">
+                        </div>
+                        <div class="col-sm-4">
+                            <label for="">Cantidad</label>
+                            <input type="text" name="quantity" readonly value="{{ $departure->quantity }}" class="form-control number">
+                        </div>
+                        <div class="col-sm-4">
+                            <label for="">Cantidad Real</label>
+                            <input type="text" name="quantity_real" value="{{ $departure->quantity_real }}" class="form-control number">
+                        </div>
+                        <div class="col-sm-4">
+                            <label for="">Fecha de Expiración</label>
+                            <input type="date" name="expired_date" value="{{ $departure->expired_date }}" class="form-control">
+                        </div>
+                        <div class="col-sm-4">
+                            <label for="">Cliente</label>
+                            <input type="text"  readonly value="{{ $departure->client->name }}" class="form-control">
+                        </div>
+                        <div class="col-sm-4">
+                            <label for="">Lote</label>
+                            <input type="text" name="lot" readonly value="{{ $departure->lot }}" class="form-control">
+                        </div>
+                        <div class="col-sm-4">
+                            <label for="">Linea</label>
+                            <input type="text" name="line" readonly value="{{ $departure->line }}" class="form-control">
+                        </div>
+                    </div>
+                    <div class="row">
                         <div class="col-sm-12">
                             <table class="table">
                                 <thead>

@@ -45,6 +45,7 @@
                     <input type="hidden" name="updated[]" value="{{$item->status == 'Aprobada' ? 1:0}}">
                     <input type="hidden" name="idItem[]" value="{{ $item->id }}">
                     <input type="hidden" name="deletedItem[]" value="0" class="deleteInput">
+                    <input type="hidden" name="lotSupplierItems[]" value="" class="form-control">
                     <input type="hidden" value="{{ $item->supply_id}}" class="idItem" name="idSupplyItem[]" />
                     <input type="hidden" name="priceItem[]" value="{{ $item->price}}" class="form-control" /></td>
                     <input type="hidden" name="currencyItem[]" value="{{ $item->currency_id}}" class="form-control" /></td>

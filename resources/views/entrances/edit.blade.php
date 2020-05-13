@@ -100,6 +100,7 @@
                       <input type="hidden" name="idItem[]" value="{{ $item->id }}">
                       <input type="hidden" name="deletedItem[]" value="0" class="deleteInput">
                       <input type="hidden" value="{{ $item->supply_id}}" class="idItem" name="idSupplyItem[]" />
+                      <input type="hidden" name="lotSupplierItems[]" value="" class="form-control">
                       <input type="text" {{ Auth::user()->role_id == 2 ? 'readonly':''}} value="{{ $item->supply->name }}" class="form-control itemContentidRow+'" /></td>
                     <td><input type="text" {{ Auth::user()->role_id == 2 ? 'readonly':''}} name="quantityItem[]" value="{{ $item->quantity}}" class="form-control" /></td>
                     <td><input type="text" {{ Auth::user()->role_id == 2 ? 'readonly':''}} name="priceItem[]" value="{{ $item->price}}" class="form-control" /></td>
@@ -212,7 +213,7 @@
 
     let idRow = $('.tableContent tbody tr').length + 1;
     $('.contentTable').append('<tr class="activeRow">' +
-      '<td><input type="hidden" name="deletedItem[]" value="0" class="deleteInput"><input type="hidden" name="idItem[]" value=""><input type="hidden" class="idItem" name="idSupplyItem[]"/> <input type="text" class="form-control itemContent' + idRow + '" /></td>' +
+      '<td><input type="hidden" name="lotSupplierItems[]" value="" class="form-control"><input type="hidden" name="deletedItem[]" value="0" class="deleteInput"><input type="hidden" name="idItem[]" value=""><input type="hidden" class="idItem" name="idSupplyItem[]"/> <input type="text" class="form-control itemContent' + idRow + '" /></td>' +
       '<td><input type="text" name="quantityItem[]" class="form-control number"/></td>' +
       '<td><input type="text" name="priceItem[]" class="form-control number price"/></td>' +
       '<td><select class="form-control" name="currencyItem[]">' + currencyOptions + '</select></td>' +

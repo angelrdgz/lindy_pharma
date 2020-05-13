@@ -21,8 +21,11 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/exportar/bitacora', 'LogbookController@export');
     Route::get('/exportar/clientes', 'ClientController@export');
     Route::get('/exportar/insumos', 'SupplyController@export');
+    Route::get('/exportar/insumos-stock', 'SupplyController@exportStock');
     Route::get('/exportar/insumos/{id}', 'SupplyController@exportSupply');
     Route::get('/exportar/moldes', 'MoldController@export');
+    Route::get('/exportar/recetas', 'RecipeController@export');
+    Route::get('/exportar/recetas/{id}', 'RecipeController@exportRecipe');
 
     Route::resource('usuarios', 'UserController');
     Route::resource('insumos', 'SupplyController');

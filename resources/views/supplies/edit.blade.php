@@ -11,11 +11,6 @@
             <h5 class="m-0 font-weight-bold text-primary">Modificar Insumo</h5>
           </div>
           <div class="col-sm-2">
-            @if(Auth::user()->role_id === 3)
-            <a href="{{ url('exportar/insumos/'.$supply->id) }}" target="_blank" class="btn btn-block btn-primary">
-              Reporte de Arribo
-            </a>
-            @endif
           </div>
         </div>
       </div>
@@ -120,25 +115,37 @@
                   <tr>
                     <th>Número de entrada</th>
                     <th>Cantidad</th>
+                    <th>No Lote Proveedor</th>
                     <th>No de Envases</th>
                     <th>Fecha de Caducidad</th>
                     <th>Fecha de Reanalisis</th>
+                    <th></th>
                   </tr>
                 </thead>
                 <tbody>
                   @foreach($supply->entrances as $order)
                   <tr>
-                     <input type="hidden" name="idItems[]" value="{{ $order->id }}" class="form-control number">
+                    <input type="hidden" name="idItems[]" value="{{ $order->id }}" class="form-control number">
                     <td>{{ $order->id }}</td>
                     <td>{{ number_format($order->quantity,4) }}</td>
                     <td>
-                      <input type="text" name="cupsItems[]" value="{{ $order->cups }}" class="form-control number">
+                      <input type="text" name="lotSupplierItems[]" {{$order->status == 'Rechazada' ? "readonly":'' }} value="{{ $order->lot_supplier }}" class="form-control">
                     </td>
                     <td>
-                    <input type="date" name="expiredDateItems[]" value="{{ $order->expired_date }}" class="form-control">
+                      <input type="text" name="cupsItems[]" {{$order->status == 'Rechazada' ? "readonly":'' }} value="{{ $order->cups }}" class="form-control number">
                     </td>
                     <td>
-                    <input type="date" name="reanalizedDateItems[]" value="{{ $order->reanalized_date }}" class="form-control">
+                      <input type="date" name="expiredDateItems[]" {{$order->status == 'Rechazada' ? "readonly":'' }} value="{{ $order->expired_date }}" class="form-control">
+                    </td>
+                    <td>
+                      <input type="date" name="reanalizedDateItems[]" {{$order->status == 'Rechazada' ? "readonly":'' }} value="{{ $order->reanalized_date }}" class="form-control">
+                    </td>
+                    <td>
+                      @if(in_array(Auth::user()->role_id, [1,3]) && $order->status !== 'Rechazada')
+                      <a href="{{ url('exportar/insumos/'.$order->id) }}" target="_blank" class="btn btn-block btn-primary">
+                        Reporte de Arribo
+                      </a>
+                      @endif
                     </td>
                   </tr>
                   @endforeach
