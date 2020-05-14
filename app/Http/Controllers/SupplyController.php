@@ -162,7 +162,7 @@ class SupplyController extends Controller
             
         });
 
-        $csvExporter->build($items, ["created_at" => "Fecha", 'supply_id' => "Codigo Producto", "name" => "Nombre Producto", "entrance_id"=>"No Orden de Entrada", "idx" => "Numero de Entrada", "quantity" => "Cantidad Kg", "cups" => "No de Envases", "expired_date" => "Fecha de Caducidad", "reanalized_date" => "Fecha de Reanalisis", "supplier" => "Proveedor"] /**/)->download('insumos_' . date('d_m_Y') . '.csv');
+        $csvExporter->build($items, ["created_at" => "Fecha", 'supply_id' => "Codigo Producto", "name" => "Nombre Producto", "entrance_id"=>"No Orden de Compra", "idx" => "Numero de Entrada", "quantity" => "Cantidad Kg", "cups" => "No de Envases", "expired_date" => "Fecha de Caducidad", "reanalized_date" => "Fecha de Reanalisis", "supplier" => "Proveedor"] /**/)->download('insumos_' . date('d_m_Y') . '.csv');
 
         // Register the hook before building
         /*$csvExporter->beforeEach(function ($supply) {
@@ -210,7 +210,7 @@ class SupplyController extends Controller
             }
         });
 
-        $csvExporter->build($items, ['code' => 'Código', 'name' => 'Nombre', 'type_id' => 'Tipo', 'stock' => 'En Almacen (Kg)', 'price' => 'Valor En Stock', 'supplier_id' => 'Proveedor'])->download('insumos_' . date('d_m_Y') . '.csv');        
+        $csvExporter->build($items, ['code' => 'Código', 'name' => 'Nombre', 'type_id' => 'Tipo', 'stock' => 'Cantidad (Kg)', 'price' => 'Valor En Stock', 'supplier_id' => 'Proveedor'])->download('insumos_' . date('d_m_Y') . '.csv');        
     }
 
     public function exportSupply($id)

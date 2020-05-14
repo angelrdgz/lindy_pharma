@@ -42,14 +42,14 @@ class RecipeController extends Controller
                 'code.unique' => 'El código ya existe',
             ]
         );
-        
+
         $recipe = new Recipe();
         $recipe->code = $request->code;
         $recipe->name = $request->name;
         $recipe->mold_id = $request->mold;
         $recipe->save();
 
-        if(count($request->idItemCoverSecond) > 0){
+        if (count($request->idItemCoverSecond) > 0) {
 
             foreach ($request->idItemCoverSecond as $key => $item) {
                 if ($request->idItemCoverSecond[$key] != NULL) {
@@ -62,10 +62,9 @@ class RecipeController extends Controller
                     $prodSupply->save();
                 }
             }
-
         }
 
-        
+
 
         foreach ($request->idItemCover as $key => $item) {
             if ($request->idItemCover[$key] != NULL) {
@@ -164,12 +163,12 @@ class RecipeController extends Controller
         $csvExporter = new \Laracsv\Export();
 
         $csvExporter->beforeEach(function ($departure) {
-            $departure->expired_date = $departure->expired_date == NULL ? "No definida":date("d/m/Y", strtotime($departure->expired_date));
+            $departure->expired_date = $departure->expired_date == NULL ? "No definida" : date("d/m/Y", strtotime($departure->expired_date));
             $departure->name = $departure->recipe->name;
             $departure->code = $departure->recipe->code;
         });
 
-        $csvExporter->build($departures, ["order_number"=>"OT", "name"=>"Nombre", "code"=>"Código", "quantity"=>"Cantidad", "quantity_real"=>"Cantidad Real","lot"=>"Lote", "expired_date"=>"Fecha de Caducidad"])->download('insumos_' . date('d_m_Y') . '.csv');        
+        $csvExporter->build($departures, ["order_number" => "OT", "name" => "Nombre", "code" => "Código", "quantity" => "Cantidad", "quantity_real" => "Cantidad Real", "lot" => "Lote", "expired_date" => "Fecha de Caducidad"])->download('inventario_' . date('d_m_Y') . '.csv');
     }
 
     public function exportRecipe($id)
@@ -178,12 +177,34 @@ class RecipeController extends Controller
         $csvExporter = new \Laracsv\Export();
 
         $csvExporter->beforeEach(function ($departure) {
-            $departure->expired_date = $departure->expired_date == NULL ? "No definida":date("d/m/Y", strtotime($departure->expired_date));
+            $departure->expired_date = $departure->expired_date == NULL ? "No definida" : date("d/m/Y", strtotime($departure->expired_date));
             $departure->name = $departure->recipe->name;
             $departure->code = $departure->recipe->code;
         });
 
-        $csvExporter->build($departures, ["order_number"=>"OT", "name"=>"Nombre", "code"=>"Código", "quantity"=>"Cantidad", "quantity_real"=>"Cantidad Real","lot"=>"Lote", "expired_date"=>"Fecha de Caducidad"])->download('insumos_' . date('d_m_Y') . '.csv');        
-        
+        $csvExporter->build($departures, ["order_number" => "OT", "name" => "Nombre", "code" => "Código", "quantity" => "Cantidad", "quantity_real" => "Cantidad Real", "lot" => "Lote", "expired_date" => "Fecha de Caducidad"])->download('inventario_' . str_replace("_", "/", $departures[0]->recipe->name) . '_' . date('d_m_Y') . '.csv');
+    }
+
+    public function stock()
+    {
+        if (Auth::user()->role_id == 3)
+            $departures = Departure::where("status", 'Inspección')->distinct("order_number")->get();
+        else
+            $departures = Departure::where("status", 'Inspección')->where("production_status", "Completa")->distinct("order_number")->get();
+        return view('recipes.stock', ["departures" => $departures]);
+    }
+
+    public function stockDetails($id)
+    {
+        $departure = Departure::find($id);
+        return view('recipes.stock_details', ["departure" => $departure]);
+    }
+
+    public function updateStock(Request $request, $id)
+    {
+        $departure = Departure::find($id);
+        Departure::where('order_number', $departure->order_number)->update(["quality_status" => $request->quality_status, "production_status" => $request->production_status, "expired_date" => $request->expired_date, "quantity_real" => $request->quantity_real]);
+
+        return redirect('inventario-recetas')->with('Inventario actualizado correctamente');
     }
 }

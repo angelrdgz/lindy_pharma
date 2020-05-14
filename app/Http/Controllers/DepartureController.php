@@ -172,9 +172,6 @@ class DepartureController extends Controller
 
     public function updateItems(Request $request, $id)
     {
-        $departure = Departure::find($id);
-        Departure::where('order_number', $departure->order_number)->update(["expired_date"=>$request->expired_date,"quantity_real"=>$request->quantity_real]);
-
         foreach ($request->id as $key => $value) {
             if ($request->orderNumber[$key] !== NULL) {
                 DepartureItem::where('id', $request->id[$key])->update(["order_number" => $request->orderNumber[$key]]);

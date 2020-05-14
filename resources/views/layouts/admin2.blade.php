@@ -99,11 +99,27 @@
           <span>Productos Terminado</span></a>
       </li>
       @endif
-      @if(in_array(Auth::user()->role_id, [1,2]))
+      @if(in_array(Auth::user()->role_id, [1,2,3]))
       <li class="nav-item {{ Request::is('recetas') ? 'active':'' }}">
-        <a class="nav-link" href="{{ url('recetas') }}">
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="true" aria-controls="collapseTwo">
           <i class="fas fa-flask"></i>
-          <span>Productos a Granel</span></a>
+          <span>Productos a Granel</span>
+        </a>
+        <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+          <div class="bg-white py-2 collapse-inner rounded">
+            <h6 class="collapse-header">Productos a Granel</h6>
+            @if(in_array(Auth::user()->role_id, [1,2]))
+            <a class="collapse-item" href="{{ url('recetas') }}">
+              <i class="fas fa-flask"></i>
+              <span>Recetas</span>
+            </a>
+            @endif
+            <a class="collapse-item" href="{{ url('inventario-recetas') }}">
+              <i class="fas fa-boxes"></i>
+              <span>Inventario</span>
+            </a>
+          </div>
+        </div>
       </li>
       @endif
       @if(in_array(Auth::user()->role_id, [1,2]))
@@ -115,7 +131,7 @@
       @endif
       @if(Auth::user()->role_id == 3)
       <li class="nav-item">
-        <a class="nav-link" href="#">
+        <!--<a class="nav-link" href="#">
           <i class="fas fa-clipboard"></i>
           <span>Ordenes de Trabajo</span>
         </a>
@@ -132,7 +148,24 @@
               <span>Acondicionado</span>
             </a>
           </li>
-        </ul>
+        </ul>-->
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapse3" aria-expanded="true" aria-controls="collapse3">
+          <i class="fas fa-flask"></i>
+          <span>Ordenes de Trabajo</span>
+        </a>
+        <div id="collapse3" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+          <div class="bg-white py-2 collapse-inner rounded">
+            <h6 class="collapse-header">Productos a Granel</h6>
+            <a class="collapse-item"  href="{{ url('ordenes-de-fabricacion') }}">
+            <i class="fas fa-industry"></i>
+              <span>Producción</span>
+            </a>
+            <a class="collapse-item" href="{{ url('ordenes-de-acondicionamiento') }}">
+            <i class="fas fa-clipboard"></i>
+              <span>Acondicionado</span>
+            </a>
+          </div>
+        </div>
       </li>
       @else
       @if(in_array(Auth::user()->role_id, [1,2]))

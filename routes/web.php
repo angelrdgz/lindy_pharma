@@ -26,11 +26,15 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/exportar/moldes', 'MoldController@export');
     Route::get('/exportar/recetas', 'RecipeController@export');
     Route::get('/exportar/recetas/{id}', 'RecipeController@exportRecipe');
+    Route::get('inventario-recetas', 'RecipeController@stock');
+    Route::get('inventario-recetas/{id}', 'RecipeController@stockDetails');
+    Route::put('inventario-recetas/{id}', 'RecipeController@updateStock');
 
     Route::resource('usuarios', 'UserController');
     Route::resource('insumos', 'SupplyController');
     Route::resource('productos', 'ProductController');
     Route::resource('recetas', 'RecipeController');
+    
     Route::resource('ordenes-de-fabricacion', 'DepartureController');
     Route::resource('ordenes-de-compra', 'EntranceController');
     Route::resource('ordenes-de-acondicionamiento', 'PackingController');

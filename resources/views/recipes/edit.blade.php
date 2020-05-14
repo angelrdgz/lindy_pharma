@@ -7,7 +7,7 @@
     <div class="card shadow mb-4">
       <div class="card-header">
         <div class="row">
-          <div class="col-sm-10 pt-2">
+          <div class="col-sm-10  pt-2">
             <h5 class="m-0 font-weight-bold text-primary">Modificar Producto Agranel</h5>
           </div>
           <div class="col-sm-2">
