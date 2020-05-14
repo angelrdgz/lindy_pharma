@@ -168,7 +168,7 @@ class RecipeController extends Controller
             $departure->code = $departure->recipe->code;
         });
 
-        $csvExporter->build($departures, ["order_number" => "OT", "name" => "Nombre", "code" => "Código", "quantity" => "Cantidad", "quantity_real" => "Cantidad Real", "lot" => "Lote", "expired_date" => "Fecha de Caducidad"])->download('inventario_' . date('d_m_Y') . '.csv');
+        $csvExporter->build($departures, ["order_number" => "OT", "code" => "Código", "name" => "Nombre", "lot" => "Lote", "quantity" => "Tamaño de Lote", "quantity_real" => "Cantidad Real",  "expired_date" => "Fecha de Caducidad", "production_status"=>"Estatus de Producción", "quality_status"=>"Estatus de Calidad"])->download('inventario_' . date('d_m_Y') . '.csv');
     }
 
     public function exportRecipe($id)
@@ -182,7 +182,7 @@ class RecipeController extends Controller
             $departure->code = $departure->recipe->code;
         });
 
-        $csvExporter->build($departures, ["order_number" => "OT", "name" => "Nombre", "code" => "Código", "quantity" => "Cantidad", "quantity_real" => "Cantidad Real", "lot" => "Lote", "expired_date" => "Fecha de Caducidad"])->download('inventario_' . str_replace("_", "/", $departures[0]->recipe->name) . '_' . date('d_m_Y') . '.csv');
+        $csvExporter->build($departures, ["order_number" => "OT", "code" => "Código", "name" => "Nombre", "lot" => "Lote", "quantity" => "Tamaño de Lote", "quantity_real" => "Cantidad Real",  "expired_date" => "Fecha de Caducidad", "production_status"=>"Estatus de Producción", "quality_status"=>"Estatus de Calidad"])->download('inventario_' . str_replace("_", "/", $departures[0]->recipe->name) . '_' . date('d_m_Y') . '.csv');
     }
 
     public function stock()
