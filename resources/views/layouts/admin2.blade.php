@@ -131,24 +131,6 @@
       @endif
       @if(Auth::user()->role_id == 3)
       <li class="nav-item">
-        <!--<a class="nav-link" href="#">
-          <i class="fas fa-clipboard"></i>
-          <span>Ordenes de Trabajo</span>
-        </a>
-        <ul class="submenu">
-          <li>
-            <a href="{{ url('ordenes-de-fabricacion') }}" class="nav-link">
-              <i class="fas fa-industry"></i>
-              <span>Producción</span>
-            </a>
-          </li>
-          <li>
-            <a href="{{ url('ordenes-de-acondicionamiento') }}" class="nav-link">
-              <i class="fas fa-clipboard"></i>
-              <span>Acondicionado</span>
-            </a>
-          </li>
-        </ul>-->
         <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapse3" aria-expanded="true" aria-controls="collapse3">
           <i class="fas fa-flask"></i>
           <span>Ordenes de Trabajo</span>
@@ -162,7 +144,7 @@
             </a>
             <a class="collapse-item" href="{{ url('ordenes-de-acondicionamiento') }}">
             <i class="fas fa-clipboard"></i>
-              <span>Acondicionado</span>
+              <span>Ordenes de Acondicionado</span>
             </a>
           </div>
         </div>
@@ -188,7 +170,7 @@
       <li class="nav-item {{ Request::is('ordenes-de-acondicionamiento') ? 'active':'' }}">
         <a class="nav-link" href="{{ url('ordenes-de-acondicionamiento') }}">
           <i class="fas fa-box"></i>
-          <span>Acondicionamiento</span></a>
+          <span>Ordenes de Acondicionamiento</span></a>
       </li>
       @endif
       <!-- Divider -->
