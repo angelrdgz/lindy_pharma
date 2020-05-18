@@ -63,13 +63,13 @@
                         <div class="col-sm-4">
                             <label for="">Status</label>
                             <select name="status" id="" class="form-control">
-                                <option value="">Seleccionar Estatus</option>
-                                <option value="Creada">Creada</option>
-                                <option value="Surtido de Insumos">Surtido de Insumos</option>
-                                <option value="Envasado Primario">Envasado Primario</option>
-                                <option value="Envasado Secundario">Envasado Secundario</option>
-                                <option value="Acondicionamiento en Tarimas">Acondicionamiento en Tarimas</option>
-                                <option value="Finalizada">Finalizada</option>
+                                <option {{ $package->status == NULL ? "selected":""}} value="">Seleccionar Estatus</option>
+                                <option {{ $package->status == "Creada" ? "selected":""}} value="Creada">Creada</option>
+                                <option {{ $package->status == "Surtido de Insumos" ? "selected":""}} value="Surtido de Insumos">Surtido de Insumos</option>
+                                <option {{ $package->status == "Envasado Primario" ? "selected":""}} value="Envasado Primario">Envasado Primario</option>
+                                <option {{ $package->status == "Envasado Secundario" ? "selected":""}} value="Envasado Secundario">Envasado Secundario</option>
+                                <option {{ $package->status == "Acondicionamiento en Tarimas" ? "selected":""}} value="Acondicionamiento en Tarimas">Acondicionamiento en Tarimas</option>
+                                <option {{ $package->status == "Finalizada" ? "selected":""}} value="Finalizada">Finalizada</option>
                             </select>
                         </div>
                         @endif

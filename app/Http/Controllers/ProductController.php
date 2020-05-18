@@ -9,6 +9,7 @@ use App\ProductSupply;
 use App\Supply;
 use App\Mold;
 use App\Logbook;
+use App\Package;
 
 use Auth;
 use Illuminate\Http\Request;
@@ -134,5 +135,57 @@ class ProductController extends Controller
 
         return redirect('productos')->with('success', 'Producto guardado correctamente');
         
+    }
+
+    public function export()
+    {
+        $packages = Package::where("status", 'Finalizada')->get();
+        $csvExporter = new \Laracsv\Export();
+
+        $csvExporter->beforeEach(function ($package) {
+            $package->id = '#'.sprintf("%05s",  $package->id);
+            $package->date_expire = $package->date_expire == NULL ? "No definida" : date("d/m/Y", strtotime($package->date_expire));
+            $package->name = $package->product->name;
+            $package->code = $package->product->code;
+        });
+
+        $csvExporter->build($packages, ["id" => "OT", "code" => "Código", "name" => "Nombre", "lot" => "Lote", "quantity" => "Tamaño de Lote", "quantity_real" => "Cantidad Real",  "date_expire" => "Fecha de Caducidad", "production_status"=>"Estatus de Producción", "quality_status"=>"Estatus de Calidad"])->download('inventario_products_' . date('d_m_Y') . '.csv');
+    }
+
+    public function exportProduct($id)
+    {
+        $package = Package::where("status", 'Finalizada')->where("product_id", $id)->get();
+        $csvExporter = new \Laracsv\Export();
+
+        $csvExporter->beforeEach(function ($pack) {
+            $pack->id = '#'.sprintf("%05s",  $pack->id);
+            $pack->date_expire = $pack->date_expire == NULL ? "No definida" : date("d/m/Y", strtotime($pack->date_expire));
+            $pack->name = $pack->product->name;
+            $pack->code = $pack->product->code;
+        });
+
+        $csvExporter->build($package, ["id" => "OT", "code" => "Código", "name" => "Nombre", "lot" => "Lote", "quantity" => "Tamaño de Lote", "quantity_real" => "Cantidad Real",  "date_expire" => "Fecha de Caducidad", "production_status"=>"Estatus de Producción", "quality_status"=>"Estatus de Calidad"])->download('inventario_' . str_replace("_", "/", $package[0]->product->name) . '_' . date('d_m_Y') . '.csv');
+    }
+
+    public function stock()
+    {
+        if (Auth::user()->role_id == 2)
+            $packages = Package::where('status', 'Finalizada')->where("production_status", "Completa")->get();
+        else
+            $packages = Package::where('status', 'Finalizada')->get();
+        return view('products.stock', ["packages" => $packages]);
+    }
+
+    public function stockDetails($id)
+    {
+        $package = Package::find($id);
+        return view('products.stock_details', ["package" => $package]);
+    }
+
+    public function updateStock(Request $request, $id)
+    {
+        $package = Package::find($id);
+        Package::where('id', $package->id)->update(["quality_status" => $request->quality_status, "production_status" => $request->production_status, "date_expire" => $request->expired_date, "quantity_real" => $request->quantity_real]);
+        return redirect('inventario-recetas')->with('Inventario actualizado correctamente');
     }
 }

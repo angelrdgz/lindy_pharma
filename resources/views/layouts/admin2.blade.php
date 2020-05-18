@@ -92,11 +92,27 @@
         <i class="fas fa-flask"></i>
           <span>Recetas</span></a>
       </li>-->
-      @if(in_array(Auth::user()->role_id, [1,2]))
-      <li class="nav-item {{ Request::is('productos') ? 'active':'' }}">
-        <a class="nav-link" href="{{ url('productos') }}">
+      @if(in_array(Auth::user()->role_id, [1,2,3]))
+      <li class="nav-item {{ Request::is('recetas') ? 'active':'' }}">
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapse3" aria-expanded="true" aria-controls="collapse3">
           <i class="fas fa-flask"></i>
-          <span>Productos Terminado</span></a>
+          <span>Productos Terminado</span>
+        </a>
+        <div id="collapse3" class="collapse" aria-labelledby="heading3" data-parent="#accordionSidebar">
+          <div class="bg-white py-2 collapse-inner rounded">
+            <h6 class="collapse-header">Productos a Granel</h6>
+            @if(in_array(Auth::user()->role_id, [1,2]))
+            <a class="collapse-item" href="{{ url('productos') }}">
+              <i class="fas fa-flask"></i>
+              <span>Productos Terminado</span>
+            </a>
+            @endif
+            <a class="collapse-item" href="{{ url('inventario-productos') }}">
+              <i class="fas fa-boxes"></i>
+              <span>Inventario</span>
+            </a>
+          </div>
+        </div>
       </li>
       @endif
       @if(in_array(Auth::user()->role_id, [1,2,3]))
@@ -138,12 +154,12 @@
         <div id="collapse3" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
           <div class="bg-white py-2 collapse-inner rounded">
             <h6 class="collapse-header">Productos a Granel</h6>
-            <a class="collapse-item"  href="{{ url('ordenes-de-fabricacion') }}">
-            <i class="fas fa-industry"></i>
+            <a class="collapse-item" href="{{ url('ordenes-de-fabricacion') }}">
+              <i class="fas fa-industry"></i>
               <span>Producción</span>
             </a>
             <a class="collapse-item" href="{{ url('ordenes-de-acondicionamiento') }}">
-            <i class="fas fa-clipboard"></i>
+              <i class="fas fa-clipboard"></i>
               <span>Ordenes de Acondicionado</span>
             </a>
           </div>

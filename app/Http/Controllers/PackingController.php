@@ -43,7 +43,7 @@ class PackingController extends Controller
         $package->price = $request->price;
         $package->presentation = $request->presentation;
         $package->date_expire = $request->expire;
-        $package->status = $request->status;
+        $package->status = "Creada";
         $package->user_id = Auth::user()->id;
         $package->save();
 
@@ -109,11 +109,13 @@ class PackingController extends Controller
                     $recipe->save();
                 }
 
-                /*foreach ($package->product->supplies as $item) {
-                $supply = Supply::find($item->supply_id);
-                $supply->stock = $supply->stock - (($item->quantity + ($item->quantity * ($item->excess / 100))) * $package->quantity);
-                $supply->save();
-            }*/
+                foreach ($package->product->supplies as $item) {
+                    $supply = Supply::find($item->supply_id);
+                    $supply->stock = $supply->stock - (($item->quantity + ($item->quantity * ($item->excess / 100))) * $package->quantity);
+                    $supply->save();
+                }
+            }else if($package->status == 'Acondicionamiento en Tarimas' && $request->status == 'Finalizada'){
+                Product::where('id', $package->product)->update(['stock', ($package->product->stock + $package->quantity)]);
             }
             $package->status = $request->status;
             $package->save();
