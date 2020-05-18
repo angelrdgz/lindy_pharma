@@ -48,15 +48,15 @@
 
       <!-- Nav Item - Dashboard -->
       @if(in_array(Auth::user()->role_id, [1]))
-      <li class="nav-item {{ Request::is('bitacora') ? 'active':'' }}">
-        <a class="nav-link" href="{{ url('bitacora') }}">
-          <i class="fas fa-clipboard-list"></i>
-          <span>Bitacora</span></a>
-      </li>
       <li class="nav-item {{ Request::is('usuarios') ? 'active':'' }}">
         <a class="nav-link" href="{{ url('usuarios') }}">
           <i class="fas fa-user-friends"></i>
           <span>Usuarios</span></a>
+      </li>
+      <li class="nav-item {{ Request::is('bitacora') ? 'active':'' }}">
+        <a class="nav-link" href="{{ url('bitacora') }}">
+          <i class="fas fa-clipboard-list"></i>
+          <span>Bitacora</span></a>
       </li>
       @endif
       @if(in_array(Auth::user()->role_id, [1,4]))
@@ -74,6 +74,13 @@
       </li>
       @endif
       @if(in_array(Auth::user()->role_id, [1,2,3,4]))
+      <li class="nav-item {{ Request::is('ordenes-de-compra') ? 'active':'' }}">
+        <a class="nav-link" href="{{ url('ordenes-de-compra') }}">
+          <i class="fas fa-cart-arrow-down"></i>
+          <span>Ordenes de Compra</span></a>
+      </li>
+      @endif
+      @if(in_array(Auth::user()->role_id, [1,2,3,4]))
       <li class="nav-item {{ Request::is('insumos') ? 'active':'' }}">
         <a class="nav-link" href="{{ url('insumos') }}">
           <i class="fas fa-capsules"></i>
@@ -85,6 +92,51 @@
         <a class="nav-link" href="{{ url('descargas') }}">
           <i class="fas fa-angle-double-down"></i>
           <span>Descarga de Insumo</span></a>
+      </li>
+      @endif
+      @if(in_array(Auth::user()->role_id, [1,2]))
+      <li class="nav-item {{ Request::is('moldes') ? 'active':'' }}">
+        <a class="nav-link" href="{{ url('moldes') }}">
+          <i class="fas fa-dice-d20"></i>
+          <span>Moldes</span></a>
+      </li>
+      @endif
+      @if(in_array(Auth::user()->role_id, [1,2]))
+      <li class="nav-item {{ Request::is('ordenes-de-fabricacion') ? 'active':'' }}">
+        <a class="nav-link" href="{{ url('ordenes-de-fabricacion') }}">
+          <i class="fas fa-clipboard"></i>
+          <span>Ordenes de Fabricación</span>
+        </a>
+      </li>
+      @endif
+      @if(in_array(Auth::user()->role_id, [1,2,3]))
+      <li class="nav-item {{ Request::is('recetas') ? 'active':'' }}">
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="true" aria-controls="collapseTwo">
+          <i class="fas fa-flask"></i>
+          <span>Productos a Granel</span>
+        </a>
+        <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+          <div class="bg-white py-2 collapse-inner rounded">
+            <h6 class="collapse-header">Productos a Granel</h6>
+            @if(in_array(Auth::user()->role_id, [1,2]))
+            <a class="collapse-item" href="{{ url('recetas') }}">
+              <i class="fas fa-flask"></i>
+              <span>Recetas</span>
+            </a>
+            @endif
+            <a class="collapse-item" href="{{ url('inventario-recetas') }}">
+              <i class="fas fa-boxes"></i>
+              <span>Inventario</span>
+            </a>
+          </div>
+        </div>
+      </li>
+      @endif
+      @if(in_array(Auth::user()->role_id, [1,2]))
+      <li class="nav-item {{ Request::is('ordenes-de-acondicionamiento') ? 'active':'' }}">
+        <a class="nav-link" href="{{ url('ordenes-de-acondicionamiento') }}">
+          <i class="fas fa-box"></i>
+          <span>Ordenes de Acondicionamiento</span></a>
       </li>
       @endif
       <!--<li class="nav-item">
@@ -115,36 +167,6 @@
         </div>
       </li>
       @endif
-      @if(in_array(Auth::user()->role_id, [1,2,3]))
-      <li class="nav-item {{ Request::is('recetas') ? 'active':'' }}">
-        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="true" aria-controls="collapseTwo">
-          <i class="fas fa-flask"></i>
-          <span>Productos a Granel</span>
-        </a>
-        <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
-          <div class="bg-white py-2 collapse-inner rounded">
-            <h6 class="collapse-header">Productos a Granel</h6>
-            @if(in_array(Auth::user()->role_id, [1,2]))
-            <a class="collapse-item" href="{{ url('recetas') }}">
-              <i class="fas fa-flask"></i>
-              <span>Recetas</span>
-            </a>
-            @endif
-            <a class="collapse-item" href="{{ url('inventario-recetas') }}">
-              <i class="fas fa-boxes"></i>
-              <span>Inventario</span>
-            </a>
-          </div>
-        </div>
-      </li>
-      @endif
-      @if(in_array(Auth::user()->role_id, [1,2]))
-      <li class="nav-item {{ Request::is('moldes') ? 'active':'' }}">
-        <a class="nav-link" href="{{ url('moldes') }}">
-          <i class="fas fa-dice-d20"></i>
-          <span>Moldes</span></a>
-      </li>
-      @endif
       @if(Auth::user()->role_id == 3)
       <li class="nav-item">
         <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapse3" aria-expanded="true" aria-controls="collapse3">
@@ -164,30 +186,7 @@
             </a>
           </div>
         </div>
-      </li>
-      @else
-      @if(in_array(Auth::user()->role_id, [1,2]))
-      <li class="nav-item {{ Request::is('ordenes-de-fabricacion') ? 'active':'' }}">
-        <a class="nav-link" href="{{ url('ordenes-de-fabricacion') }}">
-          <i class="fas fa-clipboard"></i>
-          <span>Ordenes de Fabricación</span>
-        </a>
-      </li>
-      @endif
-      @endif
-      @if(in_array(Auth::user()->role_id, [1,2,3,4]))
-      <li class="nav-item {{ Request::is('ordenes-de-compra') ? 'active':'' }}">
-        <a class="nav-link" href="{{ url('ordenes-de-compra') }}">
-          <i class="fas fa-cart-arrow-down"></i>
-          <span>Ordenes de Compra</span></a>
-      </li>
-      @endif
-      @if(in_array(Auth::user()->role_id, [1,2]))
-      <li class="nav-item {{ Request::is('ordenes-de-acondicionamiento') ? 'active':'' }}">
-        <a class="nav-link" href="{{ url('ordenes-de-acondicionamiento') }}">
-          <i class="fas fa-box"></i>
-          <span>Ordenes de Acondicionamiento</span></a>
-      </li>
+      </li>      
       @endif
       <!-- Divider -->
       <!--<hr class="sidebar-divider">-->
