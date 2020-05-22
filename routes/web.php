@@ -31,6 +31,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('inventario-recetas', 'RecipeController@stock');
     Route::get('inventario-recetas/{id}', 'RecipeController@stockDetails');
     Route::put('inventario-recetas/{id}', 'RecipeController@updateStock');
+    Route::get('pedidos/{id}/nota', 'OrderController@remitionNote');
     Route::get('inventario-productos', 'ProductController@stock');
     Route::get('inventario-productos/{id}', 'ProductController@stockDetails');
     Route::put('inventario-productos/{id}', 'ProductController@updateStock');
@@ -49,6 +50,7 @@ Route::middleware(['auth'])->group(function () {
     Route::resource('proveedores', 'SupplierController');
     Route::resource('proveedores', 'SupplierController');
     Route::resource('descargas', 'DecreaseController');
+    Route::resource('pedidos', 'OrderController');
 
 
     Route::get('ordenes-de-fabricacion/{id}/escanear', 'DepartureController@scan');

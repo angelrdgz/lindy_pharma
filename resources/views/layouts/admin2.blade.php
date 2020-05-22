@@ -152,7 +152,7 @@
         </a>
         <div id="collapse3" class="collapse" aria-labelledby="heading3" data-parent="#accordionSidebar">
           <div class="bg-white py-2 collapse-inner rounded">
-            <h6 class="collapse-header">Productos a Granel</h6>
+            <h6 class="collapse-header">Productos Terminado</h6>
             @if(in_array(Auth::user()->role_id, [1,2]))
             <a class="collapse-item" href="{{ url('productos') }}">
               <i class="fas fa-flask"></i>
@@ -188,6 +188,11 @@
         </div>
       </li>      
       @endif
+      <li class="nav-item {{ Request::is('pedidos') ? 'active':'' }}">
+        <a class="nav-link" href="{{ url('pedidos') }}">
+        <i class="fas fa-file-invoice-dollar"></i>
+          <span>Pedidos</span></a>
+      </li>
       <!-- Divider -->
       <!--<hr class="sidebar-divider">-->
 

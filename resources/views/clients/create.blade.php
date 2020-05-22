@@ -52,6 +52,10 @@
                 <label for="">Código Postal</label>
                 <input type="text" name="zip" class="form-control">
               </div>
+              <div class="col-sm-4">
+                <label for="">RFC</label>
+                <input type="text" name="rfc" class="form-control">
+              </div>
             </div>
             <br>
   <div class="row">

@@ -36,6 +36,7 @@ class ClientController extends Controller
         $client->state = $request->state;
         $client->zip = $request->zip;
         $client->email = $request->email;
+        $client->rfc = $request->rfc;
         $client->status = 1;
         $client->save();
 
@@ -71,6 +72,7 @@ class ClientController extends Controller
         $client->state = $request->state;
         $client->zip = $request->zip;
         $client->email = $request->email;
+        $client->rfc = $request->rfc;
         $client->status = 1;
         $client->save();
 
