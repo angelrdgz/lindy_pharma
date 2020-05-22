@@ -302,7 +302,7 @@
         <td></td>
         <td class="text-center" style="font-size: 10px;">{{ $order->receiver }}</td>
         <td></td>
-        <td class="text-center" style="font-size: 10px;">{{ date('d', strtotime($order->deliver_at)).' de '.$months[date('n', strtotime($order->deliver_at))].' de '.date('Y', strtotime($order->deliver_at)).' '.date('H:i', strtotime($order->deliver_at)) }}</td>
+        <td class="text-center" style="font-size: 10px;">{{ date('d').' de '.$months[date('n')].' de '.date('Y').' '.date('H:i') }}</td>
         <td></td>
       </tr>
       <tr>

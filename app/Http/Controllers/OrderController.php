@@ -97,7 +97,6 @@ class OrderController extends Controller
             $order = Order::find($id);
             $order->delivery = $request->delivery;
             $order->receiver = $request->receiver;
-            $order->deliver_at = $request->deliver_at;
             $order->box_type = $request->box_type;
             $order->clean_box = $request->clean_box;
             $order->observations = $request->observations;
@@ -123,7 +122,6 @@ class OrderController extends Controller
 
         } else {
             $order = Order::find($id);
-            $order->lot = $request->lot;
             $order->delivery = $request->delivery;
             $order->mader = $request->mader;
             $order->authorizer = $request->authorizer;

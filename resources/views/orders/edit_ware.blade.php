@@ -27,7 +27,7 @@
                             <input type="text" name="order_number" readonly value="{{ $order->order_number }}" class="form-control">
                         </div>
                         <div class="col-sm-4">
-                            <label for="">No de Nota</label>
+                            <label for="">Nota Número</label>
                             <input type="text" name="note" readonly value="{{ $order->order_number }}" class="form-control">
                         </div>
                     </div>
@@ -98,16 +98,12 @@
                     <br>
                     <div class="row">
                         <div class="col-sm-4">
-                            <label for="">Entraga</label>
+                            <label for="">Entrega</label>
                             <input type="text" name="delivery" class="form-control" value="{{ $order->delivery }}">
                         </div>
                         <div class="col-sm-4">
-                            <label for="">Recive</label>
+                            <label for="">Recibe</label>
                             <input type="text" name="receiver" class="form-control" value="{{ $order->receiver }}">
-                        </div>
-                        <div class="col-sm-4">
-                            <label for="">Fecha y Hora</label>
-                            <input type="datetime-local" name="deliver_at" class="form-control" value="{{ date('Y-m-d\TH:i', strtotime($order->deliver_at))  }}">
                         </div>
                     </div>
                     <div class="row">
