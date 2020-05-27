@@ -177,7 +177,6 @@ class EntranceController extends Controller
                             } else {
 
                                 $entranceItem = EntranceItem::find($request->idItem[$key]);
-
                                 $entranceItem->supply_id = $request->idSupplyItem[$key];
                                 $entranceItem->quantity = $request->quantityItem[$key];
                                 $entranceItem->price = $request->priceItem[$key];
@@ -188,7 +187,7 @@ class EntranceController extends Controller
 
                                 if ($request->statusItem[$key] == 'Aprobada' && $request->updated[$key] == 0) {
                                     $supply = Supply::find($request->idSupplyItem[$key]);
-                                    $supply->stock = $this->convert($supply->measurement_buy, $supply->measurement_use, $request->quantityItem[$key]);
+                                    $supply->stock = $supply->stock + $this->convert($supply->measurement_buy, $supply->measurement_use, $request->quantityItem[$key]);
                                     $supply->save();
                                 }
                             }
