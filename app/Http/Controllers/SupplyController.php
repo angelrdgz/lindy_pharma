@@ -102,6 +102,7 @@ class SupplyController extends Controller
             foreach ($request->idItems as $key => $supplie) {
                 $item =  EntranceItem::find($request->idItems[$key]);
                 $item->cups = $request->cupsItems[$key];
+                $item->lot_supplier = $request->lotSupplierItems[$key];
                 $item->expired_date = $request->expiredDateItems[$key];
                 $item->reanalized_date = $request->reanalizedDateItems[$key];
                 $item->save();
