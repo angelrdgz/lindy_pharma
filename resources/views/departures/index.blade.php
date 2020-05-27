@@ -31,6 +31,7 @@
                 <th>Cantidad Teorica</th>
                 <th>Cantidad Real</th>
                 <th>Lote</th>
+                <th>Tipo</th>
                 <th>Fecha de Caducidad</th>
                 <th>Estatus</th>
                 <th></th>
@@ -45,6 +46,15 @@
                 <td>{{ number_format($order->quantity,0) }}</td>
                 <td>{{ number_format($order->quantity_real,0) }}</td>
                 <td>{{ $order->lot }}</td>
+                <td>
+                  @if($order->type == 1)
+                  Contenido de Capsula
+                  @elseif($order->type == 2)
+                  Envolvente de Capsula 1
+                  @else
+                  Envolvente de capsula 2
+                  @endif
+                </td>
                 <td>{{ $order->expired_date == NULL ? "No definida":date("d/m/Y", strtotime($order->expired_date))}}</td>
                 <td>{{ $order->status }}</td>
                 <td>

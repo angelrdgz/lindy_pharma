@@ -60,7 +60,7 @@ class RecipeController extends Controller
                     $prodSupply->recipe_id = $recipe->id;
                     $prodSupply->supply_id = $request->idItemCoverSecond[$key];
                     $prodSupply->quantity = $request->quantityItemCoverSecond[$key];
-                    $prodSupply->excess = $request->excessItemCoverSecond[$key];
+                    $prodSupply->excess = $request->excessItemCoverSecond[$key] == NULL ? 0:$request->excessItemCoverSecond[$key];
                     $prodSupply->type = 3;
                     $prodSupply->save();
                 }
@@ -75,7 +75,7 @@ class RecipeController extends Controller
                 $prodSupply->recipe_id = $recipe->id;
                 $prodSupply->supply_id = $request->idItemCover[$key];
                 $prodSupply->quantity = $request->quantityItemCover[$key];
-                $prodSupply->excess = $request->excessItemCover[$key];
+                $prodSupply->excess = $request->excessItemCover[$key] == NULL ? 0:$request->excessItemCover[$key];
                 $prodSupply->type = 2;
                 $prodSupply->save();
             }
@@ -87,7 +87,7 @@ class RecipeController extends Controller
                 $prodSupply->recipe_id = $recipe->id;
                 $prodSupply->supply_id = $request->idItem[$key];
                 $prodSupply->quantity = $request->quantityItem[$key];
-                $prodSupply->excess = $request->excessItem[$key];
+                $prodSupply->excess = $request->excessItem[$key] == NULL ? 0:$request->excessItem[$key];
                 $prodSupply->type = 1;
                 $prodSupply->save();
             }

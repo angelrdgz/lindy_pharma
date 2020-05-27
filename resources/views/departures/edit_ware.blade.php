@@ -30,7 +30,7 @@
                                     @foreach($departure->items as $item)
                                      <tr>
                                          <td>{{ $item->supply->name }}</td>
-                                         <td>{{ $item->quantity}} {{ $item->supply->measurementUse->code }}</td>
+                                         <td>{{ ($item->quantity * $departure->quantity )}} {{ $item->supply->measurementUse->code }}</td>
                                          <td>
                                              <input type="hidden" name="id[]" value="{{$item->id}}">
                                              <select name="orderNumber[]" id="" class="form-control">
