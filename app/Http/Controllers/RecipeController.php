@@ -33,6 +33,9 @@ class RecipeController extends Controller
 
     public function store(Request $request)
     {
+        if ($request->idItemCover === NULL  || $request->idItem === NULL) {
+            return redirect()->back()->with('error', 'No se asigno ningun insumo a la receta');
+        }
 
         $request->validate(
             [
@@ -49,7 +52,7 @@ class RecipeController extends Controller
         $recipe->mold_id = $request->mold;
         $recipe->save();
 
-        if (count($request->idItemCoverSecond) > 0) {
+        if ($request->idItemCoverSecond !== NULL) {
 
             foreach ($request->idItemCoverSecond as $key => $item) {
                 if ($request->idItemCoverSecond[$key] != NULL) {

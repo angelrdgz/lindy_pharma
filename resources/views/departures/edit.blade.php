@@ -51,11 +51,11 @@
                             <input type="hidden" name="way" value="1">
                             <label for="">Estatus</label>
                             <select name="status" class="form-control" id="">
-                                <option value="">Seleccione una opción</option>
-                                <option value="Pesado" {{$departure->status == "Pesado" ? 'selected':''}}>Pesado</option>
-                                <option value="Preparación" {{$departure->status == "Preparación" ? 'selected':''}}>Preparación</option>
-                                <option value="Encapsulado" {{$departure->status == "Encapsulado" ? 'selected':''}}>Encapsulado</option>
-                                <option value="Secado" {{$departure->status == "Secado" ? 'selected':''}}>Secado</option>
+                                <option value="Pesado" {{$departure->status == "Pesado" ? 'selected':''}} {{$departure->status !== "Creada" ? 'disabled':''}}>Pesado</option>
+                                <option value="Preparación" {{$departure->status == "Preparación" ? 'selected':''}} {{$departure->status == "Pesado" ? '':'disabled'}}>Preparación</option>
+                                <option value="Encapsulado" {{$departure->status == "Encapsulado" ? 'selected':''}} {{$departure->status == "Preparación" ? '':'disabled'}}>Encapsulado</option>
+                                <option value="Secado" {{$departure->status == "Secado" ? 'selected':''}} {{$departure->status == "Encapsulado" ? '':'disabled'}}>Secado</option>
+                                <option value="Inspección" {{$departure->status == "Inspección" ? 'selected':''}} {{$departure->status == "Secado" ? '':'disabled'}}>Inspección</option>
                             </select>
                         </div>
                     </div>

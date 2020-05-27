@@ -99,6 +99,7 @@
                     <td>
                       <input type="hidden" name="idItem[]" value="{{ $item->id }}">
                       <input type="hidden" name="deletedItem[]" value="0" class="deleteInput">
+                      <input type="hidden" name="splittedItem[]" value="{{ $item->splitted }}" class="deleteInput">
                       <input type="hidden" value="{{ $item->supply_id}}" class="idItem" name="idSupplyItem[]" />
                       <input type="hidden" name="lotSupplierItems[]" value="" class="form-control">
                       <input type="text" {{ Auth::user()->role_id == 2 ? 'readonly':''}} value="{{ $item->supply->name }}" class="form-control itemContentidRow+'" /></td>
@@ -123,7 +124,7 @@
                       @endif
                     </td>
                     <td class="text-center">
-                      @if(Auth::user()->role_id == 1)
+                      @if(in_array(Auth::user()->role_id, [1,4]))
                       <a class="btn btn-danger btn-circle removeRow">
                         <i class="fas fa-trash" style="color: #fff;"></i>
                       </a>

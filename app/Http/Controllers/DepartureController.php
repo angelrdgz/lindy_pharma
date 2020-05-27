@@ -198,6 +198,10 @@ class DepartureController extends Controller
 
             if ($departure->status == 'Creada' && $request->status == 'Pesado') {
 
+                if(DepartureItem::where('departure_id', $id)->where("order_number", NULL)->count() > 0){
+                    return redirect('ordenes-de-fabricacion')->with('error', 'No se pudo actualizar el estatus, algunos insumos de la orden aun no tiene número de entrada asignado.');
+                }
+
                 foreach ($departure->items as $item) {
                     $supply = Supply::find($item->supplie_id);
                     $supply->stock = $supply->stock - (($item->quantity + ($item->quantity * ($item->excess / 100))) * $departure->quantity);

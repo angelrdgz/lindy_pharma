@@ -38,6 +38,10 @@ class EntranceController extends Controller
 
     public function store(Request $request)
     {
+        if ($request->idItem === NULL) {
+            return redirect()->back()->with('error', 'No asigno insumos a la orden de compra');
+        }
+
         $entrance = new Entrance();
         $entrance->user_id = Auth::user()->id;
         $entrance->supplier_id = $request->supplier;
@@ -68,7 +72,7 @@ class EntranceController extends Controller
             }
         }
 
-        if (count($request->comments) > 0) {
+        if ($request->comments !== NULL) {
             foreach ($request->comments as $key => $comment) {
                 if ($comment != NULL) {
                     $entranceComment = new EntranceComment();
@@ -143,14 +147,28 @@ class EntranceController extends Controller
                     if ($request->idSupplyItem[$key] != NULL) {
                         if ($request->idItem[$key] == NULL) {
 
-                            $entranceItem = new EntranceItem();
-                            $entranceItem->entrance_id = $entrance->id;
-                            $entranceItem->supply_id = $request->idSupplyItem[$key];
-                            $entranceItem->quantity = $request->quantityItem[$key];
-                            $entranceItem->price = $request->priceItem[$key];
-                            $entranceItem->currency_id = $request->currencyItem[$key];
-                            $entranceItem->status = 'Creada';
-                            $entranceItem->save();
+                            if ($request->updated[$key] == -1) {
+                                $entranceItem = new EntranceItem();
+                                $entranceItem->entrance_id = $entrance->id;
+                                $entranceItem->supply_id = $request->idSupplyItem[$key];
+                                $entranceItem->quantity = $request->quantityItem[$key];
+                                $entranceItem->price = $request->priceItem[$key];
+                                $entranceItem->status = $request->statusItem[$key];
+                                $entranceItem->comments = $request->commentsItem[$key];
+                                $entranceItem->splitted = $request->splittedItem[$key];
+                                $entranceItem->status = $request->statusItem[$key] !== NULL ? $request->statusItem[$key] : 'Creada';
+                                $entranceItem->save();
+                            } else {
+                                $entranceItem = new EntranceItem();
+                                $entranceItem->entrance_id = $entrance->id;
+                                $entranceItem->supply_id = $request->idSupplyItem[$key];
+                                $entranceItem->quantity = $request->quantityItem[$key];
+                                $entranceItem->price = $request->priceItem[$key];
+                                $entranceItem->currency_id = $request->currencyItem[$key];
+                                $entranceItem->splitted = $request->splittedItem[$key];
+                                $entranceItem->status = 'Creada';
+                                $entranceItem->save();
+                            }
                         } else {
 
                             if ($request->deletedItem[$key] == 1) {
@@ -159,11 +177,12 @@ class EntranceController extends Controller
                             } else {
 
                                 $entranceItem = EntranceItem::find($request->idItem[$key]);
-                                
+
                                 $entranceItem->supply_id = $request->idSupplyItem[$key];
                                 $entranceItem->quantity = $request->quantityItem[$key];
                                 $entranceItem->price = $request->priceItem[$key];
                                 $entranceItem->currency_id = $request->currencyItem[$key];
+                                $entranceItem->splitted = $request->splittedItem[$key];
                                 $entranceItem->status = $request->statusItem[$key] !== NULL ? $request->statusItem[$key] : 'Creada';
                                 $entranceItem->save();
 

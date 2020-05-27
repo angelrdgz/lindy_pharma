@@ -34,6 +34,7 @@
                 <td>Nombre Producto</td>
                 <td>Número de Compra</td>
                 <td>Número de Entrada</td>
+                <td>Lote de Proveedor</td>
                 <td>Cantidad Kg</td>
                 <td>No de Envases</td>
                 <td>Fecha de Caducidad</td>
@@ -47,6 +48,7 @@
             <td>{{ $supply->supply->name }}</td>
             <td>{{ '#' . strval(sprintf("%05s", $supply->entrance->id)) }}</td>
             <td>{{ '#' . strval(sprintf("%05s", $supply->id)) }}</td>
+            <td>{{ $supply->lot_supplier}}</td>
             <td>{{ $supply->quantity }}</td>
             <td>{{ $supply->cups }}</td>
             <td>{{ $supply->expired_date }}</td>

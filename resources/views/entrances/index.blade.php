@@ -62,7 +62,7 @@
                   </a>
                   @endif
                   @if(Auth::user()->role_id == 3)
-                  <a href="{{ url('ordenes-de-compra/'.$entrance->id)}}" target="_blank" class="btn btn-info btn-icon-split btn-sm">
+                  <a href="{{ url('ordenes-de-compra/'.$entrance->id)}}" class="btn btn-info btn-icon-split btn-sm">
                     <span class="icon text-white-50">
                       <i class="fas fa-search"></i>
                     </span>

@@ -37,6 +37,7 @@
                     <th>Cantidad</th>
                     <th>Estatus</th>
                     <th>Comentarios</th>
+                    <td></td>
                   </tr>
                 </thead>
                 <tbody>
@@ -44,13 +45,14 @@
                   <tr>
                     <input type="hidden" name="updated[]" value="{{$item->status == 'Aprobada' ? 1:0}}">
                     <input type="hidden" name="idItem[]" value="{{ $item->id }}">
+                    <input type="hidden" name="splittedItem[]" value="{{ $item->splitted }}">
                     <input type="hidden" name="deletedItem[]" value="0" class="deleteInput">
-                    <input type="hidden" name="lotSupplierItems[]" value="" class="form-control">
+                    <input type="hidden" name="lotSupplierItems[]" value="{{ $item->lot_supplier }}" class="form-control">
                     <input type="hidden" value="{{ $item->supply_id}}" class="idItem" name="idSupplyItem[]" />
                     <input type="hidden" name="priceItem[]" value="{{ $item->price}}" class="form-control" /></td>
                     <input type="hidden" name="currencyItem[]" value="{{ $item->currency_id}}" class="form-control" /></td>
                     <td>
-                      <input type="text" value="{{ $item->supply->name }}" class="form-control itemContentidRow+'" readonly /></td>
+                      <input type="text" value="{{ $item->supply->name }}" class="form-control itemContentidRow" readonly /></td>
                     <td><input type="text" name="quantityItem[]" value="{{ $item->quantity}}" class="form-control" /></td>
                     <td>
                       <select name="statusItem[]" id="" class="form-control">
@@ -60,7 +62,12 @@
                       </select>
                     </td>
                     <td class="text-center">
-                      <input type="text" name="commentsItem[]" value="" class="form-control" />
+                      <input type="text" name="commentsItem[]" value="{{ $item->comments }}" class="form-control" />
+                    </td>
+                    <td>
+                      @if($item->splitted == 0)
+                      <a class="btn btn-primary btn-block splittedBtn" style="color:#fff;">Dividir</a>
+                      @endif
                     </td>
                   </tr>
 
@@ -85,6 +92,30 @@
   </div>
 </div>
 
+<div class="modal fade" id="splitModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Dividir Entrada</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label for="">¿En cuantas partes deseas dividir la entrada?</label>
+          <input type="number" min="2" max="5" class="form-control splitBox">
+          <div class="text-danger d-none">La cantidad debe ser mayor a 1 y menor a 6</div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+        <button type="button" class="btn btn-primary splitBtn">Dividir</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 
 @stop
 
@@ -92,6 +123,13 @@
 
 <script>
   var availableItems = [];
+
+  var row = {id: 0, name:"", quantity: null, supply_id: null, price: null, currency_id: null}
+
+  var quantityToSplit = null;
+  var btnSplit = null;
+
+  var quantityBox = null;
 
   @foreach($supplies as $supply)
   availableItems.push({
@@ -143,6 +181,64 @@
         $('.coverTable .activeRow span').text(ui.item.measurement)
       }
     });
+  })
+
+  $(document).on('click', '.splittedBtn', function() {
+
+    row = {
+      id: $(this).closest('tr').find("input[name='idItem[]']").val(),
+      supply_id: $(this).closest('tr').find("input[name='idSupplyItem[]']").val(),
+      quantity: $(this).closest('tr').find("input[name='quantityItem[]']").val(),
+      name: $(this).closest('tr').find(".itemContentidRow").val(),
+      price: $(this).closest('tr').find("input[name='priceItem[]']").val(),
+      currency_id: $(this).closest('tr').find("input[name='currencyItem[]']").val(),
+    }
+
+    quantityBox = $(this).closest('tr').find("input[name='quantityItem[]']")
+    tr = $(this).closest('tr')
+    $('#splitModal').modal()
+  })
+
+  $('#splitModal').on('show.bs.modal', function(event) {
+    $('.splitBox').val("2")
+  })
+
+  $(document).on('click', '.splitBtn', function() {
+    if(!($('.splitBox').val() >= 2 && $('.splitBox').val() <= 5)){
+     $('.text-danger').removeClass('d-none') 
+     return false;
+    }else{
+      $('.text-danger').addClass('d-none') 
+    }
+
+    let total = row.quantity  / $('.splitBox').val()
+    quantityBox.val(total)
+    for (let index = 0; index < ($('.splitBox').val() - 1); index++) {
+      $('.contentTable tbody').append("<tr>"+
+                    '<input type="hidden" name="updated[]" value="-1">'+
+                    '<input type="hidden" name="idItem[]" value="">'+
+                    '<input type="hidden" name="splittedItem[]" value="1">'+                    
+                    '<input type="hidden" name="deletedItem[]" value="0" class="deleteInput">'+
+                    '<input type="hidden" name="lotSupplierItems[]" value="" class="form-control">'+
+                    '<input type="hidden" value="'+row.supply_id+'" class="idItem" name="idSupplyItem[]" />'+
+                    '<input type="hidden" name="priceItem[]" value="'+row.price+'" class="form-control" /></td>'+
+                    '<input type="hidden" name="currencyItem[]" value="'+row.currency_id+'" class="form-control" /></td>'+
+                    '<td><input type="text" value="'+row.name+'" class="form-control itemContentidRow" readonly /></td>'+
+                    '<td><input type="text" name="quantityItem[]" value="'+total+'" class="form-control" /></td>'+
+                    '<td>'+
+                      '<select name="statusItem[]" id="" class="form-control">'+
+                        '<option value="">Seleccione una opción</option>'+
+                        '<option value="Cuarentena">Cuarentena</option>'+
+                        '<option value="Rechazada">Rechazada</option>'+
+                     ' </select>'+
+                    '</td>'+
+                    '<td class="text-center"><input type="text" name="commentsItem[]" value="" class="form-control" /></td>'+
+                    '<td></td>'+
+                  '</tr>');      
+    }
+    tr.find('.btn').hide();
+    tr.find('input[name="splittedItem[]"]').val(1);
+    $('#splitModal').modal("hide")
   })
 </script>
 @stop
