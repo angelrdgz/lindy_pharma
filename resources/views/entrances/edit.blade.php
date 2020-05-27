@@ -144,7 +144,7 @@
                   <tr>
                     <th style="width: 80%;">Comentarios de la orden</th>
                     <th class="text-right">
-                      @if(Auth::user()->role_id == 1)
+                      @if(in_array(Auth::user()->role_id, [1,4]))
                       <a class="btn btn-link addCommentRow text-primary">Agregar Comentario</a>
                       @endif
                     </th>
