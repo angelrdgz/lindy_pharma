@@ -53,19 +53,23 @@
                     <input type="hidden" name="currencyItem[]" value="{{ $item->currency_id}}" class="form-control" /></td>
                     <td>
                       <input type="text" value="{{ $item->supply->name }}" class="form-control itemContentidRow" readonly /></td>
-                    <td><input type="text" name="quantityItem[]" value="{{ $item->quantity}}" class="form-control" /></td>
+                    <td><input type="text" name="quantityItem[]" value="{{ $item->quantity}}" class="form-control" {{$item->status !== "Creada" ? "readonly":""}}/></td>
                     <td>
+                      @if($item->status == 'Aprobada')
+                      <input type="text" name="statusItem[]" class="form-control" value="Aprobada" readonly >
+                      @else
                       <select name="statusItem[]" id="" class="form-control">
                         <option value="">Seleccione una opción</option>
                         <option value="Cuarentena" {{$item->status == "Cuarentena" ? "selected":""}}>Cuarentena</option>
                         <option value="Rechazada" {{$item->status == "Rechazada" ? "selected":""}}>Rechazada</option>
                       </select>
+                      @endif
                     </td>
                     <td class="text-center">
-                      <input type="text" name="commentsItem[]" value="{{ $item->comments }}" class="form-control" />
+                      <input type="text" name="commentsItem[]" value="{{ $item->comments }}" class="form-control" {{$item->status !== "Creada" ? "readonly":""}}/>
                     </td>
                     <td>
-                      @if($item->splitted == 0)
+                      @if($item->splitted == 0 && $item->status == 'Creada')
                       <a class="btn btn-primary btn-block splittedBtn" style="color:#fff;">Dividir</a>
                       @endif
                     </td>

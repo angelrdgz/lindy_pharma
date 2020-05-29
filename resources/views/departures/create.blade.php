@@ -18,33 +18,48 @@
           <div class="row">
             <div class="col-sm-4">
               <label for="">Receta</label>
-              <select name="recipe" id="" class="form-control">
+              <select name="recipe" id="" class="form-control @error('recipe_id') is-invalid @enderror">
                 <option value="">Seleccionar Receta</option>
                 @foreach($recipes as $recipe)
                 <option value="{{ $recipe->id }}">{{ $recipe->code.' - '.$recipe->name }}</option>
                 @endforeach
               </select>
+              @error('recipe_id')
+                <p class="text-red-500 text-xs text-danger italic">{{ $message }}</p>
+                @enderror
             </div>
             <div class="col-sm-4">
               <label for="">Tamaño del lote</label>
-              <input type="text" name="quantity" class="form-control number">
+              <input type="text" name="quantity" class="form-control @error('quantity') is-invalid @enderror number">
+              @error('quantity')
+                <p class="text-red-500 text-xs text-danger italic">{{ $message }}</p>
+                @enderror
             </div>
             <div class="col-sm-4">
               <label for="">Cliente</label>
-              <select name="client" id="" class="form-control">
+              <select name="client" id="" class="form-control @error('client_id') is-invalid @enderror">
                 <option value="">Seleccionar cliente</option>
                 @foreach($clients as $client)
                 <option value="{{ $client->id }}">{{ $client->name }}</option>
                 @endforeach
               </select>
+              @error('client_id')
+                <p class="text-red-500 text-xs text-danger italic">{{ $message }}</p>
+                @enderror
             </div>
             <div class="col-sm-4">
               <label for="">Lote</label>
-              <input type="text" name="lot" class="form-control">
+              <input type="text" name="lot" class="form-control @error('lot') is-invalid @enderror">
+              @error('lot')
+                <p class="text-red-500 text-xs text-danger italic">{{ $message }}</p>
+                @enderror
             </div>
             <div class="col-sm-4">
               <label for="">Linea</label>
-              <input type="text" name="line" class="form-control">
+              <input type="text" name="line" class="form-control @error('line') is-invalid @enderror">
+              @error('line')
+                <p class="text-red-500 text-xs text-danger italic">{{ $message }}</p>
+                @enderror
             </div>
           </div>
           <br>

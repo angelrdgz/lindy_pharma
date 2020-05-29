@@ -7,6 +7,7 @@ use App\Departure;
 use App\Recipe;
 use App\Supply;
 use App\DepartureItem;
+use App\EntranceItem;
 use Illuminate\Http\Request;
 use App\Logbook;
 
@@ -21,7 +22,10 @@ class DepartureController extends Controller
 {
     public function index()
     {
-        $orders = Departure::where('visible', true)->where('status', '!=', 'Cancelada')->get();
+        if (Auth::user()->role_id == 3)
+            $orders = Departure::where('status', 'Pesado')->get();
+        else
+            $orders = Departure::where('visible', true)->where('status', '!=', 'Cancelada')->get();
         return view('departures.index', ['orders' => $orders]);
     }
 
@@ -34,6 +38,24 @@ class DepartureController extends Controller
 
     public function store(Request $request)
     {
+        $request->validate(
+            [
+                'recipe' => 'required',
+                'client' => 'required',
+                'lot' => 'required|unique:departures',
+                'line' => 'required',
+                'quantity' => 'required',
+            ],
+            [
+                'recipe.required' => 'La receta es requerida',
+                'client.required' => 'El cliente es requerido',
+                'lot.required' => 'El lote es requerido',
+                'line.required' => 'La linea es requerida',
+                'quantity.required' => 'La cantidad es requerida',
+                'lot.unique' => 'Este lote ya existe',
+            ]
+        );
+
         $recipe = Recipe::find($request->recipe);
 
         $total = Departure::count();
@@ -172,12 +194,39 @@ class DepartureController extends Controller
 
     public function updateItems(Request $request, $id)
     {
+
+        $x = 0;
+
         foreach ($request->id as $key => $value) {
-            if ($request->orderNumber[$key] !== NULL) {
-                DepartureItem::where('id', $request->id[$key])->update(["order_number" => $request->orderNumber[$key]]);
+            if ($request->orderNumber[$key] !== NULL && $request->processed[$key] == 0) {
+
+                $departureItem = DepartureItem::where('id', $request->id[$key])->first();
+                $departureItem->order_number = $request->orderNumber[$key];
+                $departureItem->processed = 1;
+                $departureItem->save();
+
+
+
+                $entrance = EntranceItem::find($request->orderNumber[$key]);
+                $realQuantity = $this->convert($entrance->supply->measurement_buy, $entrance->supply->measurement_use, $entrance->quantity);
+                $entrance->quantity = $this->reverse($entrance->supply->measurement_buy, $entrance->supply->measurement_use, ($realQuantity - (($departureItem->quantity + ($departureItem->quantity * ($departureItem->excess / 100))) * $departureItem->departure->quantity)));
+                $entrance->save();
+
+                $supply = Supply::find($request->supplyId[$key]);
+                $supply->stock = $supply->stock - (($departureItem->quantity + ($departureItem->quantity * ($departureItem->excess / 100))) * $departureItem->departure->quantity);
+                $supply->save();
             }
+            if ($x == 0) {
+                $departureItem = DepartureItem::where('id', $request->id[$key])->first();
+                $departure = $departure = Departure::find($departureItem->departure_id);
+            }
+            $x++;
         }
-        return redirect('ordenes-de-fabricacion')->with('success', 'Orden actualizada correctamente');
+
+        $pdf = PDF::setOptions(['isHtml5ParserEnabled' => true, 'isRemoteEnabled' => true])->loadView('pdfs.order_numbers', ["departure" => $departure]);
+        return $pdf->stream('numeros_de_entrada' . $departure->id . '.pdf');
+
+        //return redirect('ordenes-de-fabricacion')->with('success', 'Orden actualizada correctamente');
     }
 
     public function scan($id)
@@ -198,15 +247,16 @@ class DepartureController extends Controller
 
             if ($departure->status == 'Creada' && $request->status == 'Pesado') {
 
-                if(DepartureItem::where('departure_id', $id)->where("order_number", NULL)->count() > 0){
+                /*if(DepartureItem::where('departure_id', $id)->where("order_number", NULL)->count() > 0){
                     return redirect('ordenes-de-fabricacion')->with('error', 'No se pudo actualizar el estatus, algunos insumos de la orden aun no tiene número de entrada asignado.');
-                }
+                }*/
 
-                foreach ($departure->items as $item) {
+                /*foreach ($departure->items as $item) {
                     $supply = Supply::find($item->supplie_id);
                     $supply->stock = $supply->stock - (($item->quantity + ($item->quantity * ($item->excess / 100))) * $departure->quantity);
                     $supply->save();
-                }
+                }*/
+
                 if ($departure->type == 2 || $departure->type == 3) {
                     $departure->visible = false;
                 }
@@ -251,11 +301,11 @@ class DepartureController extends Controller
 
             if ($newStatus == 'Pesado') {
 
-                foreach ($departure->items as $item) {
+                /*foreach ($departure->items as $item) {
                     $supply = Supply::find($item->supplie_id);
                     $supply->stock = $supply->stock - (($item->quantity + ($item->quantity * ($item->excess / 100))) * $departure->quantity);
                     $supply->save();
-                }
+                }*/
 
                 if ($departure->type == 2 || $departure->type == 3) {
                     $departure->visible = false;
@@ -305,5 +355,43 @@ class DepartureController extends Controller
         }
 
         return redirect('ordenes-de-fabricacion')->with('success', 'Orden cancelada correctamente');
+    }
+
+    private function convert($type1, $type2, $quantity)
+    {
+        $total = 0;
+
+        if ($type1 == 2 && $type2 == 1) {
+            $total = $quantity * 1000;
+        } elseif ($type1 == 2 && $type2 == 6) {
+            $total = $quantity * 1000000;
+        } elseif ($type1 == 4 && $type2 == 6) {
+            $total = $quantity * 1000;
+        } elseif ($type1 == 4 && $type2 == 3) {
+            $total = $quantity * 1000;
+        } else {
+            $total = $quantity;
+        }
+
+        return $total;
+    }
+
+    private function reverse($type1, $type2, $quantity)
+    {
+        $total = 0;
+
+        if ($type1 == 2 && $type2 == 1) {
+            $total = $quantity / 1000;
+        } elseif ($type1 == 2 && $type2 == 6) {
+            $total = $quantity / 1000000;
+        } elseif ($type1 == 4 && $type2 == 6) {
+            $total = $quantity / 1000;
+        } elseif ($type1 == 4 && $type2 == 3) {
+            $total = $quantity / 1000;
+        } else {
+            $total = $quantity;
+        }
+
+        return $total;
     }
 }

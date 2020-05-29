@@ -13,7 +13,7 @@
                 </div>
             </div>
             <div class="card-body">
-                <form method="post" action="{{ url('ordenes-de-fabricacion/'.$departure->id.'/items') }}">
+                <form method="post" target="_blank" action="{{ url('ordenes-de-fabricacion/'.$departure->id.'/items') }}">
                     @method('PUT')
                     @csrf
                     <div class="row">
@@ -30,9 +30,11 @@
                                     @foreach($departure->items as $item)
                                      <tr>
                                          <td>{{ $item->supply->name }}</td>
-                                         <td>{{ number_format((($item->quantity * $departure->quantity ) / 1000),2)}} gr</td>
+                                         <td>{{ number_format(((($item->quantity + ($item->quantity * ($item->excess / 100))) * $departure->quantity) / 1000),2)}} gr</td>
                                          <td>
                                              <input type="hidden" name="id[]" value="{{$item->id}}">
+                                             <input type="hidden" name="supplyId[]" value="{{$item->supplie_id}}">
+                                             <input type="hidden" name="processed[]" value="{{$item->processed}}">
                                              <select name="orderNumber[]" id="" class="form-control">
                                                  <option value="">Seleccionar Número de Entrada</option>
                                                  @foreach($item->supply->entranceNumbers($item->supply->id) as $order)
@@ -63,3 +65,13 @@
 
 
 @stop
+
+@section("script")
+<script>
+    $('form').submit(function(){
+        setTimeout(function(){
+            window.history.back();
+        }, 3000)
+    })
+</script>
+@endsection
