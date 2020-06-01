@@ -23,7 +23,9 @@
                                     <tr>
                                         <th>Insumo</th>
                                         <th>Cantidad</th>
+                                        <th>Cantidad Surtida</th>
                                         <th>Número de Entrada</th>
+                                        <th>Fecha</th>
                                     </tr>
                                 </thead>
                                 <tbody>
