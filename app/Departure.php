@@ -22,6 +22,10 @@ class Departure extends Model
         return $this->belongsTo('App\User', 'created_by', 'id');
     }
 
+    public function exporter(){
+        return $this->belongsTo('App\User', 'user_id', 'id');
+    }
+
     public function items(){
         return $this->hasMany('App\DepartureItem', 'departure_id', 'id');
     }

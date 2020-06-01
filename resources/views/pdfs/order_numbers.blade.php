@@ -156,11 +156,12 @@
  <table class="table">
      <thead>
          <tr>
-             <td class="box-blue">Código (MP)</td>
-             <td class="box-blue">Nombre</td>
-             <td class="box-blue">Cantidad</td>
-             <td class="box-blue">No. Entrada</td>
-             <td class="box-blue">Fecha</td>
+             <td class="box-blue text-center">Código (MP)</td>
+             <td class="box-blue text-center">Nombre</td>
+             <td class="box-blue text-center">Cantidad</td>
+             <td class="box-blue text-center">Cantidad Surtida</td>
+             <td class="box-blue text-center">No. Entrada</td>
+             <td class="box-blue text-center">Fecha</td>
          </tr>
      </thead>
      <tbody>
@@ -168,9 +169,10 @@
          <tr>
              <td class="font-12 text-center">{{ $item->supply->code}}</td>
              <td class="font-12 text-center">{{ $item->supply->code}}</td>
-             <td class="font-12 text-center">{{ $item->quantity }} gr</td>
-             <td class="font-12 text-center">{{ sprintf("%05s", $item->order_number) }}</td>
-             <td class="font-12 text-center" style="width:25%;"></td>
+             <td class="font-12 text-center">{{ number_format(((($item->quantity + ($item->quantity * ($item->excess / 100))) * $departure->quantity) / 1000),2) }} gr</td>
+             <td class="font-12 text-center">{{ number_format($item->deliver_quantity,2) }} gr</td>
+             <td class="font-12 text-center">{{ $item->order_number == NULL ? "No definido":sprintf("%05s", $item->order_number) }}</td>
+             <td class="font-12 text-center" style="width:25%;">{{ date('d/m/Y', strtotime($item->deliver_date))}}</td>
          </tr>
          @endforeach
      </tbody>
@@ -179,8 +181,12 @@
  <table class="table">
      <tbody>
          <tr>
-             <td style="width:75%" class="text-right">Surtido</td>
-             <td>_________________________</td>
+             <td style="width:15%;"></td>
+             <td style="width:15%;"></td>
+             <td class="text-right"><b>Surtió:</b></td>
+             <td style="width:19.8%; text-align:center;">{{ $departure->exporter->name}}</td>
+             <td style="width:16.6%;" class="text-right"><b>Fecha:</b></td>
+             <td style="width:16.6%;">______________________</td>
          </tr>
      </tbody>
  </table>

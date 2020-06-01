@@ -31,6 +31,7 @@
                                      <tr>
                                          <td>{{ $item->supply->name }}</td>
                                          <td>{{ number_format(((($item->quantity + ($item->quantity * ($item->excess / 100))) * $departure->quantity) / 1000),2)}} gr</td>
+                                         <td><input type="text" class="form-control number" name="deliverQuantity[]" value="{{ $item->deliver_quantity !== NULL ? $item->deliver_quantity:((($item->quantity + ($item->quantity * ($item->excess / 100))) * $departure->quantity) / 1000)}}"></td>
                                          <td>
                                              <input type="hidden" name="id[]" value="{{$item->id}}">
                                              <input type="hidden" name="supplyId[]" value="{{$item->supplie_id}}">
@@ -42,6 +43,7 @@
                                                  @endforeach
                                              </select>
                                          </td>
+                                         <td><input type="date" class="form-control" name="deliverDate[]" value="{{ $item->deliver_date}}"></td>
                                      </tr>
                                     @endforeach
                                 </tbody>

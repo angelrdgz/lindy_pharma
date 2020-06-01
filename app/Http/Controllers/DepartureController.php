@@ -198,14 +198,13 @@ class DepartureController extends Controller
         $x = 0;
 
         foreach ($request->id as $key => $value) {
-            if ($request->orderNumber[$key] !== NULL && $request->processed[$key] == 0) {
 
-                $departureItem = DepartureItem::where('id', $request->id[$key])->first();
-                $departureItem->order_number = $request->orderNumber[$key];
-                $departureItem->processed = 1;
-                $departureItem->save();
+            $departureItem = DepartureItem::where('id', $request->id[$key])->first();
+            $departureItem->order_number = $request->orderNumber[$key];
+            $departureItem->deliver_date = $request->deliverDate[$key];
+            $departureItem->deliver_quantity = $request->deliverQuantity[$key];            
 
-
+            if ($request->processed[$key] == 0 && $request->orderNumber[$key] !== NULL) {
 
                 $entrance = EntranceItem::find($request->orderNumber[$key]);
                 $realQuantity = $this->convert($entrance->supply->measurement_buy, $entrance->supply->measurement_use, $entrance->quantity);
@@ -215,10 +214,17 @@ class DepartureController extends Controller
                 $supply = Supply::find($request->supplyId[$key]);
                 $supply->stock = $supply->stock - (($departureItem->quantity + ($departureItem->quantity * ($departureItem->excess / 100))) * $departureItem->departure->quantity);
                 $supply->save();
+
+                $departureItem->processed = 1;
             }
+
+            $departureItem->save();
+
             if ($x == 0) {
                 $departureItem = DepartureItem::where('id', $request->id[$key])->first();
-                $departure = $departure = Departure::find($departureItem->departure_id);
+                $departure =  Departure::find($departureItem->departure_id);
+                $departure->user_id = Auth::user()->id;
+                $departure->save();
             }
             $x++;
         }
