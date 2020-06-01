@@ -31,7 +31,7 @@
                                 <tbody>
                                     @foreach($departure->items as $item)
                                      <tr>
-                                         <td>{{ $item->supply->name.' '.$item->supply->name }}</td>
+                                         <td>{{ $item->supply->code.' '.$item->supply->name }}</td>
                                          <td>{{ number_format(((($item->quantity + ($item->quantity * ($item->excess / 100))) * $departure->quantity) / 1000),2)}} gr</td>
                                          <td><input type="text" class="form-control number" name="deliverQuantity[]" value="{{ $item->deliver_quantity !== NULL ? $item->deliver_quantity:((($item->quantity + ($item->quantity * ($item->excess / 100))) * $departure->quantity) / 1000)}}"></td>
                                          <td>
