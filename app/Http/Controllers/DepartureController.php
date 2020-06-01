@@ -201,7 +201,7 @@ class DepartureController extends Controller
 
             $departureItem = DepartureItem::where('id', $request->id[$key])->first();
             $departureItem->order_number = $request->orderNumber[$key];
-            $departureItem->deliver_date = $request->deliverDate[$key];
+            $departureItem->deliver_date = date('Y-m-d');// $request->deliverDate[$key];
             $departureItem->deliver_quantity = $request->deliverQuantity[$key];            
 
             if ($request->processed[$key] == 0 && $request->orderNumber[$key] !== NULL) {
