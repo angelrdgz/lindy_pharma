@@ -95,7 +95,8 @@
               </div>
             </div>
             @endif
-            <div class="col-sm-4">
+            <input type="hidden" name="supplier" value="{{$supply->supplier_id}}">
+            <!--<div class="col-sm-4">
               <div class="form-group">
                 <label for="exampleFormControlInput1">Proveedor</label>
                 <select name="supplier" id="" class="form-control" {{ Auth::user()->role_id == 3 ? 'readonly':'' }}>
@@ -104,7 +105,7 @@
                   @endforeach
                 </select>
               </div>
-            </div>
+            </div>-->
           </div>
           <hr>
           <div class="row">
