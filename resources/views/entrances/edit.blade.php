@@ -83,10 +83,14 @@
                     </th>
                   </tr>
                   <tr>
+                    <th>Código</th>
                     <th>Nombre</th>
+                    <th>Entrada</th>
                     <th>Cantidad</th>
+                    @if(Auth::user()->role_id !== 2)
                     <th>Precio</th>
                     <th>Moneda</th>
+                    @endif
                     <th>Medida de Uso</th>
                     <th>Estatus</th>
                     <th></th>
@@ -96,20 +100,30 @@
                   @foreach($entrance->items as $item)
                   <tr>
                     <input type="hidden" name="updated[]" value="{{$item->status == 'Aprobada' ? 1:0}}">
+
+                    <td>{{ $item->supply->code }}</td>
                     <td>
                       <input type="hidden" name="idItem[]" value="{{ $item->id }}">
                       <input type="hidden" name="deletedItem[]" value="0" class="deleteInput">
                       <input type="hidden" name="splittedItem[]" value="{{ $item->splitted }}" class="deleteInput">
                       <input type="hidden" value="{{ $item->supply_id}}" class="idItem" name="idSupplyItem[]" />
                       <input type="hidden" name="lotSupplierItems[]" value="" class="form-control">
-                      <input type="text" {{ Auth::user()->role_id == 2 ? 'readonly':''}} value="{{ $item->supply->name }}" class="form-control itemContentidRow+'" /></td>
+                      <input type="text" {{ Auth::user()->role_id == 2 ? 'readonly':''}} value="{{ $item->supply->name }}" class="form-control itemContentidRow+'" />
+                    </td>
+                    <td>{{ sprintf("%05s", $item->id) }}</td>
                     <td><input type="text" {{ Auth::user()->role_id == 2 ? 'readonly':''}} name="quantityItem[]" value="{{ $item->quantity}}" class="form-control" /></td>
+                    @if(Auth::user()->role_id == 2)
+                    <input type="hidden" name="priceItem[]" value="{{ $item->price }}">
+                    <input type="hidden" name="currencyItem[]" value="{{ $item->currency_id }}">
+                    @else
                     <td><input type="text" {{ Auth::user()->role_id == 2 ? 'readonly':''}} name="priceItem[]" value="{{ $item->price}}" class="form-control" /></td>
                     <td><select class="form-control" {{ Auth::user()->role_id == 2 ? 'readonly':''}} name="currencyItem[]">
                         @foreach($currencies as $currency)
                         <option value="{{ $currency->id }}" {{$item->currency_id == $currency->id ? 'selected':''}}> {{$currency->name }} </option>
                         @endforeach
-                      </select></td>
+                      </select>
+                    </td>
+                    @endif
                     <td class="text-center"><span> {{ $item->supply->measurementBuy->name}} </span></td>
                     <td>
                       @if($item->status == 'Cuarentena')
@@ -271,7 +285,7 @@
   })
 
   $(document).on('click', '.removeRow', function() {
-     row = $(this)
+    row = $(this)
     $.confirm({
       title: '¿Estas seguro?',
       content: 'Se eliminara el número de entrada',
@@ -283,9 +297,9 @@
             row.closest('tr').find('.deleteInput').val(1)
             row.closest('tr').hide()
           }
-          
+
         },
-        cancel:{
+        cancel: {
           text: 'No, Cancelar',
           btnClass: 'btn-secondary',
           action: function(cancel) {
