@@ -114,8 +114,8 @@
 
     .qr {
       width: 100px;
-      display:block;
-      margin:0 auto;
+      display: block;
+      margin: 0 auto;
       height: 100px;
     }
 
@@ -245,19 +245,26 @@
     <tbody>
       <?php
       $subtotal = 0;
+      $mainCurrency = '';
+      $x = 0;
       ?>
-      <?php $mainCurrency = ''; $x = 0;?>
       @foreach($entrance->items as $item)
-
-      <?php if($x == 0){ $mainCurrency = $item->currency->code;}?>
+      <?php 
+      if ($x == 0) {
+        $mainCurrency = $item->currency->code;
+      } 
+      ?>
       <tr>
         <td class="text-center">{{ $item->quantity }}</td>
         <td class="text-center">{{ $item->supply->measurementBuy->code == NULL ? "N/A":$item->supply->measurementBuy->code }}</td>
         <td class="text-center">{{ $item->supply->code.' - '.$item->supply->name }}</td>
-        <td class="text-right">${{ number_format($item->price,2).' '.$item->currency->code }}</td>
-        <td class="text-right">${{ number_format(($item->quantity * $item->price),2).' '.$item->currency->code }}</td>
+        <td class="text-right">${{ number_format($item->price,2).' '.$mainCurrency }}</td>
+        <td class="text-right">${{ number_format(($item->quantity * $item->price),2).' '.$mainCurrency }}</td>
       </tr>
-      <?php $subtotal += $item->quantity * $item->price; $x++; ?>
+      <?php
+      $subtotal += $item->quantity * $item->price;
+      $x++;
+      ?>
       @endforeach
     </tbody>
     <tfoot>
@@ -282,7 +289,7 @@
   <br>
   <table style="width:100%;" cellspacing="0">
     <tbody>
-    <tr>
+      <tr>
         <td></td>
         <td class="text-center" style="font-size: 10px;">{{ $entrance->mader }}</td>
         <td></td>
@@ -333,8 +340,8 @@
     </table>
   </div>
   <div style="width:20%; float:right;">
-  <img class="qr" src="{{ public_path().'/images/qrcode/entrances/qrcode_entrance_'.$entrance->id.'.png' }}" alt="">
-</div>
+    <img class="qr" src="{{ public_path().'/images/qrcode/entrances/qrcode_entrance_'.$entrance->id.'.png' }}" alt="">
+  </div>
 
 </body>
 
