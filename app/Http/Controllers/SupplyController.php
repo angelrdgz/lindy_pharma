@@ -160,10 +160,9 @@ class SupplyController extends Controller
             $supply->supplier = $supply->entrance->supplier->name;
             $supply->entrance_id = '#' . strval(sprintf("%05s", $supply->entrance_id));
             $supply->idx = '#' . strval(sprintf("%05s", $supply->id));
-            
         });
 
-        $csvExporter->build($items, ["created_at" => "Fecha", 'supply_id' => "Codigo Producto", "name" => "Nombre Producto", "entrance_id"=>"No Orden de Compra", "lot_supplier"=>"Lote de Proveedor", "idx" => "Numero de Entrada", "quantity" => "Cantidad Kg", "cups" => "No de Envases", "expired_date" => "Fecha de Caducidad", "reanalized_date" => "Fecha de Reanalisis", "supplier" => "Proveedor"] /**/)->download('insumos_' . date('d_m_Y') . '.csv');
+        $csvExporter->build($items, ["created_at" => "Fecha", 'supply_id' => "Codigo Producto", "name" => "Nombre Producto", "entrance_id" => "No Orden de Compra", "lot_supplier" => "Lote de Proveedor", "idx" => "Numero de Entrada", "quantity" => "Cantidad Kg", "cups" => "No de Envases", "expired_date" => "Fecha de Caducidad", "reanalized_date" => "Fecha de Reanalisis", "supplier" => "Proveedor"] /**/)->download('insumos_' . date('d_m_Y') . '.csv');
 
         // Register the hook before building
         /*$csvExporter->beforeEach(function ($supply) {
@@ -196,22 +195,27 @@ class SupplyController extends Controller
         $csvExporter->beforeEach(function ($supply) {
             $supply->type_id = $supply->type->name;
             $supply->supplier_id = $supply->supplier->name;
-            $supply->stock = $supply->stock / 1000000;
             switch ($supply->measurement_use) {
-                case 5:
-                    $supply->price = $supply->price * $supply->stock;
-                    break;
                 case 6:
+                    $supply->stock = $supply->stock / 1000000;
+                    $supply->price = $supply->price * ($supply->stock / 1000000);
+                    break;
+                case 3:
+                    $supply->stock = $supply->stock / 1000000;
+                    $supply->price = $supply->price * ($supply->stock / 1000000);
+                    break;
+                case 1:
+                    $supply->stock = $supply->stock / 1000;
                     $supply->price = $supply->price * ($supply->stock / 1000);
                     break;
-
                 default:
-                    $supply->price = $supply->price * ($supply->stock / 1000);
+                    $supply->stock = $supply->stock;
+                    $supply->price = $supply->price * $supply->stock;
                     break;
             }
         });
 
-        $csvExporter->build($items, ['code' => 'Código', 'name' => 'Nombre', 'type_id' => 'Tipo', 'stock' => 'Cantidad (Kg)', 'price' => 'Valor En Stock', 'supplier_id' => 'Proveedor'])->download('insumos_' . date('d_m_Y') . '.csv');        
+        $csvExporter->build($items, ['code' => 'Código', 'name' => 'Nombre', 'type_id' => 'Tipo', 'stock' => 'Cantidad (Kg)', 'price' => 'Valor En Stock', 'supplier_id' => 'Proveedor'])->download('insumos_' . date('d_m_Y') . '.csv');
     }
 
     public function exportSupply($id)
