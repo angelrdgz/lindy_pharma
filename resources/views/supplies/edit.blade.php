@@ -82,7 +82,24 @@
             <div class="col-sm-4">
               <div class="form-group">
                 <label for="exampleFormControlInput1">Stock</label>
-                <input type="text" class="form-control number" {{ Auth::user()->role_id == 3 ? 'readonly':'' }} value="{{ $supply->stock / 1000000 }}" name="stock">
+                <?php
+                $quanty = 0;
+                switch ($supply->measurement_use) {
+                  case 6:
+                    $quanty = $supply->stock / 1000000;
+                    break;
+                  case 3:
+                    $quanty = $supply->stock / 1000000;
+                    break;
+                    case 1:
+                      $quanty = $supply->stock / 1000;
+                      break;
+                  default:
+                    $quanty = $supply->stock;
+                    break;
+                }
+                ?>
+                <input type="text" class="form-control number" {{ Auth::user()->role_id == 3 ? 'readonly':'' }} value="{{ $quanty  }}" name="stock">
               </div>
             </div>
             @if(Auth::user()->role_id == 3)
