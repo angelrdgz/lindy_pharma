@@ -98,7 +98,7 @@
             <div class="col-sm-4">
               <div class="form-group">
                 <label for="exampleFormControlInput1">Proveedor</label>
-                <select name="supplier" id="" class="form-control">
+                <select name="supplier" id="" class="form-control" {{ Auth::user()->role_id == 3 ? 'readonly':'' }}>
                   @foreach($suppliers as $supplier)
                   <option value="{{ $supplier->id }}" {{$supply->supplier_id == $supplier->id ? 'selected':''}}>{{ $supplier->name }}</option>
                   @endforeach
@@ -115,6 +115,7 @@
                   <tr>
                     <th>Número de entrada</th>
                     <th>Cantidad</th>
+                    <th>Proveedor</th>
                     <th>No Lote Proveedor</th>
                     <th>No de Envases</th>
                     <th>Fecha de Caducidad</th>
@@ -128,6 +129,7 @@
                     <input type="hidden" name="idItems[]" value="{{ $order->id }}" class="form-control number">
                     <td>{{ $order->id }}</td>
                     <td>{{ number_format($order->quantity,4) }}</td>
+                    <td>{{ $order->entrance->supplier->name }}</td>
                     <td>
                       <input type="text" name="lotSupplierItems[]" {{$order->status == 'Rechazada' ? "readonly":'' }} value="{{ $order->lot_supplier }}" class="form-control">
                     </td>

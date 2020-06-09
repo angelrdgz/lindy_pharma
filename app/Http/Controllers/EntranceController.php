@@ -232,8 +232,11 @@ class EntranceController extends Controller
     public function destroy($id)
     {
         $entrance = Entrance::find($id);
-        $entrance->status = "Cancelada";
-        $entrance->save();
+
+        $entrance->items()->delete();
+        $entrance->comments()->delete();
+
+        
 
         $logbook = new Logbook();
         $logbook->type_id = 3;
@@ -242,6 +245,8 @@ class EntranceController extends Controller
         $logbook->icon = 'fas fa-cart-arrow-down';
         $logbook->created_by = Auth::user()->id;
         $logbook->save();
+
+        $entrance->delete();
 
         return redirect('ordenes-de-compra')->with('success', 'Orden cancelada correctamente');
     }

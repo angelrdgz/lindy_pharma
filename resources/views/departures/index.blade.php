@@ -64,6 +64,12 @@
                     </span>
                     <span class="text">Modificar</span>
                   </a>
+                  <a href="{{ url('ordenes-de-fabricacion/'.$order->id)}}" target="_blank" class="btn btn-info btn-icon-split btn-sm">
+                    <span class="icon text-white-50">
+                      <i class="far fa-eye"></i>
+                    </span>
+                    <span class="text">Reporte</span>
+                  </a>
                 </td>
               </tr>
               @endforeach

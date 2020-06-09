@@ -15,6 +15,7 @@
   <link href="{{ asset('css/font_awesome.css') }}" rel="stylesheet" type="text/css">
   <link rel="stylesheet" href="{{ asset('css/jquery_ui.css')}}">
   <link rel="stylesheet" href="{{ asset('css/jquery_alerts.css')}}">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/css/bootstrap-select.css" />
   <link href="{{ asset('css/dataTables.bootstrap4.css') }}" rel="stylesheet" type="text/css">
   <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
 
@@ -132,11 +133,11 @@
         </div>
       </li>
       @endif
-      @if(in_array(Auth::user()->role_id, [1,2]))
-      <li class="nav-item {{ Request::is('ordenes-de-acondicionamiento') ? 'active':'' }}">
-        <a class="nav-link" href="{{ url('ordenes-de-acondicionamiento') }}">
+      @if(in_array(Auth::user()->role_id, [1,2,4]))
+      <li class="nav-item text-wrap {{ Request::is('ordenes-de-acondicionamiento') ? 'active':'' }}">
+        <a class="nav-link text-wrap" href="{{ url('ordenes-de-acondicionamiento') }}">
           <i class="fas fa-box"></i>
-          <span>Ordenes de Acondicionamiento</span></a>
+          <span class="">Ordenes de Acondicionamiento</span></a>
       </li>
       @endif
       <!--<li class="nav-item">
@@ -180,7 +181,7 @@
               <i class="fas fa-industry"></i>
               <span>Producción</span>
             </a>
-            <a class="collapse-item" href="{{ url('ordenes-de-acondicionamiento') }}">
+            <a class="collapse-item text-wrap" href="{{ url('ordenes-de-acondicionamiento') }}">
               <i class="fas fa-clipboard"></i>
               <span>Ordenes de Acondicionado</span>
             </a>
@@ -561,6 +562,8 @@
   </div>
 
   <!-- Bootstrap core JavaScript-->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js"
+integrity="sha384-b/U6ypiBEHpOf/4+1nzFpr53nxSS+GLCkfwBdFNTxtclqqenISfwAzpKaMNFNmj4" crossorigin="anonymous"></script>
   <script src="{{ asset('js/jquery_3.4.1.js') }}"></script>
   <script src="{{ asset('js/jquery_ui.js')}}"></script>
   <script src="{{ asset('js/jquery_alerts.js')}}"></script>
@@ -570,6 +573,8 @@
   <script src="{{ asset('js/jquery.easing.js')}} "></script>
   <script src="{{ asset('js/jquery.dataTables.js')}} "></script>
   <script src="{{ asset('js/dataTables.bootstrap4.js')}} "></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/js/bootstrap-select.min.js"></script>
 
   <!-- Custom scripts for all pages-->
   <script src="{{ asset('js/sb-admin-2.js')}} "></script>

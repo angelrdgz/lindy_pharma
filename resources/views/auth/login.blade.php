@@ -73,6 +73,7 @@
 </html>-->
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -80,58 +81,75 @@
   <link rel="stylesheet" href="{{ asset('css/app.css') }}">
   <title>Lindy Pharma</title>
 </head>
+
 <body id="login">
-<div class="d-md-flex h-md-100 align-items-center">
+  <div class="d-md-flex h-md-100 align-items-center">
 
-<!-- First Half -->
+    <!-- First Half -->
 
-<div class="col-md-6 p-0 bg-white h-md-100">
-    <div class="text-white d-md-flex align-items-center h-100 p-5 text-center justify-content-center">
+    <div class="col-md-6 p-0 bg-white h-md-100">
+      <div class="text-white d-md-flex align-items-center h-100 p-5 text-center justify-content-center">
         <div class="logoarea pt-5 pb-5">
-        <h1 class="text-center text-5xl">¡Bienvenido!</h1>
-        @if (session('error'))
-          <div class="row ">          
-            <div class="col-sm-12 mb-10">
-                  <div class="card bg-danger text-white shadow">
-                    <div class="card-body">
-                    {{ session('error') }}
-                    </div>
+          <h1 class="text-center text-5xl">¡Bienvenido!</h1>
+          @if (1 == 2)
+          <div class="row ">
+            <div class="col-sm-12 mb-3">
+              <div class="card bg-danger text-white shadow">
+                <div class="card-body">
+                  <div class="alert alert-info">
+                    <p>
+                      Your session has expired. Please login back!.
+                    </p>
                   </div>
-                </div>            
+                </div>
+              </div>
+            </div>
+          </div>
+          @endif
+          @if (session('error'))
+          <div class="row ">
+            <div class="col-sm-12 mb-10">
+              <div class="card bg-danger text-white shadow">
+                <div class="card-body">
+                  {{ session('error') }}
+                </div>
+              </div>
+            </div>
           </div>
           <br>
           @endif
-  <form action="{{ url('/login') }}" method="post" class="bg-white rounded px-8 pt-6 pb-8 mb-6">
-   @csrf
-  <div class="form-group">
-    <label for="exampleInputEmail1">Email</label>
-    <input type="email" name="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
-    @error('email')
-            <p class="text-red-500 text-xs text-danger italic">El usuario es requerido.</p>
-      @enderror 
-  </div>
-  <div class="form-group">
-    <label for="exampleInputPassword1">Contraseña</label>
-    <input name="password" type="password" class="form-control" id="exampleInputPassword1">
-    @error('password')
-            <p class="text-red-500 text-danger text-xs italic">La contraseña es requerida.</p>
-      @enderror 
-  </div>
-  <button type="submit" class="btn btn-primary">Entrar</button>
-</form>
+          <form action="{{ url('/login') }}" method="post" class="bg-white rounded px-8 pt-6 pb-8 mb-6">
+            @csrf
+            <div class="form-group">
+              <label for="exampleInputEmail1">Email</label>
+              <input type="email" name="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
+              @error('email')
+              <p class="text-red-500 text-xs text-danger italic">El usuario es requerido.</p>
+              @enderror
+            </div>
+            <div class="form-group">
+              <label for="exampleInputPassword1">Contraseña</label>
+              <input name="password" type="password" class="form-control" id="exampleInputPassword1">
+              @error('password')
+              <p class="text-red-500 text-danger text-xs italic">La contraseña es requerida.</p>
+              @enderror
+            </div>
+            <button type="submit" class="btn btn-primary">Entrar</button>
+          </form>
         </div>
+      </div>
     </div>
-</div>
 
-<!-- Second Half -->
+    <!-- Second Half -->
 
-<div class="col-md-6 p-0 bg-white h-md-100 loginarea">
-    <div class="d-flex flex-column justify-content-center align-items-center h-md-100 p-5 justify-content-center">
-    <img src="{{ asset('images/logo.png') }}" class="logo" alt="">
-  <img src="{{ asset('images/chemistry_gif.gif') }}" class="chemistry" alt="">
+    <div class="col-md-6 p-0 bg-white h-md-100 loginarea">
+      <div class="d-flex flex-column justify-content-center align-items-center h-md-100 p-5 justify-content-center">
+        <img src="{{ asset('images/logo.png') }}" class="logo" alt="">
+        <img src="{{ asset('images/chemistry_gif.gif') }}" class="chemistry" alt="">
+      </div>
     </div>
-</div>
-    
-</div>
+
+  </div>
 </body>
+
 </html>

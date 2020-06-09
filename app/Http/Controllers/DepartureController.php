@@ -7,6 +7,7 @@ use App\Departure;
 use App\Recipe;
 use App\Supply;
 use App\DepartureItem;
+use App\DepartureItemEntrance;
 use App\EntranceItem;
 use Illuminate\Http\Request;
 use App\Logbook;
@@ -23,7 +24,7 @@ class DepartureController extends Controller
     public function index()
     {
         if (Auth::user()->role_id == 3)
-            $orders = Departure::where('status', 'Pesado')->get();
+            $orders = Departure::where('status', 'Liberado')->get();
         else
             $orders = Departure::where('visible', true)->where('status', '!=', 'Cancelada')->get();
         return view('departures.index', ['orders' => $orders]);
@@ -168,15 +169,27 @@ class DepartureController extends Controller
 
     public function show($id)
     {
-        $order = Departure::find($id);
-        $recipe = Recipe::find($order->recipe_id);
-        $totals = DB::select('SELECT quantity + (quantity * (excess / 100)) as "Total" FROM recipe_supplies where recipe_id = :id AND type = 1', ["id" => $order->recipe_id]);
-        $tt = 0;
-        foreach ($totals as $total) {
-            $tt += $total->Total;
+        if (Auth::user()->role_id == 3) {
+            $order = Departure::find($id);
+            $recipe = Recipe::find($order->recipe_id);
+            $totals = DB::select('SELECT quantity + (quantity * (excess / 100)) as "Total" FROM recipe_supplies where recipe_id = :id AND type = 1', ["id" => $order->recipe_id]);
+            $tt = 0;
+            foreach ($totals as $total) {
+                $tt += $total->Total;
+            }
+            $pdf = PDF::setOptions(['isHtml5ParserEnabled' => true, 'isRemoteEnabled' => true])->loadView('pdfs.order_numbers', ["departure" => $order, "recipe" => $recipe, "totalSupplies" => $tt]);
+            return $pdf->stream('listado_de_mp_' . $order->id . '.pdf');
+        } else {
+            $order = Departure::find($id);
+            $recipe = Recipe::find($order->recipe_id);
+            $totals = DB::select('SELECT quantity + (quantity * (excess / 100)) as "Total" FROM recipe_supplies where recipe_id = :id AND type = 1', ["id" => $order->recipe_id]);
+            $tt = 0;
+            foreach ($totals as $total) {
+                $tt += $total->Total;
+            }
+            $pdf = PDF::setOptions(['isHtml5ParserEnabled' => true, 'isRemoteEnabled' => true])->loadView('pdfs.pdf', ["order" => $order, "recipe" => $recipe, "totalSupplies" => $tt]);
+            return $pdf->stream('orden_de_fabricación_' . $order->id . '.pdf');
         }
-        $pdf = PDF::setOptions(['isHtml5ParserEnabled' => true, 'isRemoteEnabled' => true])->loadView('pdfs.pdf', ["order" => $order, "recipe" => $recipe, "totalSupplies" => $tt]);
-        return $pdf->stream('orden_de_fabricación_' . $order->id . '.pdf');
     }
 
     public function edit($id)
@@ -200,39 +213,71 @@ class DepartureController extends Controller
         foreach ($request->id as $key => $value) {
 
             $departureItem = DepartureItem::where('id', $request->id[$key])->first();
-            $departureItem->order_number = $request->orderNumber[$key];
             $departureItem->deliver_date = date('Y-m-d');// $request->deliverDate[$key];
-            $departureItem->deliver_quantity = $request->deliverQuantity[$key];            
+            $departureItem->deliver_quantity = $request->deliverQuantity[$key];
 
+            $totalQuantity = $this->convert($departureItem->supply->measurement_buy, $departureItem->supply->measurement_use, ($departureItem->quantity + ($departureItem->quantity * ($departureItem->excess / 100)) * $departureItem->departure->quantity));
             if ($request->processed[$key] == 0 && $request->orderNumber[$key] !== NULL) {
 
-                $entrance = EntranceItem::find($request->orderNumber[$key]);
-                $realQuantity = $this->convert($entrance->supply->measurement_buy, $entrance->supply->measurement_use, $entrance->quantity);
-                $entrance->quantity = $this->reverse($entrance->supply->measurement_buy, $entrance->supply->measurement_use, ($realQuantity - (($departureItem->quantity + ($departureItem->quantity * ($departureItem->excess / 100))) * $departureItem->departure->quantity)));
-                $entrance->save();
+                $ids = explode(",", $request->orderNumber[$key]);
 
-                $supply = Supply::find($request->supplyId[$key]);
-                $supply->stock = $supply->stock - (($departureItem->quantity + ($departureItem->quantity * ($departureItem->excess / 100))) * $departureItem->departure->quantity);
-                $supply->save();
+                $total = $this->convert($departureItem->supply->measurement_buy, $departureItem->supply->measurement_use, ($departureItem->quantity + ($departureItem->quantity * ($departureItem->excess / 100)) * $departureItem->departure->quantity));
+
+                foreach ($ids as $idx) {
+
+                    $entrance = EntranceItem::find($idx);
+                    $realQuantity = $this->convert($entrance->supply->measurement_buy, $entrance->supply->measurement_use, $entrance->quantity);
+                    if ($total >= $realQuantity) {
+                        $entrance->quantity = 0;
+                        $different = $realQuantity;
+                    } else {
+                        $entrance->quantity = $this->reverse($entrance->supply->measurement_buy, $entrance->supply->measurement_use, ($realQuantity - $total));
+                        $different = $total;
+                    }
+
+                    $entrance->save();
+
+                    $supply = Supply::find($request->supplyId[$key]);
+                    if ($total >= $realQuantity) {
+                        $supply->stock = $supply->stock - $realQuantity;
+                    } else {
+                        $supply->stock = 0;
+                    }
+
+                    $supply->save();
+
+                    $total -= $realQuantity;
+
+                    $die = new DepartureItemEntrance();
+                    $die->departure_item_id = $departureItem->id;
+                    $die->quantity = $this->reverse($entrance->supply->measurement_buy, $entrance->supply->measurement_use, $totalQuantity);
+                    $die->delivery_quantity = $this->reverse($entrance->supply->measurement_buy, $entrance->supply->measurement_use, $different);
+                    $die->entrance_number = $idx;
+                    $die->supply_id = $request->supplyId[$key];
+                    $die->save();
+
+                    if ($total <= 0) {
+                        break;
+                    }
+                }
 
                 $departureItem->processed = 1;
             }
 
-            $departureItem->save();
-
             if ($x == 0) {
-                $departureItem = DepartureItem::where('id', $request->id[$key])->first();
                 $departure =  Departure::find($departureItem->departure_id);
                 $departure->user_id = Auth::user()->id;
                 $departure->save();
             }
             $x++;
+
+            $departureItem->save();
         }
 
         $pdf = PDF::setOptions(['isHtml5ParserEnabled' => true, 'isRemoteEnabled' => true])->loadView('pdfs.order_numbers', ["departure" => $departure]);
         return $pdf->stream('numeros_de_entrada' . $departure->id . '.pdf');
 
-        //return redirect('ordenes-de-fabricacion')->with('success', 'Orden actualizada correctamente');
+        return redirect('ordenes-de-fabricacion')->with('success', 'Orden actualizada correctamente');
     }
 
     public function scan($id)

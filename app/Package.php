@@ -18,6 +18,14 @@ class Package extends Model
         return $this->belongsTo('App\User');
     }
 
+    public function exporter(){
+        return $this->belongsTo('App\User', 'user_id', 'id');
+    }
+
+    public function recipes(){
+        return $this->hasMany('App\PackageRecipe');
+    }
+
     public function supplies(){
         return $this->hasMany('App\PackageSupply');
     }

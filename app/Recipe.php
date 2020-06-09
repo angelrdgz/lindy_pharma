@@ -21,4 +21,9 @@ class Recipe extends Model
     public function mold(){
         return $this->belongsTo('App\Mold');
     }
+
+    public function lotNumbers($id){
+        $entrances = \DB::select("select departures.* from departures WHERE departures.recipe_id = :id AND departures.status = 'Inspección' AND departures.quantity_real > 0 AND departures.type = 1", ["id"=>$id]);
+        return $entrances;
+    }
 }

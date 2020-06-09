@@ -24,10 +24,16 @@
                                 <option value="{{ $product->id }}">{{ $product->code.' - '.$product->name }}</option>
                                 @endforeach
                             </select>
+                            @error('product')
+                            <p class="text-red-500 text-xs text-danger italic">{{ $message }}</p>
+                            @enderror
                         </div>
                         <div class="col-sm-4">
                             <label for="">Cantidad</label>
                             <input type="text" name="quantity" class="form-control number">
+                            @error('quantity')
+                            <p class="text-red-500 text-xs text-danger italic">{{ $message }}</p>
+                            @enderror
                         </div>
                         <div class="col-sm-4">
                             <label for="">Cliente</label>
@@ -37,27 +43,45 @@
                                 <option value="{{ $client->id }}">{{ $client->name }}</option>
                                 @endforeach
                             </select>
+                            @error('client')
+                            <p class="text-red-500 text-xs text-danger italic">{{ $message }}</p>
+                            @enderror
                         </div>
                         <div class="col-sm-4">
                             <label for="">Lote</label>
                             <input type="text" name="lot" class="form-control">
+                            @error('lot')
+                            <p class="text-red-500 text-xs text-danger italic">{{ $message }}</p>
+                            @enderror
                         </div>
                         <div class="col-sm-4">
                             <label for="">Presentación</label>
                             <input type="text" name="presentation" class="form-control">
+                            @error('presentation')
+                            <p class="text-red-500 text-xs text-danger italic">{{ $message }}</p>
+                            @enderror
                         </div>
                         <div class="col-sm-4">
                             <label for="">Fecha de Expiración</label>
                             <input type="date" name="expire" class="form-control">
+                            @error('expire')
+                            <p class="text-red-500 text-xs text-danger italic">{{ $message }}</p>
+                            @enderror
                         </div>
                         <div class="col-sm-4">
                             <label for="">Forma Farmacéutica</label>
                             <input type="text" name="form" class="form-control">
+                            @error('form')
+                            <p class="text-red-500 text-xs text-danger italic">{{ $message }}</p>
+                            @enderror
                         </div>
                         <div class="col-sm-4">
                             <label for="">Precio Máximo</label>
                             <input type="text" name="price" class="form-control number">
-                        </div>                        
+                            @error('price')
+                            <p class="text-red-500 text-xs text-danger italic">{{ $message }}</p>
+                            @enderror
+                        </div>
                     </div>
                     <br>
                     <div class="row">

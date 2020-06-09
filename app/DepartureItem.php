@@ -15,4 +15,8 @@ class DepartureItem extends Model
     public function departure(){
         return $this->belongsTo('App\Departure', 'departure_id', 'id');
     }
+
+    public function entrances(){
+        return $this->hasMany('App\DepartureItemEntrance', 'departure_item_id', 'id');
+    }
 }

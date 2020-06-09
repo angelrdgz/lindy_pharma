@@ -65,11 +65,7 @@
                             <select name="status" id="" class="form-control">
                                 <option {{ $package->status == NULL ? "selected":""}} value="">Seleccionar Estatus</option>
                                 <option {{ $package->status == "Creada" ? "selected":""}} value="Creada">Creada</option>
-                                <option {{ $package->status == "Surtido de Insumos" ? "selected":""}} value="Surtido de Insumos">Surtido de Insumos</option>
-                                <option {{ $package->status == "Envasado Primario" ? "selected":""}} value="Envasado Primario">Envasado Primario</option>
-                                <option {{ $package->status == "Envasado Secundario" ? "selected":""}} value="Envasado Secundario">Envasado Secundario</option>
-                                <option {{ $package->status == "Acondicionamiento en Tarimas" ? "selected":""}} value="Acondicionamiento en Tarimas">Acondicionamiento en Tarimas</option>
-                                <option {{ $package->status == "Finalizada" ? "selected":""}} value="Finalizada">Finalizada</option>
+                                <option {{ $package->status == "Liberada" ? "selected":""}} value="Liberada">Liberada</option>
                             </select>
                         </div>
                         @endif

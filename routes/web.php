@@ -55,6 +55,7 @@ Route::middleware(['auth'])->group(function () {
 
     Route::get('ordenes-de-fabricacion/{id}/escanear', 'DepartureController@scan');
     Route::put('ordenes-de-fabricacion/{id}/items', 'DepartureController@updateItems');
+    Route::put('ordenes-de-acondicionamiento/{id}/items', 'PackingController@updateItems');
     
 });
 

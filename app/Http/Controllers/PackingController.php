@@ -5,7 +5,12 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 
 use App\Package;
+use App\Departure;
+use App\PackageRecipe;
 use App\PackageSupply;
+use App\PackageProductLot;
+use App\PackageSupplyEntrance;
+use App\EntranceItem;
 use App\Product;
 use App\Client;
 use App\Supply;
@@ -20,7 +25,11 @@ class PackingController extends Controller
 {
     public function index()
     {
-        $packages = Package::all();
+        if (Auth::user()->role_id == 3)
+            $packages = Package::where("status", "Liberada")->get();
+        else
+            $packages = Package::all();
+
         return view('packing.index', ["packages" => $packages]);
     }
 
@@ -34,6 +43,31 @@ class PackingController extends Controller
 
     public function store(Request $request)
     {
+
+        $request->validate(
+            [
+                'product' => 'required',
+                'client' => 'required',
+                'lot' => 'required|unique:packages',
+                'form' => 'required',
+                'quantity' => 'required',
+                'price' => 'required',
+                'expire' => 'required',
+                'presentation' => 'required',
+            ],
+            [
+                'product.required' => 'El producto es requerido',
+                'client.required' => 'El cliente es requerido',
+                'lot.required' => 'El lote es requerido',
+                'form.required' => 'La formula es requerida',
+                'quantity.required' => 'La cantidad es requerida',
+                'price.required' => 'El precio es requerido',
+                'expire.required' => 'La fecha de caducidad es requerida',
+                'presentation.required' => 'La presentación es requerida',
+                'lot.unique' => 'Este lote ya existe',
+            ]
+        );
+
         $package = new Package();
         $package->product_id = $request->product;
         $package->quantity = $request->quantity;
@@ -47,6 +81,26 @@ class PackingController extends Controller
         $package->user_id = Auth::user()->id;
         $package->save();
 
+        $product = Product::find($request->product);
+
+        foreach ($product->recipes as $recipe) {
+            $packageRecipe = new PackageRecipe();
+            $packageRecipe->package_id = $package->id;
+            $packageRecipe->recipe_id = $recipe->recipe_id;
+            $packageRecipe->quantity = $recipe->quantity;
+            $packageRecipe->excess = $recipe->excess;
+            $packageRecipe->save();
+        }
+
+        foreach ($product->supplies as $supply) {
+            $packageSupply = new PackageSupply();
+            $packageSupply->package_id = $package->id;
+            $packageSupply->supply_id = $supply->supply_id;
+            $packageSupply->quantity = $supply->quantity;
+            $packageSupply->excess = $supply->excess;
+            $packageSupply->save();
+        }
+
         QrCode::size(150)->format('png')->generate(env('APP_URL') . 'ordenes-de-acondicionamiento/' . $package->id . '/escanear', public_path('images/qrcode/packing/qrcode_packing_' . $package->id . '.png'));
 
         return redirect('ordenes-de-acondicionamiento')->with('success', 'Orden creada correctamente');
@@ -55,13 +109,19 @@ class PackingController extends Controller
     public function show($id)
     {
         $order = Package::find($id);
-        /*$totals = DB::select('SELECT quantity + (quantity * (excess / 100)) as "Total" FROM recipe_supplies where recipe_id = :id AND type = :type', ["id" => $order->recipe_id, "type" => $order->type]);
+        if (Auth::user()->role_id == 3) {
+            $pdf = PDF::setOptions(['isHtml5ParserEnabled' => true, 'isRemoteEnabled' => true])->loadView('pdfs.lot_numbers', ["package" => $order]);
+        return $pdf->stream('numeros_de_lote_' . $order->id . '.pdf');
+        } else {
+            
+            /*$totals = DB::select('SELECT quantity + (quantity * (excess / 100)) as "Total" FROM recipe_supplies where recipe_id = :id AND type = :type', ["id" => $order->recipe_id, "type" => $order->type]);
         $tt = 0;
         foreach ($totals as $total) {
             $tt += $total->Total;
         }*/
-        $pdf = PDF::setOptions(['isHtml5ParserEnabled' => true, 'isRemoteEnabled' => true])->loadView('pdfs.conditioning', ["order" => $order]);
-        return $pdf->stream('orden_de_acondicionamiento_' . $order->id . '.pdf');
+            $pdf = PDF::setOptions(['isHtml5ParserEnabled' => true, 'isRemoteEnabled' => true])->loadView('pdfs.conditioning', ["order" => $order]);
+            return $pdf->stream('orden_de_acondicionamiento_' . $order->id . '.pdf');
+        }
     }
 
     public function edit($id)
@@ -70,7 +130,11 @@ class PackingController extends Controller
         $products = Product::all();
         $supplies = Supply::all();
         $package = Package::find($id);
-        return view('packing.edit', ["package" => $package, "clients" => $clients, "products" => $products, "supplies" => $supplies]);
+
+        if (Auth::user()->role_id == 3)
+            return view('packing.edit_ware', ["package" => $package, "clients" => $clients, "products" => $products, "supplies" => $supplies]);
+        else
+            return view('packing.edit', ["package" => $package, "clients" => $clients, "products" => $products, "supplies" => $supplies]);
     }
 
     public function update(Request $request, $id)
@@ -114,7 +178,7 @@ class PackingController extends Controller
                     $supply->stock = $supply->stock - (($item->quantity + ($item->quantity * ($item->excess / 100))) * $package->quantity);
                     $supply->save();
                 }
-            }else if($package->status == 'Acondicionamiento en Tarimas' && $request->status == 'Finalizada'){
+            } else if ($package->status == 'Acondicionamiento en Tarimas' && $request->status == 'Finalizada') {
                 Product::where('id', $package->product)->update(['stock', ($package->product->stock + $package->quantity)]);
             }
             $package->status = $request->status;
@@ -124,5 +188,128 @@ class PackingController extends Controller
         //QrCode::size(150)->format('png')->generate(env('APP_URL') . 'ordenes-de-acondicionamiento/' . $package->id . '/escanear', public_path('images/qrcode/packing/qrcode_packing_' . $package->id . '.png'));
 
         return redirect('ordenes-de-acondicionamiento')->with('success', 'Orden modificada correctamente');
+    }
+
+    public function updateItems(Request $request, $id)
+    {
+
+        $x = 0;
+
+        foreach ($request->idRecipeRow as $key => $value) {
+
+            $departureItem = PackageRecipe::find($request->idRecipeRow[$key]);
+            $departureItem->deliver_date = date('Y-m-d'); // $request->deliverDate[$key];
+            $departureItem->deliver_quantity = $request->deliverQuantityRecipe[$key];
+
+            $totalQuantity = $departureItem->quantity  * $departureItem->package->quantity;
+            if ($request->processedRecipe[$key] == 0 && $request->lotNumber[$key] !== NULL) {
+
+                $ids = explode(",", $request->lotNumber[$key]);
+
+                $total = $departureItem->quantity  * $departureItem->package->quantity;
+
+                foreach ($ids as $idx) {
+
+                    $entrance = Departure::find($idx);
+                    $realQuantity = $entrance->quantity;
+                    if ($total >= $realQuantity) {
+                        $entrance->quantity = 0;
+                        $different = $realQuantity;
+                    } else {
+                        $entrance->quantity = $realQuantity - $total;
+                        $different = $total;
+                    }
+
+                    $entrance->save();
+
+                    $total -= $realQuantity;
+
+                    $die = new PackageProductLot();
+                    $die->package_recipe_id = $departureItem->id;
+                    $die->quantity = $totalQuantity;
+                    $die->delivery_quantity = $different;
+                    $die->lot_number = $idx;
+                    $die->recipe_id = $request->recipeId[$key];
+                    $die->save();
+
+                    if ($total <= 0) {
+                        break;
+                    }
+                }
+
+                $departureItem->processed = 1;
+            }
+
+            if ($x == 0) {
+                $package =  Package::find($id);
+                $package->user_id = Auth::user()->id;
+                $package->save();
+            }
+            $x++;
+
+            $departureItem->save();
+        }
+
+        foreach ($request->idSupplyRow as $key => $value) {
+
+            $departureItem = PackageSupply::where('id', $request->idSupplyRow[$key])->first();
+            $departureItem->deliver_date = date('Y-m-d'); // $request->deliverDate[$key];
+            $departureItem->deliver_quantity = $request->deliverQuantity[$key];
+
+            $totalQuantity = $departureItem->quantity + ($departureItem->quantity * ($departureItem->excess / 100)) * $departureItem->package->quantity;
+            if ($request->processed[$key] == 0 && $request->orderNumber[$key] !== NULL) {
+
+                $ids = explode(",", $request->orderNumber[$key]);
+
+                $total = $departureItem->quantity + ($departureItem->quantity * ($departureItem->excess / 100)) * $departureItem->package->quantity;
+
+                foreach ($ids as $idx) {
+
+                    $entrance = EntranceItem::find($idx);
+                    $realQuantity = $entrance->quantity;
+                    if ($total >= $realQuantity) {
+                        $entrance->quantity = 0;
+                        $different = $realQuantity;
+                    } else {
+                        $entrance->quantity = $realQuantity - $total;
+                        $different = $total;
+                    }
+
+                    $entrance->save();
+
+                    $supply = Supply::find($request->supplyId[$key]);
+                    if ($total >= $realQuantity) {
+                        $supply->stock = $supply->stock - $realQuantity;
+                    } else {
+                        $supply->stock = 0;
+                    }
+
+                    $supply->save();
+
+                    $total -= $realQuantity;
+
+                    $die = new PackageSupplyEntrance();
+                    $die->package_supply_id = $departureItem->id;
+                    $die->quantity = $totalQuantity;
+                    $die->delivery_quantity = $different;
+                    $die->entrance_number = $idx;
+                    $die->supply_id = $request->supplyId[$key];
+                    $die->save();
+
+                    if ($total <= 0) {
+                        break;
+                    }
+                }
+
+                $departureItem->processed = 1;
+            }
+
+            $departureItem->save();
+        }
+
+        $pdf = PDF::setOptions(['isHtml5ParserEnabled' => true, 'isRemoteEnabled' => true])->loadView('pdfs.lot_numbers', ["package" => $package]);
+        return $pdf->stream('numeros_de_lote_' . $package->id . '.pdf');
+
+        return redirect('ordenes-de-acondicionamiento')->with('success', 'Orden actualizada correctamente');
     }
 }

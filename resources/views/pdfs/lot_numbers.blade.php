@@ -155,11 +155,11 @@
         <tbody>
             <tr>
                 <td class="font-12"><b>OT</b></td>
-                <td class="font-12">{{ $departure->order_number }}/1.</td>
+                <td class="font-12">{{ $package->order_number }}/1.</td>
                 <td class="font-12"><b>PRODUCTO</b></td>
-                <td class="font-12">{{ $departure->recipe->name}}</td>
-                <td class="font-12"><b>CÓDIGO A GRANEL</b></td>
-                <td class="font-12">{{ $departure->recipe->code}}</td>
+                <td class="font-12">{{ $package->product->name}}</td>
+                <td class="font-12"><b>CÓDIGO PRODUCTO</b></td>
+                <td class="font-12">{{ $package->product->code}}</td>
             </tr>
         </tbody>
     </table>
@@ -176,15 +176,42 @@
             </tr>
         </thead>
         <tbody>
-            @foreach($departure->items as $item)
-            @foreach($item->entrances as $entrance)
+            @foreach($package->recipes as $recipe)
+            @foreach($recipe->lots as $lot)
+            <tr>
+                <td class="font-12 text-center">{{ $lot->recipe->code}}</td>
+                <td class="font-12 text-center">{{ $lot->recipe->name}}</td>
+                <td class="font-12 text-center">{{ number_format($lot->quantity,2) }} pza</td>
+                <td class="font-12 text-center">{{ number_format($lot->delivery_quantity,2) }} pza</td>
+                <td class="font-12 text-center">{{ $lot->lot_number == NULL ? "No definido":sprintf("%05s", $lot->lot_number) }}</td>
+                <td class="font-12 text-center" style="width:25%;">{{ date('d/m/Y', strtotime($recipe->deliver_date))}}</td>
+            </tr>
+            @endforeach
+            @endforeach
+        </tbody>
+    </table>
+    <br><br>
+    <table class="table">
+        <thead>
+            <tr>
+                <td class="box-blue text-center">Código (MP)</td>
+                <td class="box-blue text-center">Nombre</td>
+                <td class="box-blue text-center">Cantidad</td>
+                <td class="box-blue text-center">Cantidad Surtida</td>
+                <td class="box-blue text-center">No. Entrada</td>
+                <td class="box-blue text-center">Fecha</td>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach($package->supplies as $supply)
+            @foreach($supply->entrances as $entrance)
             <tr>
                 <td class="font-12 text-center">{{ $entrance->supply->code}}</td>
                 <td class="font-12 text-center">{{ $entrance->supply->name}}</td>
-                <td class="font-12 text-center">{{ number_format($entrance->quantity,2) }} gr</td>
-                <td class="font-12 text-center">{{ number_format($entrance->delivery_quantity,2) }} gr</td>
+                <td class="font-12 text-center">{{ number_format($entrance->quantity,2) }} pza</td>
+                <td class="font-12 text-center">{{ number_format($entrance->delivery_quantity,2) }} pza</td>
                 <td class="font-12 text-center">{{ $entrance->entrance_number == NULL ? "No definido":sprintf("%05s", $entrance->entrance_number) }}</td>
-                <td class="font-12 text-center" style="width:25%;">{{ date('d/m/Y', strtotime($item->deliver_date))}}</td>
+                <td class="font-12 text-center" style="width:25%;">{{ date('d/m/Y', strtotime($supply->deliver_date))}}</td>
             </tr>
             @endforeach
             @endforeach
@@ -197,7 +224,7 @@
                 <td style="width:15%;"></td>
                 <td style="width:15%;"></td>
                 <td class="text-right"><b>Surtió:</b></td>
-                <td style="width:19.8%; text-align:center;">{{ $departure->exporter->name}}</td>
+                <td style="width:19.8%; text-align:center;">{{ $package->exporter->name}}</td>
                 <td style="width:16.6%;" class="text-right"><b>Fecha:</b></td>
                 <td style="width:16.6%;">______________________</td>
             </tr>
