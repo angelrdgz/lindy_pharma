@@ -48,12 +48,12 @@
                     <input type="hidden" name="splittedItem[]" value="{{ $item->splitted }}">
                     <input type="hidden" name="deletedItem[]" value="0" class="deleteInput">
                     <input type="hidden" name="lotSupplierItems[]" value="{{ $item->lot_supplier }}" class="form-control">
-                    <input type="hidden" value="{{ $item->supply_id}}" class="idItem" name="idSupplyItem[]" />
+                    <input type="hidden" value="{{ $item->supply_id }}" class="idItem" name="idSupplyItem[]" />
                     <input type="hidden" name="priceItem[]" value="{{ $item->price}}" class="form-control" /></td>
                     <input type="hidden" name="currencyItem[]" value="{{ $item->currency_id}}" class="form-control" /></td>
                     <td>
                       <input type="text" value="{{ $item->supply->name }}" class="form-control itemContentidRow" readonly /></td>
-                    <td><input type="text" name="quantityItem[]" value="{{ $item->quantity}}" class="form-control" {{$item->status !== "Creada" ? "readonly":""}}/></td>
+                    <td><input type="text" name="quantityItem[]" value="{{ $item->quantity}}" class="form-control quantityId{{ $item->supply_id }}" {{$item->status !== "Creada" ? "readonly":""}}/></td>
                     <td>
                       @if($item->status == 'Aprobada')
                       <input type="text" name="statusItem[]" class="form-control" value="Aprobada" readonly >
@@ -126,7 +126,6 @@
 @section('script')
 
 <script>
-  var availableItems = [];
 
   var row = {id: 0, name:"", quantity: null, supply_id: null, price: null, currency_id: null}
 
@@ -134,60 +133,20 @@
   var btnSplit = null;
 
   var quantityBox = null;
+  var trIndex = null;
 
-  @foreach($supplies as $supply)
-  availableItems.push({
-    id: "{{$supply->id}}",
-    value: "{{$supply->name}}",
-    label: "{{$supply->code}} {{$supply->name}}",
-    measurement: "{{$supply->measurementBuy->name}}"
-  })
+  var ids = [];
+
+  @foreach($entrance->items as $item)
+   ids["quantityId"+{{ $item->supply_id }}] = {{ $item->quantity }}
   @endforeach
 
-  $(document).on('click', '.addContentRow', function() {
+  console.log(ids)
 
-    $('.contentTable tbody tr').removeClass('activeRow')
-
-    let idRow = $('.tableContent tbody tr').length + 1;
-    $('.contentTable').append('<tr class="activeRow">' +
-      '<td><input type="hidden" class="idItem" name="idItem[]"/> <input type="text" class="form-control itemContent' + idRow + '" /></td>' +
-      '<td><input type="text" name="quantityItem[]" class="form-control number"/></td>' +
-      '<td><span> - </span></td>' +
-      '</tr>')
-
-    $(".itemContent" + idRow).autocomplete({
-      source: availableItems,
-      select: function(event, ui) {
-        console.log(ui)
-        $('.contentTable .activeRow .idItem').val(ui.item.id)
-        $('.contentTable .activeRow span').text(ui.item.measurement)
-      }
-    });
-  })
-
-  $(document).on('click', '.addCoverRow', function() {
-
-    $('.coverTable tbody tr').removeClass('activeRow')
-
-    let idRow = $('.tableCover tbody tr').length + 1;
-    $('.coverTable').append('<tr class="activeRow">' +
-      '<td><input type="hidden" class="idItem" name="idItemCover[]"/> <input type="text" class="form-control itemCover' + idRow + '" /></td>' +
-      '<td><input type="text" name="quantityItemCover[]" class="form-control number" /></td>' +
-      '<td><input type="text" name="excessItemCover[]" class="form-control number" value="0.0"/></td>' +
-      '<td><span> - </span></td>' +
-      '</tr>')
-
-    $(".itemCover" + idRow).autocomplete({
-      source: availableItems,
-      select: function(event, ui) {
-        console.log(ui)
-        $('.coverTable .activeRow .idItem').val(ui.item.id)
-        $('.coverTable .activeRow span').text(ui.item.measurement)
-      }
-    });
-  })
 
   $(document).on('click', '.splittedBtn', function() {
+
+    trIndex = $(this).closest('tr').index();
 
     row = {
       id: $(this).closest('tr').find("input[name='idItem[]']").val(),
@@ -206,6 +165,28 @@
   $('#splitModal').on('show.bs.modal', function(event) {
     $('.splitBox').val("2")
   })
+  
+  $(document).on('keyup', 'input[name="quantityItem[]"]', function() {
+    console.log($(this).val())
+    if ($(this).val() == "") {
+      $(this).val(0)
+    } else {
+      var supplyClass = $(this).attr('class').split(' ')[1]
+      var total = ids[supplyClass]
+
+      var sum = 0;
+      $("."+supplyClass).each(function() {
+        sum += parseFloat($(this).val()); // Or this.innerHTML, this.innerText
+      });
+
+      console.log(total+' - '+sum)
+
+      if(total < sum){
+        $(this).val(parseInt($(this).val()) - (sum -total))
+      }
+
+    }
+  })
 
   $(document).on('click', '.splitBtn', function() {
     if(!($('.splitBox').val() >= 2 && $('.splitBox').val() <= 5)){
@@ -218,7 +199,7 @@
     let total = row.quantity  / $('.splitBox').val()
     quantityBox.val(total)
     for (let index = 0; index < ($('.splitBox').val() - 1); index++) {
-      $('.contentTable tbody').append("<tr>"+
+      $('.contentTable tbody tr').eq(trIndex).after("<tr>"+
                     '<input type="hidden" name="updated[]" value="-1">'+
                     '<input type="hidden" name="idItem[]" value="">'+
                     '<input type="hidden" name="splittedItem[]" value="1">'+                    
@@ -228,7 +209,7 @@
                     '<input type="hidden" name="priceItem[]" value="'+row.price+'" class="form-control" /></td>'+
                     '<input type="hidden" name="currencyItem[]" value="'+row.currency_id+'" class="form-control" /></td>'+
                     '<td><input type="text" value="'+row.name+'" class="form-control itemContentidRow" readonly /></td>'+
-                    '<td><input type="text" name="quantityItem[]" value="'+total+'" class="form-control" /></td>'+
+                    '<td><input type="text" name="quantityItem[]" value="'+total+'" class="form-control quantityId'+row.supply_id+'" /></td>'+
                     '<td>'+
                       '<select name="statusItem[]" id="" class="form-control">'+
                         '<option value="">Seleccione una opción</option>'+

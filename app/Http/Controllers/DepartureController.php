@@ -213,8 +213,8 @@ class DepartureController extends Controller
         foreach ($request->id as $key => $value) {
 
             $departureItem = DepartureItem::where('id', $request->id[$key])->first();
-            $departureItem->deliver_date = date('Y-m-d');// $request->deliverDate[$key];
-            $departureItem->deliver_quantity = $request->deliverQuantity[$key];
+            $departureItem->deliver_date = date('Y-m-d'); // $request->deliverDate[$key];
+            $departureItem->deliver_quantity = $this->reverse($departureItem->supply->measurement_buy, $departureItem->supply->measurement_use,($request->deliverQuantity[$key] / $departureItem->departure->quantity));
 
             $totalQuantity = $this->convert($departureItem->supply->measurement_buy, $departureItem->supply->measurement_use, ($departureItem->quantity + ($departureItem->quantity * ($departureItem->excess / 100)) * $departureItem->departure->quantity));
             if ($request->processed[$key] == 0 && $request->orderNumber[$key] !== NULL) {
@@ -296,7 +296,35 @@ class DepartureController extends Controller
         if ($request->way !== NULL) {
 
 
-            if ($departure->status == 'Creada' && $request->status == 'Pesado') {
+            if ($departure->status == 'Creada' && $request->status == 'Liberado') {
+
+                $supplies = [];
+
+                foreach ($departure->items as $item) {
+                    $total = ($item->quantity + ($item->quantity * ($item->excess / 100))) * $departure->quantity;
+                    $enable = EntranceItem::where('supply_id', $item->supplie_id)->where("status", "Aprobada")->sum("quantity");                    
+                    if ($total > $enable) {
+                        switch ($item->supply->measurement_use) {
+                            case 6:
+                            case 3:
+                                $tag = number_format((($total - $enable) / 1000),2).' gr';
+                                break;
+                            case 1:
+                                $tag = number_format(($total - $enable),2).' gr';
+                                break;
+                            case 5:
+                                $tag = number_format(($total - $enable),2).' pza';
+                                break;
+                            default:
+                            $tag = number_format(($total - $enable),2).' pza';
+                                break;
+                        }
+                        array_push($supplies, $item->supply->name . ' (' . $tag . ')');
+                    }
+                }
+
+                if (count($supplies) > 0)
+                        return redirect('ordenes-de-fabricacion')->with('error', 'Estos insumos no cuentan con suficiente stock disponible: ' . implode(", ", $supplies));
 
                 /*if(DepartureItem::where('departure_id', $id)->where("order_number", NULL)->count() > 0){
                     return redirect('ordenes-de-fabricacion')->with('error', 'No se pudo actualizar el estatus, algunos insumos de la orden aun no tiene número de entrada asignado.');

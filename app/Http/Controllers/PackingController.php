@@ -111,9 +111,9 @@ class PackingController extends Controller
         $order = Package::find($id);
         if (Auth::user()->role_id == 3) {
             $pdf = PDF::setOptions(['isHtml5ParserEnabled' => true, 'isRemoteEnabled' => true])->loadView('pdfs.lot_numbers', ["package" => $order]);
-        return $pdf->stream('numeros_de_lote_' . $order->id . '.pdf');
+            return $pdf->stream('numeros_de_lote_' . $order->id . '.pdf');
         } else {
-            
+
             /*$totals = DB::select('SELECT quantity + (quantity * (excess / 100)) as "Total" FROM recipe_supplies where recipe_id = :id AND type = :type', ["id" => $order->recipe_id, "type" => $order->type]);
         $tt = 0;
         foreach ($totals as $total) {
@@ -166,8 +166,46 @@ class PackingController extends Controller
 
             $package->user_id = Auth::user()->id;
 
-            if ($package->status == 'Creada' && $request->status == 'Surtido de Insumos') {
-                foreach ($package->product->recipes as $item) {
+            if ($package->status == 'Creada' && $request->status == 'Liberado') {
+
+                $supplies = [];
+                $recipes = [];
+
+                foreach ($package->recipes as $recipe) {
+                    $total = ($recipe->quantity + ($recipe->quantity * ($recipe->excess / 100))) * $package->quantity;
+                    $enable = Departure::where('recipe_id', $recipe->recipe_id)->where("status", "Inspección")->where("type", 1)->sum("quantity_real");
+                    if ($total > $enable) {
+                        $tag = number_format(($total - $enable), 2) . ' pza';
+                        array_push($recipes, $recipe->recipe->name . ' (' . $tag . ')');
+                    }
+                }
+
+                foreach ($package->supplies as $item) {
+                    $total = ($item->quantity + ($item->quantity * ($item->excess / 100))) * $package->quantity;
+                    $enable = EntranceItem::where('supply_id', $item->supplie_id)->where("status", "Aprobada")->sum("quantity");
+                    if ($total > $enable) {
+                        switch ($item->supply->measurement_use) {
+                            case 6:
+                            case 3:
+                                $tag = number_format((($total - $enable) / 1000), 2) . ' gr';
+                                break;
+                            case 1:
+                                $tag = number_format(($total - $enable), 2) . ' gr';
+                                break;
+                            case 5:
+                                $tag = number_format(($total - $enable), 2) . ' pza';
+                                break;
+                            default:
+                                $tag = number_format(($total - $enable), 2) . ' pza';
+                                break;
+                        }
+                        array_push($supplies, $item->supply->name . ' (' . $tag . ')');
+                    }
+                }
+
+                if (count($supplies) > 0 || count($recipes))
+                    return redirect('ordenes-de-fabricacion')->with('error', 'Estas recetas no cuentan consuficientes capsulas: '. implode(", ", $recipes).'.<br>Estos insumos no cuentan con suficiente stock disponible: ' . implode(", ", $supplies));
+                /*foreach ($package->product->recipes as $item) {
                     $recipe = Recipe::find($item->recipe_id);
                     $recipe->stock = $recipe->stock - (($item->quantity + ($item->quantity * ($item->excess / 100))) * $package->quantity);
                     $recipe->save();
@@ -177,7 +215,7 @@ class PackingController extends Controller
                     $supply = Supply::find($item->supply_id);
                     $supply->stock = $supply->stock - (($item->quantity + ($item->quantity * ($item->excess / 100))) * $package->quantity);
                     $supply->save();
-                }
+                }*/
             } else if ($package->status == 'Acondicionamiento en Tarimas' && $request->status == 'Finalizada') {
                 Product::where('id', $package->product)->update(['stock', ($package->product->stock + $package->quantity)]);
             }

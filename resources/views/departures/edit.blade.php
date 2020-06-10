@@ -51,6 +51,7 @@
                             <input type="hidden" name="way" value="1">
                             <label for="">Estatus</label>
                             <select name="status" class="form-control" id="">
+                            <option value="Creada" {{ $departure->status == "Creada" ? "selected":""}}>Creada</option>
                                 <option value="Liberado">Liberado</option>
                             </select>
                         </div>
