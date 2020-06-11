@@ -218,14 +218,14 @@ class DepartureController extends Controller
                 foreach ($ids as $idx) {
 
                     $entrance = EntranceItem::find($idx);
-                    $entranceQuantity = convert($entrance->supply->measurement_buy, $entrance->supply->measurement_use, $entrance->available_quantity);
+                    $entranceQuantity = $this->convert($entrance->supply->measurement_buy, $entrance->supply->measurement_use, $entrance->available_quantity);
                     echo "Disponible en entra #" . $entrance->id . ": " . $entranceQuantity . '<br>';
                     if ($totalForDiscount >= $entranceQuantity) {
                         $entrance->available_quantity = 0;
                         echo "El total a descontar es mayor a la cantidad disponible en la entrada<br>";
                     } else {
                         echo "El total a descontar es menor a la cantidad disponible en la entrada<br>";
-                        $entrance->available_quantity = reverse($entrance->supply->measurement_buy, $entrance->supply->measurement_use, ($entranceQuantity - $totalForDiscount));
+                        $entrance->available_quantity = $this->reverse($entrance->supply->measurement_buy, $entrance->supply->measurement_use, ($entranceQuantity - $totalForDiscount));
                         echo "Cantidad a actualizar:" . $entrance->available_quantity . "<br>";
                     }
 
@@ -304,7 +304,7 @@ class DepartureController extends Controller
                 foreach ($departure->items as $item) {
                     $total = ($item->quantity + ($item->quantity * ($item->excess / 100))) * $departure->quantity;
                     $enable = EntranceItem::where('supply_id', $item->supplie_id)->where("status", "Aprobada")->sum("quantity");
-                    $enable = convert($item->supply->measurement_buy, $item->supply->measurement_use, $enable);
+                    $enable = $this->convert($item->supply->measurement_buy, $item->supply->measurement_use, $enable);
                     if ($total > $enable) {
                         switch ($item->supply->measurement_use) {
                             case 6:
@@ -488,4 +488,5 @@ class DepartureController extends Controller
 
         return $total;
     }
+    
 }

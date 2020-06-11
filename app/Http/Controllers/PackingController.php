@@ -350,4 +350,5 @@ class PackingController extends Controller
 
         //return redirect('ordenes-de-acondicionamiento')->with('success', 'Orden actualizada correctamente');
     }
+
 }

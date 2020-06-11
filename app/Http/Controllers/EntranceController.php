@@ -191,7 +191,7 @@ class EntranceController extends Controller
 
                                 if ($request->statusItem[$key] == 'Aprobada' && $request->updated[$key] == 0) {
                                     $supply = Supply::find($request->idSupplyItem[$key]);
-                                    $supply->stock = $supply->stock + convert($supply->measurement_buy, $supply->measurement_use, $request->quantityItem[$key]);
+                                    $supply->stock = $supply->stock + $this->convert($supply->measurement_buy, $supply->measurement_use, $request->quantityItem[$key]);
                                     $supply->save();
                                 }
                             }
@@ -253,5 +253,43 @@ class EntranceController extends Controller
         $entrance->delete();
 
         return redirect('ordenes-de-compra')->with('success', 'Orden cancelada correctamente');
+    }
+
+    private function convert($type1, $type2, $quantity)
+    {
+        $total = 0;
+
+        if ($type1 == 2 && $type2 == 1) {
+            $total = $quantity * 1000;
+        } elseif ($type1 == 2 && $type2 == 6) {
+            $total = $quantity * 1000000;
+        } elseif ($type1 == 4 && $type2 == 6) {
+            $total = $quantity * 1000;
+        } elseif ($type1 == 4 && $type2 == 3) {
+            $total = $quantity * 1000;
+        } else {
+            $total = $quantity;
+        }
+
+        return $total;
+    }
+
+    private function reverse($type1, $type2, $quantity)
+    {
+        $total = 0;
+
+        if ($type1 == 2 && $type2 == 1) {
+            $total = $quantity / 1000;
+        } elseif ($type1 == 2 && $type2 == 6) {
+            $total = $quantity / 1000000;
+        } elseif ($type1 == 4 && $type2 == 6) {
+            $total = $quantity / 1000;
+        } elseif ($type1 == 4 && $type2 == 3) {
+            $total = $quantity / 1000;
+        } else {
+            $total = $quantity;
+        }
+
+        return $total;
     }
 }
