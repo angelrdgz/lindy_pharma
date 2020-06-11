@@ -181,8 +181,8 @@
             <tr>
                 <td class="font-12 text-center">{{ $entrance->supply->code}}</td>
                 <td class="font-12 text-center">{{ $entrance->supply->name}}</td>
-                <td class="font-12 text-center">{{ number_format(($departure->quantity * $entrance->quantity),2) }} gr</td>
-                <td class="font-12 text-center">{{ number_format(($departure->quantity *$entrance->delivery_quantity),2) }} gr</td>
+                <td class="font-12 text-center">{{ number_format(($entrance->quantity / 1000),2) }} gr</td>
+                <td class="font-12 text-center">{{ number_format(($entrance->delivery_quantity / 1000),2) }} gr</td>
                 <td class="font-12 text-center">{{ $entrance->entrance_number == NULL ? "No definido":sprintf("%05s", $entrance->entrance_number) }}</td>
                 <td class="font-12 text-center" style="width:25%;">{{ date('d/m/Y', strtotime($item->deliver_date))}}</td>
             </tr>
@@ -197,7 +197,7 @@
                 <td style="width:15%;"></td>
                 <td style="width:15%;"></td>
                 <td class="text-right"><b>Surtió:</b></td>
-                <td style="width:19.8%; text-align:center;">{{ $departure->exporter->name}}</td>
+                <td style="width:19.8%; text-align:center;">{{ $departure->user_id == NULL ? "No definido":$departure->exporter->name}}</td>
                 <td style="width:16.6%;" class="text-right"><b>Fecha:</b></td>
                 <td style="width:16.6%;">______________________</td>
             </tr>

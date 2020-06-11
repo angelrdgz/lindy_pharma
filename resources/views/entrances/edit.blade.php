@@ -75,10 +75,17 @@
               <table class="table contentTable">
                 <thead>
                   <tr>
-                    <th colspan="6">Contenido de la orden</th>
+                    <th colspan="{{Auth::user()->role_id == 2 ? '5':'6'}}">Contenido de la orden</th>
                     <th class="text-right">
                       @if(in_array(Auth::user()->role_id, [1,4]))
                       <a class="btn btn-link addContentRow text-primary">Agregar Insumo</a>
+                      @endif
+                      @if(Auth::user()->role_id == 2)
+                      Aprobar todas
+                      <div class="custom-control custom-switch float-right ml-2">
+                        <input type="checkbox" class="custom-control-input" id="switchAll">
+                        <label class="custom-control-label" for="switchAll"></label>
+                      </div>
                       @endif
                     </th>
                   </tr>
@@ -221,6 +228,18 @@
   @foreach($currencies as $currency)
   currencyOptions += '<option value="{{ $currency->id }}">{{ $currency->name }}</option>';
   @endforeach
+
+  $(document).on('change', '#switchAll', function(){
+    if($(this).is(":checked")){
+      $(".contentTable tbody tr").each(function(index, tr){
+        $(tr).find("select").val("Aprobada");
+      })
+    }else{
+      $(".contentTable tbody tr").each(function(index, tr){
+        $(tr).find("select").val("");
+      })
+    }
+  })
 
   $(document).on('click', '.addContentRow', function() {
 

@@ -16,6 +16,8 @@ Route::post('/login', 'AuthController@loginPost');
 
 Route::post('logout', 'AuthController@logout')->name('logout');
 
+Route::resource("test", "TestController");
+
 Route::middleware(['auth'])->group(function () {
 
     Route::get('/exportar/bitacora', 'LogbookController@export');
@@ -35,6 +37,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('inventario-productos', 'ProductController@stock');
     Route::get('inventario-productos/{id}', 'ProductController@stockDetails');
     Route::put('inventario-productos/{id}', 'ProductController@updateStock');
+    Route::get('ordenes-de-fabricacion/{id}/revision', 'DepartureController@revision');
 
     Route::resource('usuarios', 'UserController');
     Route::resource('insumos', 'SupplyController');

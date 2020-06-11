@@ -239,38 +239,38 @@ class PackingController extends Controller
             $departureItem->deliver_date = date('Y-m-d'); // $request->deliverDate[$key];
             $departureItem->deliver_quantity = $request->deliverQuantityRecipe[$key];
 
-            $totalQuantity = $departureItem->quantity  * $departureItem->package->quantity;
+            $totalNeedIt = $departureItem->quantity  * $departureItem->package->quantity;
             if ($request->processedRecipe[$key] == 0 && $request->lotNumber[$key] !== NULL) {
 
                 $ids = explode(",", $request->lotNumber[$key]);
 
-                $total = $departureItem->quantity  * $departureItem->package->quantity;
+                $totalForDiscount = $totalNeedIt;
 
                 foreach ($ids as $idx) {
 
                     $entrance = Departure::find($idx);
-                    $realQuantity = $entrance->quantity;
-                    if ($total >= $realQuantity) {
+                    $lotQuantity = $entrance->quantity;
+                    if ($totalForDiscount >= $lotQuantity) {
                         $entrance->quantity = 0;
-                        $different = $realQuantity;
+                        $different = $lotQuantity;
                     } else {
-                        $entrance->quantity = $realQuantity - $total;
-                        $different = $total;
+                        $entrance->quantity = $lotQuantity - $totalForDiscount;
+                        $different = $totalForDiscount;
                     }
 
                     $entrance->save();
 
-                    $total -= $realQuantity;
+                    $totalForDiscount -= $lotQuantity;
 
                     $die = new PackageProductLot();
                     $die->package_recipe_id = $departureItem->id;
-                    $die->quantity = $totalQuantity;
+                    $die->quantity = $totalNeedIt;
                     $die->delivery_quantity = $different;
                     $die->lot_number = $idx;
                     $die->recipe_id = $request->recipeId[$key];
                     $die->save();
 
-                    if ($total <= 0) {
+                    if ($totalForDiscount <= 0) {
                         break;
                     }
                 }
@@ -294,32 +294,32 @@ class PackingController extends Controller
             $departureItem->deliver_date = date('Y-m-d'); // $request->deliverDate[$key];
             $departureItem->deliver_quantity = $request->deliverQuantity[$key];
 
-            $totalQuantity = $departureItem->quantity + ($departureItem->quantity * ($departureItem->excess / 100)) * $departureItem->package->quantity;
+            $totalNeedIt = $departureItem->quantity + ($departureItem->quantity * ($departureItem->excess / 100)) * $departureItem->package->quantity;
             if ($request->processed[$key] == 0 && $request->orderNumber[$key] !== NULL) {
 
                 $ids = explode(",", $request->orderNumber[$key]);
 
-                $total = $departureItem->quantity + ($departureItem->quantity * ($departureItem->excess / 100)) * $departureItem->package->quantity;
+                $totalForDiscount = $totalNeedIt;
 
                 foreach ($ids as $idx) {
 
                     $entrance = EntranceItem::find($idx);
-                    $realQuantity = $entrance->quantity;
-                    if ($total >= $realQuantity) {
+                    $entranceQuantity = $entrance->quantity;
+                    if ($totalForDiscount >= $entranceQuantity) {
                         $entrance->quantity = 0;
-                        $different = $realQuantity;
                     } else {
-                        $entrance->quantity = $realQuantity - $total;
-                        $different = $total;
+                        $entrance->quantity = $entranceQuantity - $totalForDiscount;
                     }
 
                     $entrance->save();
 
                     $supply = Supply::find($request->supplyId[$key]);
                     if ($total >= $realQuantity) {
-                        $supply->stock = $supply->stock - $realQuantity;
+                        $supply->stock = $supply->stock - $entranceQuantity;
+                        $different = $entranceQuantity;
                     } else {
-                        $supply->stock = 0;
+                        $supply->stock = $supply->stock - $totalForDiscount;
+                        $different = $totalForDiscount;
                     }
 
                     $supply->save();
@@ -328,7 +328,7 @@ class PackingController extends Controller
 
                     $die = new PackageSupplyEntrance();
                     $die->package_supply_id = $departureItem->id;
-                    $die->quantity = $totalQuantity;
+                    $die->quantity = $totalNeedIt;
                     $die->delivery_quantity = $different;
                     $die->entrance_number = $idx;
                     $die->supply_id = $request->supplyId[$key];
