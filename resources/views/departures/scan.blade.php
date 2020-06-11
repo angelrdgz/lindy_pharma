@@ -32,6 +32,7 @@
             <div class="modal-body">
                 @switch($departure->status)
                 @case("Creada")
+                @case("Liberado")
                 <?php $newStatus = "Pesado";; ?>
                 @break
 

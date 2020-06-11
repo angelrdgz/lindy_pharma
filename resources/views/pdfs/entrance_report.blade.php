@@ -36,6 +36,7 @@
                 <td>Número de Entrada</td>
                 <td>Lote de Proveedor</td>
                 <td>Cantidad Kg</td>
+                <td>Cantidad Disponible Kg</td>
                 <td>No de Envases</td>
                 <td>Fecha de Caducidad</td>
                 <td>Fecha de Reanalisis</td>
@@ -50,6 +51,7 @@
             <td>{{ '#' . strval(sprintf("%05s", $supply->id)) }}</td>
             <td>{{ $supply->lot_supplier}}</td>
             <td>{{ $supply->quantity }}</td>
+            <td>{{ $supply->available_quantity }}</td>
             <td>{{ $supply->cups }}</td>
             <td>{{ $supply->expired_date }}</td>
             <td>{{ $supply->reanalized_date }}</td>
