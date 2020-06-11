@@ -180,21 +180,19 @@ class EntranceController extends Controller
                             } else {
 
                                 $entranceItem = EntranceItem::find($request->idItem[$key]);
-                                if ($entrance->status == "Creada" || $entrance->status == "Cuarentena") {
-                                    $entranceItem->supply_id = $request->idSupplyItem[$key];
-                                    $entranceItem->quantity = $request->quantityItem[$key];
-                                    $entranceItem->available_quantity = $request->quantityItem[$key];
-                                    $entranceItem->price = $request->priceItem[$key];
-                                    $entranceItem->currency_id = $request->currencyItem[$key];
-                                    $entranceItem->splitted = $request->splittedItem[$key];
-                                    $entranceItem->status = $request->statusItem[$key] !== NULL ? $request->statusItem[$key] : 'Creada';
-                                    $entranceItem->save();
+                                $entranceItem->supply_id = $request->idSupplyItem[$key];
+                                $entranceItem->quantity = $request->quantityItem[$key];
+                                $entranceItem->available_quantity = $request->quantityItem[$key];
+                                $entranceItem->price = $request->priceItem[$key];
+                                $entranceItem->currency_id = $request->currencyItem[$key];
+                                $entranceItem->splitted = $request->splittedItem[$key];
+                                $entranceItem->status = $request->statusItem[$key] !== NULL ? $request->statusItem[$key] : 'Creada';
+                                $entranceItem->save();
 
-                                    if ($request->statusItem[$key] == 'Aprobada' && $request->updated[$key] == 0) {
-                                        $supply = Supply::find($request->idSupplyItem[$key]);
-                                        $supply->stock = $supply->stock + convert($supply->measurement_buy, $supply->measurement_use, $request->quantityItem[$key]);
-                                        $supply->save();
-                                    }
+                                if ($request->statusItem[$key] == 'Aprobada' && $request->updated[$key] == 0) {
+                                    $supply = Supply::find($request->idSupplyItem[$key]);
+                                    $supply->stock = $supply->stock + convert($supply->measurement_buy, $supply->measurement_use, $request->quantityItem[$key]);
+                                    $supply->save();
                                 }
                             }
                         }
