@@ -218,15 +218,15 @@ class DepartureController extends Controller
                 foreach ($ids as $idx) {
 
                     $entrance = EntranceItem::find($idx);
-                    $entranceQuantity = convert($entrance->supply->measurement_buy, $entrance->supply->measurement_use, $entrance->quantity);
+                    $entranceQuantity = convert($entrance->supply->measurement_buy, $entrance->supply->measurement_use, $entrance->available_quantity);
                     echo "Disponible en entra #" . $entrance->id . ": " . $entranceQuantity . '<br>';
                     if ($totalForDiscount >= $entranceQuantity) {
-                        $entrance->quantity = 0;
+                        $entrance->available_quantity = 0;
                         echo "El total a descontar es mayor a la cantidad disponible en la entrada<br>";
                     } else {
                         echo "El total a descontar es menor a la cantidad disponible en la entrada<br>";
-                        $entrance->quantity = reverse($entrance->supply->measurement_buy, $entrance->supply->measurement_use, ($entranceQuantity - $totalForDiscount));
-                        echo "Cantidad a actualizar:" . $entrance->quantity . "<br>";
+                        $entrance->available_quantity = reverse($entrance->supply->measurement_buy, $entrance->supply->measurement_use, ($entranceQuantity - $totalForDiscount));
+                        echo "Cantidad a actualizar:" . $entrance->available_quantity . "<br>";
                     }
 
                     $entrance->save();
@@ -275,10 +275,10 @@ class DepartureController extends Controller
             $departureItem->save();
         }
 
-        /*$pdf = PDF::setOptions(['isHtml5ParserEnabled' => true, 'isRemoteEnabled' => true])->loadView('pdfs.order_numbers', ["departure" => $departure]);
-        return $pdf->stream('numeros_de_entrada' . $departure->id . '.pdf');*/
+        $pdf = PDF::setOptions(['isHtml5ParserEnabled' => true, 'isRemoteEnabled' => true])->loadView('pdfs.order_numbers', ["departure" => $departure]);
+        return $pdf->stream('numeros_de_entrada' . $departure->id . '.pdf');
 
-        return redirect('ordenes-de-fabricacion')->with('success', 'Orden actualizada correctamente');
+        //return redirect('ordenes-de-fabricacion')->with('success', 'Orden actualizada correctamente');
     }
 
     public function scan($id)

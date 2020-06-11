@@ -29,7 +29,7 @@ class Supply extends Model
     }
 
     public function entranceNumbers($id){
-        $entrances = \DB::select("select entrance_items.* from entrance_items INNER JOIN entrances ON entrance_items.entrance_id = entrances.id WHERE entrance_items.supply_id = :id AND entrance_items.status = 'Aprobada' AND entrance_items.quantity > 0", ["id"=>$id]);
+        $entrances = \DB::select("select entrance_items.* from entrance_items INNER JOIN entrances ON entrance_items.entrance_id = entrances.id WHERE entrance_items.supply_id = :id AND entrance_items.status = 'Aprobada' AND entrance_items.available_quantity > 0", ["id"=>$id]);
         return $entrances;
     }
 }

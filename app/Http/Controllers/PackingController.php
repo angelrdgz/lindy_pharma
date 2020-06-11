@@ -204,7 +204,7 @@ class PackingController extends Controller
                 }
 
                 if (count($supplies) > 0 || count($recipes))
-                    return redirect('ordenes-de-fabricacion')->with('error', 'Estas recetas no cuentan consuficientes capsulas: '. implode(", ", $recipes).'.<br>Estos insumos no cuentan con suficiente stock disponible: ' . implode(", ", $supplies));
+                    return redirect('ordenes-de-fabricacion')->with('error', 'Estas recetas no cuentan consuficientes capsulas: ' . implode(", ", $recipes) . '.<br>Estos insumos no cuentan con suficiente stock disponible: ' . implode(", ", $supplies));
                 /*foreach ($package->product->recipes as $item) {
                     $recipe = Recipe::find($item->recipe_id);
                     $recipe->stock = $recipe->stock - (($item->quantity + ($item->quantity * ($item->excess / 100))) * $package->quantity);
@@ -304,17 +304,17 @@ class PackingController extends Controller
                 foreach ($ids as $idx) {
 
                     $entrance = EntranceItem::find($idx);
-                    $entranceQuantity = $entrance->quantity;
+                    $entranceQuantity = $entrance->available_quantity;
                     if ($totalForDiscount >= $entranceQuantity) {
-                        $entrance->quantity = 0;
+                        $entrance->available_quantity = 0;
                     } else {
-                        $entrance->quantity = $entranceQuantity - $totalForDiscount;
+                        $entrance->available_quantity = $entranceQuantity - $totalForDiscount;
                     }
 
                     $entrance->save();
 
                     $supply = Supply::find($request->supplyId[$key]);
-                    if ($total >= $realQuantity) {
+                    if ($totalForDiscount >= $entranceQuantity) {
                         $supply->stock = $supply->stock - $entranceQuantity;
                         $different = $entranceQuantity;
                     } else {
@@ -324,7 +324,7 @@ class PackingController extends Controller
 
                     $supply->save();
 
-                    $total -= $realQuantity;
+                    $totalForDiscount -= $entranceQuantity;
 
                     $die = new PackageSupplyEntrance();
                     $die->package_supply_id = $departureItem->id;
@@ -334,7 +334,7 @@ class PackingController extends Controller
                     $die->supply_id = $request->supplyId[$key];
                     $die->save();
 
-                    if ($total <= 0) {
+                    if ($totalForDiscount <= 0) {
                         break;
                     }
                 }
@@ -348,6 +348,6 @@ class PackingController extends Controller
         $pdf = PDF::setOptions(['isHtml5ParserEnabled' => true, 'isRemoteEnabled' => true])->loadView('pdfs.lot_numbers', ["package" => $package]);
         return $pdf->stream('numeros_de_lote_' . $package->id . '.pdf');
 
-        return redirect('ordenes-de-acondicionamiento')->with('success', 'Orden actualizada correctamente');
+        //return redirect('ordenes-de-acondicionamiento')->with('success', 'Orden actualizada correctamente');
     }
 }

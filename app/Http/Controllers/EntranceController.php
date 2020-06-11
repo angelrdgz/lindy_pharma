@@ -65,6 +65,7 @@ class EntranceController extends Controller
                 $entranceItem->entrance_id = $entrance->id;
                 $entranceItem->supply_id = $request->idItem[$key];
                 $entranceItem->quantity = $request->quantityItem[$key];
+                $entranceItem->available_quantity = $request->quantityItem[$key];
                 $entranceItem->price = $request->priceItem[$key];
                 $entranceItem->currency_id = $request->currencyItem[$key];
                 $entranceItem->status = 'Creada';
@@ -152,6 +153,7 @@ class EntranceController extends Controller
                                 $entranceItem->entrance_id = $entrance->id;
                                 $entranceItem->supply_id = $request->idSupplyItem[$key];
                                 $entranceItem->quantity = $request->quantityItem[$key];
+                                $entranceItem->available_quantity = $request->quantityItem[$key];
                                 $entranceItem->price = $request->priceItem[$key];
                                 $entranceItem->status = $request->statusItem[$key];
                                 $entranceItem->comments = $request->commentsItem[$key];
@@ -163,6 +165,7 @@ class EntranceController extends Controller
                                 $entranceItem->entrance_id = $entrance->id;
                                 $entranceItem->supply_id = $request->idSupplyItem[$key];
                                 $entranceItem->quantity = $request->quantityItem[$key];
+                                $entranceItem->available_quantity = $request->quantityItem[$key];
                                 $entranceItem->price = $request->priceItem[$key];
                                 $entranceItem->currency_id = $request->currencyItem[$key];
                                 $entranceItem->splitted = $request->splittedItem[$key];
@@ -177,18 +180,21 @@ class EntranceController extends Controller
                             } else {
 
                                 $entranceItem = EntranceItem::find($request->idItem[$key]);
-                                $entranceItem->supply_id = $request->idSupplyItem[$key];
-                                $entranceItem->quantity = $request->quantityItem[$key];
-                                $entranceItem->price = $request->priceItem[$key];
-                                $entranceItem->currency_id = $request->currencyItem[$key];
-                                $entranceItem->splitted = $request->splittedItem[$key];
-                                $entranceItem->status = $request->statusItem[$key] !== NULL ? $request->statusItem[$key] : 'Creada';
-                                $entranceItem->save();
+                                if ($entrance->status == "Creada" || $entrance->status == "Cuarentena") {
+                                    $entranceItem->supply_id = $request->idSupplyItem[$key];
+                                    $entranceItem->quantity = $request->quantityItem[$key];
+                                    $entranceItem->available_quantity = $request->quantityItem[$key];
+                                    $entranceItem->price = $request->priceItem[$key];
+                                    $entranceItem->currency_id = $request->currencyItem[$key];
+                                    $entranceItem->splitted = $request->splittedItem[$key];
+                                    $entranceItem->status = $request->statusItem[$key] !== NULL ? $request->statusItem[$key] : 'Creada';
+                                    $entranceItem->save();
 
-                                if ($request->statusItem[$key] == 'Aprobada' && $request->updated[$key] == 0) {
-                                    $supply = Supply::find($request->idSupplyItem[$key]);
-                                    $supply->stock = $supply->stock + convert($supply->measurement_buy, $supply->measurement_use, $request->quantityItem[$key]);
-                                    $supply->save();
+                                    if ($request->statusItem[$key] == 'Aprobada' && $request->updated[$key] == 0) {
+                                        $supply = Supply::find($request->idSupplyItem[$key]);
+                                        $supply->stock = $supply->stock + convert($supply->measurement_buy, $supply->measurement_use, $request->quantityItem[$key]);
+                                        $supply->save();
+                                    }
                                 }
                             }
                         }
@@ -236,7 +242,7 @@ class EntranceController extends Controller
         $entrance->items()->delete();
         $entrance->comments()->delete();
 
-        
+
 
         $logbook = new Logbook();
         $logbook->type_id = 3;
@@ -249,24 +255,5 @@ class EntranceController extends Controller
         $entrance->delete();
 
         return redirect('ordenes-de-compra')->with('success', 'Orden cancelada correctamente');
-    }
-
-    private function convert($type1, $type2, $quantity)
-    {
-        $total = 0;
-
-        if ($type1 == 2 && $type2 == 1) {
-            $total = $quantity * 1000;
-        } elseif ($type1 == 2 && $type2 == 6) {
-            $total = $quantity * 1000000;
-        } elseif ($type1 == 4 && $type2 == 6) {
-            $total = $quantity * 1000;
-        } elseif ($type1 == 4 && $type2 == 3) {
-            $total = $quantity * 1000;
-        } else {
-            $total = $quantity;
-        }
-
-        return $total;
     }
 }

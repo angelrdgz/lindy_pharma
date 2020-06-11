@@ -115,16 +115,16 @@
                       <input type="hidden" name="splittedItem[]" value="{{ $item->splitted }}" class="deleteInput">
                       <input type="hidden" value="{{ $item->supply_id}}" class="idItem" name="idSupplyItem[]" />
                       <input type="hidden" name="lotSupplierItems[]" value="" class="form-control">
-                      <input type="text" {{ Auth::user()->role_id == 2 ? 'readonly':''}} value="{{ $item->supply->name }}" class="form-control itemContentidRow+'" />
+                      <input type="text" {{ Auth::user()->role_id == 2 || $item->status == "Aprobada" ? 'readonly':''}} value="{{ $item->supply->name }}" class="form-control itemContentidRow+'" />
                     </td>
                     <td>{{ sprintf("%05s", $item->id) }}</td>
-                    <td><input type="text" {{ Auth::user()->role_id == 2 ? 'readonly':''}} name="quantityItem[]" value="{{ number_format($item->quantity,2, '.', '') }}" class="form-control" /></td>
+                    <td><input type="text" {{ Auth::user()->role_id == 2 || $item->status == "Aprobada" ? 'readonly':''}} name="quantityItem[]" value="{{ number_format($item->quantity,2, '.', '') }}" class="form-control" /></td>
                     @if(Auth::user()->role_id == 2)
                     <input type="hidden" name="priceItem[]" value="{{ $item->price }}">
                     <input type="hidden" name="currencyItem[]" value="{{ $item->currency_id }}">
                     @else
-                    <td><input type="text" {{ Auth::user()->role_id == 2 ? 'readonly':''}} name="priceItem[]" value="{{ $item->price}}" class="form-control" /></td>
-                    <td><select class="form-control" {{ Auth::user()->role_id == 2 ? 'readonly':''}} name="currencyItem[]">
+                    <td><input type="text" {{ Auth::user()->role_id == 2 || $item->status == "Aprobada" ? 'readonly':''}} name="priceItem[]" value="{{ $item->price}}" class="form-control" /></td>
+                    <td><select class="form-control" {{ Auth::user()->role_id == 2 || $item->status == "Aprobada" ? 'readonly':''}} name="currencyItem[]">
                         @foreach($currencies as $currency)
                         <option value="{{ $currency->id }}" {{$item->currency_id == $currency->id ? 'selected':''}}> {{$currency->name }} </option>
                         @endforeach
@@ -145,7 +145,7 @@
                       @endif
                     </td>
                     <td class="text-center">
-                      @if(in_array(Auth::user()->role_id, [1,4]))
+                      @if(in_array(Auth::user()->role_id, [1,4]) && $item->status == "Creada")
                       <a class="btn btn-danger btn-circle removeRow">
                         <i class="fas fa-trash" style="color: #fff;"></i>
                       </a>
