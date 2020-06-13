@@ -354,6 +354,7 @@ class DepartureController extends Controller
 
             switch ($departure->status) {
                 case "Creada":
+                case "Liberado":
                     $newStatus = "Pesado";
                     break;
                 case "Pesado":
