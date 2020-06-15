@@ -378,7 +378,10 @@ class DepartureController extends Controller
             }
 
             if ($newStatus == 'Inspección') {
-                Departure::where('order_number', $departure->order_number)->update(["quantity_real" => $request->total]);
+                $recipe = Recipe::find($departure->recipe_id);
+                $recipe->stock = $recipe->stock + $request->total;
+                $recipe->save();
+                Departure::where('order_number', $departure->order_number)->update(["quantity_real" => $request->total, "available_quantity" => $request->total]);
             }
 
             if ($newStatus == 'Pesado') {

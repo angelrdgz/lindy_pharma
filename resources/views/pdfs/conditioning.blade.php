@@ -179,7 +179,6 @@
           <th>UM</th>
           <th>Cantidad Total</th>
           <th>UM</th>
-          <th>Número de Entrada Utilizada</th>
         </tr>
       </thead>
       <tbody>
@@ -194,10 +193,9 @@
            <td class="text-center">caps</td>
            <td class="text-right">{{ number_format((($recipe->quantity + ($recipe->quantity * ($recipe->excess / 100))) * $order->quantity),4)  }}</td>
            <td class="text-center">caps</td>
-           <td class="text-center">{{ $recipe->order_number == NULL ? "":sprintf("%05s", $recipe->order_number)}}</td>
          </tr>
         @endforeach
-        @foreach($order->product->supplies as $supply)
+        @foreach($order->supplies as $supply)
          <tr>
            <td class="text-center">{{ $supply->supply->code }}</td>
            <td>{{ $supply->supply->name }}</td>
@@ -206,13 +204,16 @@
            <td class="text-center">{{ $supply->excess }}</td>
            <td class="text-right">{{ number_format(($supply->quantity + ($supply->quantity * ($supply->excess / 100))),4) }}</td>
            <td class="text-center">{{ $supply->supply->measurementUse->code }}</td>
-           <td class="text-right">{{ number_format(((($supply->quantity + ($supply->quantity * ($supply->excess / 100))) * $order->quantity) / 1000),4)  }}</td>
+           <td class="text-right">{{ number_format(((($supply->quantity + ($supply->quantity * ($supply->excess / 100))) * $order->quantity)),4)  }}</td>
            <td class="text-center">{{ $supply->supply->measurementUse->code }}</td>
-           <td class="text-center">{{ count($supply->entranceNumber($order->id, $supply->supply_id)) > 0  ? sprintf("%05s",  $supply->entranceNumber($order->id, $supply->supply_id)[0]->entrance_number):""}}</td>
          </tr>
         @endforeach
       </tbody>
     </table>
+    <br>
+    <br>
+    <br>
+    <img class="qr" src="{{ public_path().'/images/qrcode/packing/qrcode_packing_'.$order->id.'.png' }}" alt="">
 
     <footer>
     <table style="width:100%;">

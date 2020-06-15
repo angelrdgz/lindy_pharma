@@ -12,7 +12,7 @@ class ProductSupply extends Model
     }
 
     public function entranceNumber($package, $supply){
-        $number = \DB::select("select * from packages_supplies WHERE supply_id = :supply AND package_id = :package", ["supply"=>$supply, "package"=>$package]);
+        $number = \DB::select("select * from package_supplies WHERE supply_id = :supply AND package_id = :package", ["supply"=>$supply, "package"=>$package]);
         return $number;
     }
 }

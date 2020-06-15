@@ -26,7 +26,7 @@ class PackingController extends Controller
     public function index()
     {
         if (Auth::user()->role_id == 3)
-            $packages = Package::where("status", "Liberada")->get();
+            $packages = Package::whereIn("status", ["Liberado", "Empacado"])->get();
         else
             $packages = Package::all();
 
@@ -109,19 +109,8 @@ class PackingController extends Controller
     public function show($id)
     {
         $order = Package::find($id);
-        if (Auth::user()->role_id == 3) {
-            $pdf = PDF::setOptions(['isHtml5ParserEnabled' => true, 'isRemoteEnabled' => true])->loadView('pdfs.lot_numbers', ["package" => $order]);
-            return $pdf->stream('numeros_de_lote_' . $order->id . '.pdf');
-        } else {
-
-            /*$totals = DB::select('SELECT quantity + (quantity * (excess / 100)) as "Total" FROM recipe_supplies where recipe_id = :id AND type = :type', ["id" => $order->recipe_id, "type" => $order->type]);
-        $tt = 0;
-        foreach ($totals as $total) {
-            $tt += $total->Total;
-        }*/
-            $pdf = PDF::setOptions(['isHtml5ParserEnabled' => true, 'isRemoteEnabled' => true])->loadView('pdfs.conditioning', ["order" => $order]);
-            return $pdf->stream('orden_de_acondicionamiento_' . $order->id . '.pdf');
-        }
+        $pdf = PDF::setOptions(['isHtml5ParserEnabled' => true, 'isRemoteEnabled' => true])->loadView('pdfs.conditioning', ["order" => $order]);
+        return $pdf->stream('orden_de_acondicionamiento_' . $order->id . '.pdf');
     }
 
     public function edit($id)
@@ -140,7 +129,17 @@ class PackingController extends Controller
     public function update(Request $request, $id)
     {
         if (Auth::user()->role_id == 3) {
-            if (count($request->orderNumber) > 0) {
+            $package = Package::find($id);
+            if ($package->status == 'Liberado' && $request->status == 'Empacado') {
+                $package->quantity_real = $request->total;
+                $package->status = $request->status;
+                $package->available_quantity = $request->total;
+                $package->save();
+
+                Product::where('id', $package->product)->update(['stock' => ($package->product->stock + $request->total)]);
+                
+            }
+            /*if (count($request->orderNumber) > 0) {
                 $package = Package::find($id);
                 $package->supplies()->delete();
                 for ($i = 0; $i < count($request->orderNumber); $i++) {
@@ -152,7 +151,7 @@ class PackingController extends Controller
                         $packageSupply->save();
                     }
                 }
-            }
+            }*/
         } else {
             $package = Package::find($id);
             $package->product_id = $request->product;
@@ -204,7 +203,7 @@ class PackingController extends Controller
                 }
 
                 if (count($supplies) > 0 || count($recipes))
-                    return redirect('ordenes-de-fabricacion')->with('error', 'Estas recetas no cuentan consuficientes capsulas: ' . implode(", ", $recipes) . '.<br>Estos insumos no cuentan con suficiente stock disponible: ' . implode(", ", $supplies));
+                return redirect('ordenes-de-acondicionamiento')->with('error', 'Estas recetas no cuentan consuficientes capsulas: ' . implode(", ", $recipes) . '.<br>Estos insumos no cuentan con suficiente stock disponible: ' . implode(", ", $supplies));
                 /*foreach ($package->product->recipes as $item) {
                     $recipe = Recipe::find($item->recipe_id);
                     $recipe->stock = $recipe->stock - (($item->quantity + ($item->quantity * ($item->excess / 100))) * $package->quantity);
@@ -216,8 +215,6 @@ class PackingController extends Controller
                     $supply->stock = $supply->stock - (($item->quantity + ($item->quantity * ($item->excess / 100))) * $package->quantity);
                     $supply->save();
                 }*/
-            } else if ($package->status == 'Acondicionamiento en Tarimas' && $request->status == 'Finalizada') {
-                Product::where('id', $package->product)->update(['stock', ($package->product->stock + $package->quantity)]);
             }
             $package->status = $request->status;
             $package->save();
@@ -249,15 +246,23 @@ class PackingController extends Controller
                 foreach ($ids as $idx) {
 
                     $entrance = Departure::find($idx);
-                    $lotQuantity = $entrance->quantity;
+                    $lotQuantity = $entrance->available_quantity;
                     if ($totalForDiscount >= $lotQuantity) {
-                        $entrance->quantity = 0;
+                        $entrance->available_quantity = 0;
                         $different = $lotQuantity;
                     } else {
-                        $entrance->quantity = $lotQuantity - $totalForDiscount;
+                        $entrance->available_quantity = $lotQuantity - $totalForDiscount;
                         $different = $totalForDiscount;
                     }
 
+                    $recipe = Recipe::find($request->recipeId[$key]);
+                    if ($totalForDiscount >= $lotQuantity) {
+                        $recipe->stock = $recipe->stock - $lotQuantity;
+                    } else {
+                        $recipe->stock = $recipe->stock - $totalForDiscount;
+                    }
+
+                    $recipe->save();
                     $entrance->save();
 
                     $totalForDiscount -= $lotQuantity;
@@ -294,7 +299,7 @@ class PackingController extends Controller
             $departureItem->deliver_date = date('Y-m-d'); // $request->deliverDate[$key];
             $departureItem->deliver_quantity = $request->deliverQuantity[$key];
 
-            $totalNeedIt = $departureItem->quantity + ($departureItem->quantity * ($departureItem->excess / 100)) * $departureItem->package->quantity;
+            $totalNeedIt = ($departureItem->quantity + ($departureItem->quantity * ($departureItem->excess / 100))) * $departureItem->package->quantity;
             if ($request->processed[$key] == 0 && $request->orderNumber[$key] !== NULL) {
 
                 $ids = explode(",", $request->orderNumber[$key]);
@@ -351,4 +356,19 @@ class PackingController extends Controller
         //return redirect('ordenes-de-acondicionamiento')->with('success', 'Orden actualizada correctamente');
     }
 
+    public function scan($id)
+    {
+        $package = Package::find($id);
+        if ($package->status == 'Empacado') {
+            return redirect('ordenes-de-acondicionamiento')->with('success', 'La orden de acondicionamiento ya ha finalizado');
+        }
+        return view('packing.scan', ["package" => $package]);
+    }
+
+    public function revision($id)
+    {
+        $package = Package::find($id);
+        $pdf = PDF::setOptions(['isHtml5ParserEnabled' => true, 'isRemoteEnabled' => true])->loadView('pdfs.lot_numbers', ["package" => $package]);
+        return $pdf->stream('numeros_de_lote_' . $package->id . '.pdf');
+    }
 }

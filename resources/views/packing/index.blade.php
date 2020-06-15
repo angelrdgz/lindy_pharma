@@ -54,6 +54,12 @@
                                     </a>
                                     <a href="{{ url('ordenes-de-acondicionamiento/'.$package->id)}}" target="_blank" class="btn btn-info btn-icon-split btn-sm">
                                         <span class="icon text-white-50">
+                                            <i class="far fa-file"></i>
+                                        </span>
+                                        <span class="text">PDF</span>
+                                    </a>
+                                    <a href="{{ url('ordenes-de-acondicionamiento/'.$package->id.'/revision')}}" target="_blank" class="btn btn-info btn-icon-split btn-sm">
+                                        <span class="icon text-white-50">
                                             <i class="far fa-eye"></i>
                                         </span>
                                         <span class="text">Reporte</span>

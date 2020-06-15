@@ -67,7 +67,7 @@
                                     @foreach($package->supplies as $supply)
                                     <tr>
                                         <td>{{ $supply->supply->code.' - '.$supply->supply->name }}</td>
-                                        <td>{{ number_format((($supply->quantity + ($supply->quantity * ($supply->excess / 100))) * $package->quantity),2)}} gr</td>
+                                        <td>{{ number_format((($supply->quantity + ($supply->quantity * ($supply->excess / 100))) * $package->quantity),2)}} pza</td>
                                         <td><input type="text" class="form-control number" name="deliverQuantity[]" value="{{ $supply->deliver_quantity !== NULL ? $supply->deliver_quantity:(($supply->quantity + ($supply->quantity * ($supply->excess / 100))) * $package->quantity)}}"></td>
                                         <td>
                                             <input type="hidden" name="supplyId[]" value="{{ $supply->supply_id }}">

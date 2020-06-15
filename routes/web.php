@@ -38,6 +38,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('inventario-productos/{id}', 'ProductController@stockDetails');
     Route::put('inventario-productos/{id}', 'ProductController@updateStock');
     Route::get('ordenes-de-fabricacion/{id}/revision', 'DepartureController@revision');
+    Route::get('ordenes-de-acondicionamiento/{id}/revision', 'PackingController@revision');
 
     Route::resource('usuarios', 'UserController');
     Route::resource('insumos', 'SupplyController');
@@ -57,6 +58,7 @@ Route::middleware(['auth'])->group(function () {
 
 
     Route::get('ordenes-de-fabricacion/{id}/escanear', 'DepartureController@scan');
+    Route::get('ordenes-de-acondicionamiento/{id}/escanear', 'PackingController@scan');
     Route::put('ordenes-de-fabricacion/{id}/items', 'DepartureController@updateItems');
     Route::put('ordenes-de-acondicionamiento/{id}/items', 'PackingController@updateItems');
     
