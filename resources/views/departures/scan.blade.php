@@ -49,11 +49,11 @@
                 @break
 
                 @case("Secado")
-                <?php $newStatus = "Granel";; ?>
+                <?php $newStatus = "Inspección";; ?>
                 @break
 
-                @case("Granel")
-                <?php $newStatus = "Inspección";; ?>
+                @case("Inspección")
+                <?php $newStatus = "Granel";; ?>
                 @break
 
                 @default
@@ -70,10 +70,10 @@
                             <td><b>Estatus actual:</b></td>
                             <td>{{ ucfirst($departure->status) }}</td>
                         </tr>
-                        @if($departure->status == "Granel")
+                        @if($departure->status == "Inspección")
                         <tr>
                             <td><b>Cantidad :</b></td>
-                            <td><input type="text" class="form-control number listenTotal" value='{{ $departure->status == "Granel" ? $departure->quantity:"0"}}'></td>
+                            <td><input type="text" class="form-control number listenTotal" value='{{ $departure->status == "Inspección" ? $departure->quantity:"0"}}'></td>
                         </tr>
                         @endif
                         <tr>

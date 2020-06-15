@@ -284,7 +284,7 @@ class DepartureController extends Controller
     public function scan($id)
     {
         $departure = Departure::find($id);
-        if ($departure->status == 'Inspección') {
+        if ($departure->status == 'Granel') {
             return redirect('ordenes-de-fabricacion')->with('success', 'La orden de fabricación ya ha finalizado');
         }
         return view('departures.scan', ["departure" => $departure]);
@@ -367,17 +367,17 @@ class DepartureController extends Controller
                     $newStatus = "Secado";
                     break;
                 case "Secado":
-                    $newStatus = "Granel";
-                    break;
-                case "Granel":
                     $newStatus = "Inspección";
+                    break;
+                case "Inspección":
+                    $newStatus = "Granel";
                     break;
                 default:
                     $newStatus = "N/A";
                     break;
             }
 
-            if ($newStatus == 'Inspección') {
+            if ($newStatus == 'Granel') {
                 $recipe = Recipe::find($departure->recipe_id);
                 $recipe->stock = $recipe->stock + $request->total;
                 $recipe->save();
