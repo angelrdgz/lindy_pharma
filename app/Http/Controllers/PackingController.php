@@ -26,7 +26,7 @@ class PackingController extends Controller
     public function index()
     {
         if (Auth::user()->role_id == 3)
-            $packages = Package::whereIn("status", ["Liberado", "Empacado"])->get();
+            $packages = Package::where("status", "Liberado")->orWhere("status", "Empacado")->get();
         else
             $packages = Package::all();
 
