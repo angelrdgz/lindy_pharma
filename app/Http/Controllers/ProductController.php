@@ -147,7 +147,7 @@ class ProductController extends Controller
             $package->code = $package->product->code;
         });
 
-        $csvExporter->build($packages, ["id" => "OT", "code" => "Código", "name" => "Nombre", "lot" => "Lote", "quantity" => "Tamaño de Lote", "quantity_real" => "Cantidad Real",  "date_expire" => "Fecha de Caducidad", "production_status" => "Estatus de Producción", "quality_status" => "Estatus de Calidad"])->download('inventario_products_' . date('d_m_Y') . '.csv');
+        $csvExporter->build($packages, ["id" => "OT", "code" => "Código", "name" => "Nombre", "lot" => "Lote", "quantity" => "Tamano de Lote", "quantity_real" => "Cantidad Real",  "date_expire" => "Fecha de Caducidad", "production_status" => "Estatus de Produccion", "quality_status" => "Estatus de Calidad"])->download('inventario_products_' . date('d_m_Y') . '.csv');
     }
 
     public function exportProduct($id)
@@ -162,7 +162,7 @@ class ProductController extends Controller
             $pack->code = $pack->product->code;
         });
 
-        $csvExporter->build($package, ["id" => "OT", "code" => "Código", "name" => "Nombre", "lot" => "Lote", "quantity" => "Tamaño de Lote", "quantity_real" => "Cantidad Real",  "date_expire" => "Fecha de Caducidad", "production_status" => "Estatus de Producción", "quality_status" => "Estatus de Calidad"])->download('inventario_' . str_replace("_", "/", $package[0]->product->name) . '_' . date('d_m_Y') . '.csv');
+        $csvExporter->build($package, ["id" => "OT", "code" => "Codigo", "name" => "Nombre", "lot" => "Lote", "quantity" => "Tamano de Lote", "quantity_real" => "Cantidad Real",  "date_expire" => "Fecha de Caducidad", "production_status" => "Estatus de Produccion", "quality_status" => "Estatus de Calidad"])->download('inventario_' . str_replace("_", "/", $package[0]->product->name) . '_' . date('d_m_Y') . '.csv');
     }
 
     public function stock()
