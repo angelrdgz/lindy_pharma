@@ -164,7 +164,7 @@ class SupplyController extends Controller
                 $supply->idx = '#' . strval(sprintf("%05s", $supply->id));
             });
 
-            $csvExporter->build($items, ["created_at" => "Fecha", 'supply_id' => "Codigo Producto", "name" => "Nombre Producto", "entrance_id" => "No Orden de Compra", "lot_supplier" => "Lote de Proveedor", "idx" => "Numero de Entrada", "available_quantity" => "Cantidad Kg", "cups" => "No de Envases", "expired_date" => "Fecha de Caducidad", "reanalized_date" => "Fecha de Reanalisis", "supplier" => "Proveedor"] /**/)->download('inventario_de_materias_primas_' . date('d_m_Y') . '.csv');
+            $csvExporter->build($items, ["created_at" => "Fecha", 'supply_id' => "Codigo Producto", "name" => "Nombre Producto", "entrance_id" => "No Orden de Compra", "lot_supplier" => "Lote de Proveedor", "idx" => "Numero de Entrada","quantity"=>"Cantidad Inicial Kg", "available_quantity" => "Cantidad Disponible Kg", "cups" => "No de Envases", "expired_date" => "Fecha de Caducidad", "reanalized_date" => "Fecha de Reanalisis", "supplier" => "Proveedor"] /**/)->download('inventario_de_materias_primas_' . date('d_m_Y') . '.csv');
         } else {
 
             $items = EntranceItem::join('supplies', 'entrance_items.supply_id', '=', 'supplies.id')->orderBy('entrance_items.supply_id', 'ASC')->where("supplies.type_id", "!=", 1)->where('entrance_items.status', '!=', 'Rechazada')->get();
@@ -178,7 +178,7 @@ class SupplyController extends Controller
                 $supply->idx = '#' . strval(sprintf("%05s", $supply->id));
             });
 
-            $csvExporter->build($items, ["created_at" => "Fecha", 'supply_id' => "Codigo Producto", "name" => "Nombre Producto", "entrance_id" => "No Orden de Compra", "lot_supplier" => "Lote de Proveedor", "idx" => "Numero de Entrada", "available_quantity" => "Cantidad pza", "cups" => "No de Envases", "expired_date" => "Fecha de Caducidad", "reanalized_date" => "Fecha de Reanalisis", "supplier" => "Proveedor"] /**/)->download('inventario_de_materiales_' . date('d_m_Y') . '.csv');
+            $csvExporter->build($items, ["created_at" => "Fecha", 'supply_id' => "Codigo Producto", "name" => "Nombre Producto", "entrance_id" => "No Orden de Compra", "lot_supplier" => "Lote de Proveedor", "idx" => "Numero de Entrada","quantity"=>"Cantidad Inicial Pza", "available_quantity" => "Cantidad Disponible pza", "cups" => "No de Envases", "expired_date" => "Fecha de Caducidad", "reanalized_date" => "Fecha de Reanalisis", "supplier" => "Proveedor"] /**/)->download('inventario_de_materiales_' . date('d_m_Y') . '.csv');
         }
 
 
