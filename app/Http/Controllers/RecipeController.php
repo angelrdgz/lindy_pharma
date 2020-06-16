@@ -162,7 +162,7 @@ class RecipeController extends Controller
 
     public function export()
     {
-        $departures = Departure::where("status", 'Inspección')->distinct("order_number")->get();
+        $departures = Departure::where("status", 'Granel')->distinct("order_number")->get();
         $csvExporter = new \Laracsv\Export();
 
         $csvExporter->beforeEach(function ($departure) {
@@ -171,12 +171,12 @@ class RecipeController extends Controller
             $departure->code = $departure->recipe->code;
         });
 
-        $csvExporter->build($departures, ["order_number" => "OT", "code" => "Código", "name" => "Nombre", "lot" => "Lote", "quantity" => "Tamaño de Lote", "quantity_real" => "Cantidad Real",  "expired_date" => "Fecha de Caducidad", "production_status"=>"Estatus de Producción", "quality_status"=>"Estatus de Calidad"])->download('inventario_' . date('d_m_Y') . '.csv');
+        $csvExporter->build($departures, ["order_number" => "OT", "code" => "Código", "name" => "Nombre", "lot" => "Lote", "quantity" => "Tamaño de Lote", "quantity_real" => "Cantidad Real", "available_quantity"=>"Cantidad Disponible", "expired_date" => "Fecha de Caducidad", "production_status"=>"Estatus de Producción", "quality_status"=>"Estatus de Calidad"])->download('inventario_' . date('d_m_Y') . '.csv');
     }
 
     public function exportRecipe($id)
     {
-        $departures = Departure::where("status", 'Inspección')->where("recipe_id", $id)->distinct("order_number")->get();
+        $departures = Departure::where("status", 'Granel')->where("recipe_id", $id)->distinct("order_number")->get();
         $csvExporter = new \Laracsv\Export();
 
         $csvExporter->beforeEach(function ($departure) {
