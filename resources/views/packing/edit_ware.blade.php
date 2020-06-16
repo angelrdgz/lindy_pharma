@@ -41,8 +41,7 @@
                                             <input type="hidden" name="idRecipeRow[]" value="{{$recipe->id}}">
                                             <input type="hidden" name="processedRecipe[]" value="{{$recipe->processed}}">
                                             <input type="hidden" name="lotNumber[]" value="{{$recipe->lot_number}}">
-                                            <select id="" class="form-control selectPickerLot">
-                                                <option value="">Seleccionar Número de Lote</option>
+                                            <select id="" class="form-control selectPickerLot" multiple>
                                                 @foreach($recipe->recipe->lotNumbers($recipe->recipe_id) as $order)
                                                 <option value="{{ $order->id}}">{{$order->order_number}}</option>
                                                 @endforeach
@@ -74,8 +73,7 @@
                                             <input type="hidden" name="idSupplyRow[]" value="{{$supply->id}}">
                                             <input type="hidden" name="processed[]" value="{{$supply->processed}}">
                                             <input type="hidden" name="orderNumber[]" value="{{$supply->entrance_number}}">
-                                            <select id="" class="form-control selectPickerEntrance">
-                                                <option value="">Seleccionar Número de Entrada</option>
+                                            <select id="" class="form-control selectPickerEntrance" multiple>
                                                 @foreach($supply->supply->entranceNumbers($supply->supply->id) as $order)
                                                 <option value="{{ $order->id}}" {{ $order->id == $supply->order_number ? "selected":""}}>{{sprintf("%05s", $order->id)}}</option>
                                                 @endforeach

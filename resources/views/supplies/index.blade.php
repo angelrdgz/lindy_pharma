@@ -10,10 +10,27 @@
             <h5 class="m-0 font-weight-bold text-primary">Insumos</h5>
           </div>
           <div class="col-sm-2 pt-2">
-            <a href="{{ url('exportar/insumos-stock') }}" target="_blank" class="btn btn-primary btn-block">Exportar Stock</a>
-          </div>          
+          <div class="dropdown">
+              <button class="btn btn-primary btn-block dropdown-toggle" type="button" id="dropdownMenuButton2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              Exportar Stock
+              </button>
+              <div class="dropdown-menu" aria-labelledby="dropdownMenuButton2">
+                <a href="{{ url('exportar/insumos-stock?type=1') }}" target="_blank" class="dropdown-item">Stock de Materias Primas</a>
+                <a href="{{ url('exportar/insumos-stock?type=2') }}" target="_blank" class="dropdown-item">Stock de Materiales</a>
+              </div>
+            </div>
+            <!--<a href="{{ url('exportar/insumos-stock') }}" target="_blank" class="btn btn-primary btn-block">Exportar Stock</a>-->
+          </div>
           <div class="col-sm-2 pt-2">
-            <a href="{{ url('exportar/insumos') }}" target="_blank" class="btn btn-primary btn-block">Exportar CSV</a>
+            <div class="dropdown">
+              <button class="btn btn-primary btn-block dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Exportar CSV
+              </button>
+              <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                <a href="{{ url('exportar/insumos?type=1') }}" target="_blank" class="dropdown-item">Inventario de Materias Primas</a>
+                <a href="{{ url('exportar/insumos?type=2') }}" target="_blank" class="dropdown-item">Inventario de Materiales</a>
+              </div>
+            </div>
           </div>
           <div class="col-sm-2">
             @if(Auth::user()->role_id !== 3)

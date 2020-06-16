@@ -31,6 +31,7 @@
                 <th>Lote</th>
                 <th>Tamaño de Lote</th>
                 <th>Cantidad Real</th>
+                <th>Cantidad Disponible</th>
                 <th>Fecha de Caducidad</th>
                 <th>Estatus de Producción</th>
                 <th>Estatus de Calidad</th>
@@ -46,6 +47,7 @@
                 <td>{{ $departure->lot }}</td>
                 <td>{{ number_format($departure->quantity,0) }}</td>
                 <td>{{ number_format($departure->quantity_real,0) }}</td>
+                <td>{{ number_format($departure->available_quantity,0) }}</td>
                 <td>{{ $departure->expired_date == NULL ? "No definida":date("d/m/Y", strtotime($departure->expired_date))}}</td>
                 <td>{{ $departure->production_status == NULL ? "No definido":$departure->production_status}}</td>
                 <td>{{ $departure->quality_status == NULL ? "No definido":$departure->quality_status}}</td>

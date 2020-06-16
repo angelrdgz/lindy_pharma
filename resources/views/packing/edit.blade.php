@@ -65,7 +65,7 @@
                             <select name="status" id="" class="form-control">
                                 <option {{ $package->status == NULL ? "selected":""}} value="">Seleccionar Estatus</option>
                                 <option {{ $package->status == "Creada" ? "selected":""}} value="Creada">Creada</option>
-                                <option {{ $package->status == "Liberada" ? "selected":""}} value="Liberada">Liberada</option>
+                                <option {{ $package->status == "Liberado" ? "selected":""}} value="Liberado">Liberado</option>
                             </select>
                         </div>
                         @endif

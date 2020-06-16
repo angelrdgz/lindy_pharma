@@ -21,7 +21,7 @@ class ProductController extends Controller
     {
         $products = Product::all();
         return view('products.index', [
-            'products'=>$products
+            'products' => $products
         ]);
     }
 
@@ -29,7 +29,7 @@ class ProductController extends Controller
     {
         $supplies = Supply::all();
         $recipes = Recipe::all();
-        return view('products.create', ['recipes'=>$recipes, 'supplies'=>$supplies]);
+        return view('products.create', ['recipes' => $recipes, 'supplies' => $supplies]);
     }
 
     public function store(Request $request)
@@ -50,31 +50,31 @@ class ProductController extends Controller
         $product->save();
 
         foreach ($request->idItemRecipe as $key => $item) {
-            if($request->idItemRecipe[$key] != NULL){
+            if ($request->idItemRecipe[$key] != NULL) {
                 $prodSupply = new ProductRecipe();
-            $prodSupply->product_id = $product->id;
-            $prodSupply->recipe_id = $request->idItemRecipe[$key];
-            $prodSupply->quantity = $request->quantityItemRecipe[$key];
-            $prodSupply->excess = $request->excessItemRecipe[$key];
-            $prodSupply->save();
-            }                        
+                $prodSupply->product_id = $product->id;
+                $prodSupply->recipe_id = $request->idItemRecipe[$key];
+                $prodSupply->quantity = $request->quantityItemRecipe[$key];
+                $prodSupply->excess = $request->excessItemRecipe[$key];
+                $prodSupply->save();
+            }
         }
 
         foreach ($request->idItem as $key => $item) {
-            if($request->idItem[$key] != NULL){
+            if ($request->idItem[$key] != NULL) {
                 $prodSupply = new ProductSupply();
-            $prodSupply->product_id = $product->id;
-            $prodSupply->supply_id = $request->idItem[$key];
-            $prodSupply->quantity = $request->quantityItem[$key];
-            $prodSupply->excess = $request->excessItem[$key];
-            $prodSupply->save();
-            }            
+                $prodSupply->product_id = $product->id;
+                $prodSupply->supply_id = $request->idItem[$key];
+                $prodSupply->quantity = $request->quantityItem[$key];
+                $prodSupply->excess = $request->excessItem[$key];
+                $prodSupply->save();
+            }
         }
 
         $logbook = new Logbook();
         $logbook->type_id = 1;
         $logbook->title = 'Producto Creado';
-        $logbook->content = 'El producto con el código "'.$request->code.'" ha sido creado';
+        $logbook->content = 'El producto con el código "' . $request->code . '" ha sido creado';
         $logbook->icon = 'fas fa-flask';
         $logbook->created_by = Auth::user()->id;
         $logbook->save();
@@ -89,7 +89,7 @@ class ProductController extends Controller
         $recipes = Recipe::all();
         $productRecipes = ProductRecipe::where('product_id', $id)->get();
         $productSupplies = ProductSupply::where('product_id', $id)->get();
-        return view('products.edit', ['product'=>$product, 'recipes'=>$recipes, 'supplies'=>$supplies, 'productRecipes'=>$productRecipes, 'productSupplies'=>$productSupplies]);
+        return view('products.edit', ['product' => $product, 'recipes' => $recipes, 'supplies' => $supplies, 'productRecipes' => $productRecipes, 'productSupplies' => $productSupplies]);
     }
 
     public function update(Request $request, $id)
@@ -103,38 +103,36 @@ class ProductController extends Controller
         $product->recipes()->delete();
 
         foreach ($request->idItemRecipe as $key => $item) {
-            if($request->idItemRecipe[$key] != NULL){
+            if ($request->idItemRecipe[$key] != NULL) {
                 $prodSupply = new ProductRecipe();
-            $prodSupply->product_id = $product->id;
-            $prodSupply->recipe_id = $request->idItemRecipe[$key];
-            $prodSupply->quantity = $request->quantityItemRecipe[$key];
-            $prodSupply->excess = $request->excessItemRecipe[$key];
-            $prodSupply->save();
+                $prodSupply->product_id = $product->id;
+                $prodSupply->recipe_id = $request->idItemRecipe[$key];
+                $prodSupply->quantity = $request->quantityItemRecipe[$key];
+                $prodSupply->excess = $request->excessItemRecipe[$key];
+                $prodSupply->save();
             }
-            
         }
 
         foreach ($request->idItem as $key => $item) {
-            if($request->idItem[$key] != NULL){
+            if ($request->idItem[$key] != NULL) {
                 $prodSupply = new ProductSupply();
-            $prodSupply->product_id = $product->id;
-            $prodSupply->supply_id = $request->idItem[$key];
-            $prodSupply->quantity = $request->quantityItem[$key];
-            $prodSupply->excess = $request->excessItem[$key];
-            $prodSupply->save();
-            }                        
+                $prodSupply->product_id = $product->id;
+                $prodSupply->supply_id = $request->idItem[$key];
+                $prodSupply->quantity = $request->quantityItem[$key];
+                $prodSupply->excess = $request->excessItem[$key];
+                $prodSupply->save();
+            }
         }
 
         $logbook = new Logbook();
         $logbook->type_id = 2;
         $logbook->title = 'Producto Modificado';
-        $logbook->content = 'El producto con el código "'.$request->code.'" ha sido modificado';
+        $logbook->content = 'El producto con el código "' . $request->code . '" ha sido modificado';
         $logbook->icon = 'fas fa-flask';
         $logbook->created_by = Auth::user()->id;
         $logbook->save();
 
         return redirect('productos')->with('success', 'Producto guardado correctamente');
-        
     }
 
     public function export()
@@ -143,13 +141,13 @@ class ProductController extends Controller
         $csvExporter = new \Laracsv\Export();
 
         $csvExporter->beforeEach(function ($package) {
-            $package->id = '#'.sprintf("%05s",  $package->id);
+            $package->id = '#' . sprintf("%05s",  $package->id);
             $package->date_expire = $package->date_expire == NULL ? "No definida" : date("d/m/Y", strtotime($package->date_expire));
             $package->name = $package->product->name;
             $package->code = $package->product->code;
         });
 
-        $csvExporter->build($packages, ["id" => "OT", "code" => "Código", "name" => "Nombre", "lot" => "Lote", "quantity" => "Tamaño de Lote", "quantity_real" => "Cantidad Real",  "date_expire" => "Fecha de Caducidad", "production_status"=>"Estatus de Producción", "quality_status"=>"Estatus de Calidad"])->download('inventario_products_' . date('d_m_Y') . '.csv');
+        $csvExporter->build($packages, ["id" => "OT", "code" => "Código", "name" => "Nombre", "lot" => "Lote", "quantity" => "Tamaño de Lote", "quantity_real" => "Cantidad Real",  "date_expire" => "Fecha de Caducidad", "production_status" => "Estatus de Producción", "quality_status" => "Estatus de Calidad"])->download('inventario_products_' . date('d_m_Y') . '.csv');
     }
 
     public function exportProduct($id)
@@ -158,21 +156,21 @@ class ProductController extends Controller
         $csvExporter = new \Laracsv\Export();
 
         $csvExporter->beforeEach(function ($pack) {
-            $pack->id = '#'.sprintf("%05s",  $pack->id);
+            $pack->id = '#' . sprintf("%05s",  $pack->id);
             $pack->date_expire = $pack->date_expire == NULL ? "No definida" : date("d/m/Y", strtotime($pack->date_expire));
             $pack->name = $pack->product->name;
             $pack->code = $pack->product->code;
         });
 
-        $csvExporter->build($package, ["id" => "OT", "code" => "Código", "name" => "Nombre", "lot" => "Lote", "quantity" => "Tamaño de Lote", "quantity_real" => "Cantidad Real",  "date_expire" => "Fecha de Caducidad", "production_status"=>"Estatus de Producción", "quality_status"=>"Estatus de Calidad"])->download('inventario_' . str_replace("_", "/", $package[0]->product->name) . '_' . date('d_m_Y') . '.csv');
+        $csvExporter->build($package, ["id" => "OT", "code" => "Código", "name" => "Nombre", "lot" => "Lote", "quantity" => "Tamaño de Lote", "quantity_real" => "Cantidad Real",  "date_expire" => "Fecha de Caducidad", "production_status" => "Estatus de Producción", "quality_status" => "Estatus de Calidad"])->download('inventario_' . str_replace("_", "/", $package[0]->product->name) . '_' . date('d_m_Y') . '.csv');
     }
 
     public function stock()
     {
         if (Auth::user()->role_id == 2)
-            $packages = Package::where('status', 'Finalizada')->where("production_status", "Completa")->get();
+            $packages = Package::where('status', 'Empacado')->where("production_status", "Completa")->get();
         else
-            $packages = Package::where('status', 'Finalizada')->get();
+            $packages = Package::where('status', 'Empacado')->get();
         return view('products.stock', ["packages" => $packages]);
     }
 

@@ -206,46 +206,46 @@ class DepartureController extends Controller
             $departureItem->deliver_quantity = ($request->deliverQuantity[$key] * 1000) / $departureItem->departure->quantity;
 
             $totalNeedIt = ($departureItem->quantity + ($departureItem->quantity * ($departureItem->excess / 100))) * $departureItem->departure->quantity;
-            echo "Total necesario: " . $totalNeedIt . '<br>';
+            //echo "Total necesario: " . $totalNeedIt . '<br>';
             if ($request->processed[$key] == 0 && $request->orderNumber[$key] !== NULL) {
 
                 $ids = explode(",", $request->orderNumber[$key]);
 
                 $totalForDiscount = $totalNeedIt; //convert($departureItem->supply->measurement_buy, $departureItem->supply->measurement_use, ($departureItem->quantity + ($departureItem->quantity * ($departureItem->excess / 100)) * $departureItem->departure->quantity));
 
-                echo "Total a descontar: " . $totalForDiscount . '<br>';
+                //echo "Total a descontar: " . $totalForDiscount . '<br>';
 
                 foreach ($ids as $idx) {
 
                     $entrance = EntranceItem::find($idx);
                     $entranceQuantity = $this->convert($entrance->supply->measurement_buy, $entrance->supply->measurement_use, $entrance->available_quantity);
-                    echo "Disponible en entra #" . $entrance->id . ": " . $entranceQuantity . '<br>';
+                    //echo "Disponible en entra #" . $entrance->id . ": " . $entranceQuantity . '<br>';
                     if ($totalForDiscount >= $entranceQuantity) {
                         $entrance->available_quantity = 0;
-                        echo "El total a descontar es mayor a la cantidad disponible en la entrada<br>";
+                        //echo "El total a descontar es mayor a la cantidad disponible en la entrada<br>";
                     } else {
-                        echo "El total a descontar es menor a la cantidad disponible en la entrada<br>";
+                        //echo "El total a descontar es menor a la cantidad disponible en la entrada<br>";
                         $entrance->available_quantity = $this->reverse($entrance->supply->measurement_buy, $entrance->supply->measurement_use, ($entranceQuantity - $totalForDiscount));
-                        echo "Cantidad a actualizar:" . $entrance->available_quantity . "<br>";
+                        //echo "Cantidad a actualizar:" . $entrance->available_quantity . "<br>";
                     }
 
                     $entrance->save();
 
                     $supply = Supply::find($request->supplyId[$key]);
                     if ($totalForDiscount >= $entranceQuantity) {
-                        echo "ID: ".$request->supplyId[$key].", Stock actual: " . $supply->stock . ', Cantidad a descontar: ' . $entranceQuantity . ' queda en: ' . ($supply->stock - $entranceQuantity) . '<br>';
+                        //echo "ID: ".$request->supplyId[$key].", Stock actual: " . $supply->stock . ', Cantidad a descontar: ' . $entranceQuantity . ' queda en: ' . ($supply->stock - $entranceQuantity) . '<br>';
                         $supply->stock = $supply->stock - $entranceQuantity;
                         $different = $entranceQuantity;
                     } else {                        
-                        echo "Stock actual: " . $supply->stock . ', Cantidad a descontar: ' . $totalForDiscount . ' queda en: ' . ($supply->stock - $totalForDiscount) . '<br>';
+                        //echo "Stock actual: " . $supply->stock . ', Cantidad a descontar: ' . $totalForDiscount . ' queda en: ' . ($supply->stock - $totalForDiscount) . '<br>';
                         $supply->stock = $supply->stock - $totalForDiscount;
                         $different = $totalForDiscount;
                     }
 
                     $supply->save();
 
-                    echo "Se ocupaba: " . $totalNeedIt . ' y se pago: ' . $different . '<br>';
-                    echo "=======================================<br><br>";
+                    //echo "Se ocupaba: " . $totalNeedIt . ' y se pago: ' . $different . '<br>';
+                    //echo "=======================================<br><br>";
 
                     $die = new DepartureItemEntrance();
                     $die->departure_item_id = $departureItem->id;

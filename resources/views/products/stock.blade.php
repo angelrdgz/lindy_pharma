@@ -31,6 +31,7 @@
                 <th>Lote</th>
                 <th>Tamaño de Lote</th>
                 <th>Cantidad Real</th>
+                <th>Cantidad Disponible</th>
                 <th>Fecha de Caducidad</th>
                 <th>Estatus de Producción</th>
                 <th>Estatus de Calidad</th>
@@ -46,6 +47,7 @@
                 <td>{{ $package->lot }}</td>
                 <td>{{ number_format($package->quantity,0) }}</td>
                 <td>{{ number_format($package->quantity_real,0) }}</td>
+                <td>{{ number_format($package->available_quantity,0) }}</td>
                 <td>{{ $package->expired_date == NULL ? "No definida":date("d/m/Y", strtotime($package->expired_date))}}</td>
                 <td>{{ $package->production_status == NULL ? "No definido":$package->production_status}}</td>
                 <td>{{ $package->quality_status == NULL ? "No definido":$package->quality_status}}</td>

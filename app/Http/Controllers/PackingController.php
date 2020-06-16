@@ -137,7 +137,6 @@ class PackingController extends Controller
                 $package->save();
 
                 Product::where('id', $package->product)->update(['stock' => ($package->product->stock + $request->total)]);
-                
             }
             /*if (count($request->orderNumber) > 0) {
                 $package = Package::find($id);
@@ -153,6 +152,7 @@ class PackingController extends Controller
                 }
             }*/
         } else {
+
             $package = Package::find($id);
             $package->product_id = $request->product;
             $package->quantity = $request->quantity;
@@ -172,7 +172,8 @@ class PackingController extends Controller
 
                 foreach ($package->recipes as $recipe) {
                     $total = ($recipe->quantity + ($recipe->quantity * ($recipe->excess / 100))) * $package->quantity;
-                    $enable = Departure::where('recipe_id', $recipe->recipe_id)->where("status", "Inspección")->where("type", 1)->sum("quantity_real");
+                    $enable = intval(Departure::where('recipe_id', $recipe->recipe_id)->where("status", "Granel")->where("type", 1)->sum("available_quantity"));
+
                     if ($total > $enable) {
                         $tag = number_format(($total - $enable), 2) . ' pza';
                         array_push($recipes, $recipe->recipe->name . ' (' . $tag . ')');
@@ -181,7 +182,7 @@ class PackingController extends Controller
 
                 foreach ($package->supplies as $item) {
                     $total = ($item->quantity + ($item->quantity * ($item->excess / 100))) * $package->quantity;
-                    $enable = EntranceItem::where('supply_id', $item->supplie_id)->where("status", "Aprobada")->sum("quantity");
+                    $enable = floatval(EntranceItem::where('supply_id', $item->supply_id)->where("status", "Aprobada")->sum("available_quantity"));
                     if ($total > $enable) {
                         switch ($item->supply->measurement_use) {
                             case 6:
@@ -202,8 +203,9 @@ class PackingController extends Controller
                     }
                 }
 
-                if (count($supplies) > 0 || count($recipes))
-                return redirect('ordenes-de-acondicionamiento')->with('error', 'Estas recetas no cuentan consuficientes capsulas: ' . implode(", ", $recipes) . '.<br>Estos insumos no cuentan con suficiente stock disponible: ' . implode(", ", $supplies));
+                if (count($supplies) > 0 || count($recipes)) {
+                    return redirect('ordenes-de-acondicionamiento')->with('error', 'Estas recetas no cuentan consuficientes capsulas: ' . implode(", ", $recipes) . '. Estos insumos no cuentan con suficiente stock disponible: ' . implode(", ", $supplies));
+                }
                 /*foreach ($package->product->recipes as $item) {
                     $recipe = Recipe::find($item->recipe_id);
                     $recipe->stock = $recipe->stock - (($item->quantity + ($item->quantity * ($item->excess / 100))) * $package->quantity);
