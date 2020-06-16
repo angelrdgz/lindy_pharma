@@ -45,7 +45,7 @@
     font-weight: bold; 
     }
     table.item td, table.item th { 
-    padding: 10px; 
+    padding: 3px 10px; 
     border: 1px solid #888;
     font-size: 9px;
     }
@@ -201,7 +201,7 @@
       <thead>
         <tr>
           <th>Código del Insumo</th>
-          <th>Descripción del Insumo</th>
+          <th style="width: 30%;">Descripción del Insumo</th>
           <th>Cantidad Unitaria</th>
           <th>UM</th>
           <th>Exceso (%)</th>

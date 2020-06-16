@@ -12,6 +12,10 @@
             font-family: sans-serif;
         }
 
+        .text-left {
+            text-align: left;
+        }
+
         .text-center {
             text-align: center;
         }
@@ -154,12 +158,12 @@
     <table class="table">
         <tbody>
             <tr>
-                <td class="font-12"><b>OT</b></td>
-                <td class="font-12">{{ $package->order_number }}/1.</td>
-                <td class="font-12"><b>PRODUCTO</b></td>
-                <td class="font-12">{{ $package->product->name}}</td>
-                <td class="font-12"><b>CÓDIGO PRODUCTO</b></td>
-                <td class="font-12">{{ $package->product->code}}</td>
+                <td class="font-12" style="width: 3%;"><b>OT</b></td>
+                <td class="font-12 text-left" style="width: 10%;">{{ sprintf("%05s", $package->id) }}/1.</td>
+                <td class="font-12" style="width: 10%;"><b>PRODUCTO</b></td>
+                <td class="font-12 text-left">{{ $package->product->name}}</td>
+                <td class="font-12" style="width: 18%;"><b>CÓDIGO PRODUCTO</b></td>
+                <td class="font-12 text-left">{{ $package->product->code}}</td>
             </tr>
         </tbody>
     </table>

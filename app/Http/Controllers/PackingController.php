@@ -273,7 +273,7 @@ class PackingController extends Controller
                     $die->package_recipe_id = $departureItem->id;
                     $die->quantity = $totalNeedIt;
                     $die->delivery_quantity = $different;
-                    $die->lot_number = $idx;
+                    $die->lot_number = $entrance->lot;
                     $die->recipe_id = $request->recipeId[$key];
                     $die->save();
 

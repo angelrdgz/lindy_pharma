@@ -43,7 +43,7 @@
                                             <input type="hidden" name="lotNumber[]" value="{{$recipe->lot_number}}">
                                             <select id="" class="form-control selectPickerLot" multiple>
                                                 @foreach($recipe->recipe->lotNumbers($recipe->recipe_id) as $order)
-                                                <option value="{{ $order->id}}">{{$order->order_number}}</option>
+                                                <option value="{{ $order->id }}">{{$order->lot}}</option>
                                                 @endforeach
                                             </select>
                                         </td>

@@ -12,6 +12,10 @@
             font-family: sans-serif;
         }
 
+        .text-left {
+            text-align: left;
+        }
+
         .text-center {
             text-align: center;
         }
@@ -154,12 +158,12 @@
     <table class="table">
         <tbody>
             <tr>
-                <td class="font-12"><b>OT</b></td>
-                <td class="font-12">{{ $departure->order_number }}/1.</td>
-                <td class="font-12"><b>PRODUCTO</b></td>
-                <td class="font-12">{{ $departure->recipe->name}}</td>
-                <td class="font-12"><b>CÓDIGO A GRANEL</b></td>
-                <td class="font-12">{{ $departure->recipe->code}}</td>
+                <td class="font-12" style="width: 3%;"><b>OT</b></td>
+                <td class="font-12 text-left" style="width: 10%;">{{ $departure->order_number }}/1.</td>
+                <td class="font-12" style="width: 10%;"><b>PRODUCTO</b></td>
+                <td class="font-12 text-left">{{ $departure->recipe->name}}</td>
+                <td class="font-12" style="width: 10%;"><b>CÓDIGO A GRANEL</b></td>
+                <td class="font-12 text-left">{{ $departure->recipe->code}}</td>
             </tr>
         </tbody>
     </table>

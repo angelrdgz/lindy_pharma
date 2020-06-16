@@ -42,9 +42,9 @@
               <table class="table coverTable">
                 <thead>
                   <tr>
-                    <th colspan="3">Producto Agranel</th>
+                    <th colspan="3">Producto a Granel</th>
                     <th class="text-right">
-                      <a class="btn btn-link addCoverRow" style="color: #2146f5;">Agregar Producto Agranel</a>
+                      <a class="btn btn-link addCoverRow" style="color: #2146f5;">Agregar Producto a Granel</a>
                     </th>
                   </tr>
                   <tr class="text-center">
