@@ -149,15 +149,15 @@
       <li class="nav-item {{ Request::is('recetas') ? 'active':'' }}">
         <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapse4" aria-expanded="true" aria-controls="collapse3">
           <i class="fas fa-flask"></i>
-          <span>Productos Terminado</span>
+          <span>Producto Terminado</span>
         </a>
         <div id="collapse4" class="collapse" aria-labelledby="heading3" data-parent="#accordionSidebar">
           <div class="bg-white py-2 collapse-inner rounded">
-            <h6 class="collapse-header">Productos Terminado</h6>
+            <h6 class="collapse-header">Producto Terminado</h6>
             @if(in_array(Auth::user()->role_id, [1,2]))
             <a class="collapse-item" href="{{ url('productos') }}">
               <i class="fas fa-flask"></i>
-              <span>Productos Terminado</span>
+              <span>Recetas</span>
             </a>
             @endif
             <a class="collapse-item" href="{{ url('inventario-productos') }}">
