@@ -207,7 +207,6 @@ class RecipeController extends Controller
     {
         $departure = Departure::find($id);
         Departure::where('order_number', $departure->order_number)->update(["quality_status" => $request->quality_status, "production_status" => $request->production_status, "expired_date" => $request->expired_date, "quantity_real" => $request->quantity_real]);
-
         return redirect('inventario-recetas')->with('Inventario actualizado correctamente');
     }
 }

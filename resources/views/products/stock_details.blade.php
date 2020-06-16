@@ -30,7 +30,7 @@
                         </div>
                         <div class="col-sm-4">
                             <label for="">Cantidad Disponible</label>
-                            <input type="text" name="quantity_real" readonly value="{{ $package->available_quantity }}" class="form-control number">
+                            <input type="text" name="" readonly value="{{ $package->available_quantity }}" class="form-control number">
                         </div>
                         <div class="col-sm-4">
                             <label for="">Fecha de Caducidad</label>
