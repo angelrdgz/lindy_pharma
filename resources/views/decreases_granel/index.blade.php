@@ -7,10 +7,10 @@
             <div class="card-header">
                 <div class="row">
                     <div class="col-sm-10 pt-2">
-                        <h5 class="m-0 font-weight-bold text-primary">Descargas</h5>
+                        <h5 class="m-0 font-weight-bold text-primary">Descargas de Granel</h5>
                     </div>
                     <div class="col-sm-2">
-                        <a href="{{ url('descargas/create') }}" class="btn btn-link">
+                        <a href="{{ url('descargas-granel/create') }}" class="btn btn-link">
                             <i class="fas fa-plus"></i>
                             Nueva Descarga
                         </a>
@@ -22,8 +22,8 @@
                     <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                         <thead>
                             <tr>
-                                <th>Orden de Trabajo</th>
-                                <th>Tipo</th>
+                                <th>Ord. de Acondicionamiento</th>
+                                <th>Lote</th>
                                 <th>Creado Por</th>
                                 <th>Fecha y Hora</th>
                                 <th></th>
@@ -32,32 +32,18 @@
                         <tbody>
                             @foreach($decreases as $decrease)
                             <tr>
-                                <td>{{ $decrease->departure->order_number }}</td>
-                                <td>
-                                    @switch($decrease->type)
-                                    @case("1")
-                                    CONTENIDO DE LA CAPSULA
-                                    @break
-                                    @case("2")
-                                    ENVOLVENTE DE LA CAPSULA 1
-                                    @break
-                                    @case("3")
-                                    ENVOLVENTE DE LA CAPSULA 2
-                                    @break
-                                    @default
-                                    CONTENIDO DE LA CAPSULA
-                                    @endswitch
-                                </td>
+                                <td>{{ $decrease->package_id }}</td>
+                                <td>{{ $decrease->package->lot }}</td>
                                 <td>{{ $decrease->user->name }}</td>
                                 <td>{{ date('d/m/Y H:i', strtotime($decrease->created_at)) }}</td>
                                 <td>
-                                    <a href="{{ url('descargas/'.$decrease->id.'/edit')}}" class="btn btn-warning btn-icon-split btn-sm">
+                                    <a href="{{ url('descargas-granel/'.$decrease->id.'/edit')}}" class="btn btn-warning btn-icon-split btn-sm">
                                         <span class="icon text-white-50">
                                             <i class="fas fa-pencil-alt"></i>
                                         </span>
                                         <span class="text">Modificar</span>
                                     </a>
-                                    <a href="{{ url('descargas/'.$decrease->id)}}" target="_blank" class="btn btn-info btn-icon-split btn-sm">
+                                    <a href="{{ url('descargas-granel/'.$decrease->id)}}" target="_blank" class="btn btn-info btn-icon-split btn-sm">
                                         <span class="icon text-white-50">
                                             <i class="fas fa-file"></i>
                                         </span>

@@ -88,11 +88,18 @@
           <span>Insumos</span></a>
       </li>
       @endif
-      @if(in_array(Auth::user()->role_id, [1,3]))
+      @if(in_array(Auth::user()->role_id, [1,2,3]))
       <li class="nav-item {{ Request::is('descargas') ? 'active':'' }}">
         <a class="nav-link" href="{{ url('descargas') }}">
           <i class="fas fa-angle-double-down"></i>
           <span>Descarga de Insumo</span></a>
+      </li>
+      @endif
+      @if(in_array(Auth::user()->role_id, [1,2,3]))
+      <li class="nav-item {{ Request::is('descargas-granel') ? 'active':'' }}">
+        <a class="nav-link" href="{{ url('descargas-granel') }}">
+          <i class="fas fa-angle-double-down"></i>
+          <span>Descarga de Granel</span></a>
       </li>
       @endif
       @if(in_array(Auth::user()->role_id, [1,2]))

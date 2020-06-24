@@ -267,7 +267,7 @@
       <tr>
       <th class="text-center box-blue font-10">CÓDIGO</th>
       <th class="text-center box-blue font-10" style="width:25%;">PRODUCTO</th>
-        <th class="text-center box-blue font-10">CANTIDAD</th>
+        <th class="text-center box-blue font-10">CANTIDAD SOLICITADA</th>
         <th class="text-center box-blue font-10">CANTIDAD ENTREGADA</th>
         <th class="text-center box-blue font-10">LOTE</th>
         <th class="text-center box-blue font-10">PZAS POR CAJA</th>
@@ -283,7 +283,7 @@
       <td class="text-center">{{ $item->product->name }}</td>
       <td class="text-center">{{ intval($item->quantity) }}</td>
       <td class="text-center">{{ intval($item->quantity_real) }}</td>
-      <td class="text-center">{{ intval($item->lot) }}</td>
+      <td class="text-center">{{ $item->lot }}</td>
         <td class="text-center">{{ intval($item->pieces) }}</td>
         <td class="text-center">{{ intval($item->boxes) }}</td>
         <td class="text-center">{{ intval($item->partial)}}</td>

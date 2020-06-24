@@ -182,6 +182,11 @@ class OrderController extends Controller
         //
     }
 
+    public function destroy($id)
+    {
+        
+    }
+
     public function remitionNote($id)
     {
         $order = Order::find($id);

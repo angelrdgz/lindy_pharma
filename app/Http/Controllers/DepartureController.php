@@ -236,7 +236,7 @@ class DepartureController extends Controller
                         //echo "ID: ".$request->supplyId[$key].", Stock actual: " . $supply->stock . ', Cantidad a descontar: ' . $entranceQuantity . ' queda en: ' . ($supply->stock - $entranceQuantity) . '<br>';
                         $supply->stock = $supply->stock - $entranceQuantity;
                         $different = $entranceQuantity;
-                    } else {                        
+                    } else {
                         //echo "Stock actual: " . $supply->stock . ', Cantidad a descontar: ' . $totalForDiscount . ' queda en: ' . ($supply->stock - $totalForDiscount) . '<br>';
                         $supply->stock = $supply->stock - $totalForDiscount;
                         $different = $totalForDiscount;
@@ -492,5 +492,133 @@ class DepartureController extends Controller
 
         return $total;
     }
-    
+
+    public function export()
+    {
+        $csvExporter = new \Laracsv\Export();
+        $items = Departure::where("type", 1)->where("status", "!=", "Cancelada")->get();
+        $csvExporter->beforeEach(function ($item) {
+            $item->name = $item->recipe->name;
+            $item->created_at = $item->created_at;
+
+            switch ($item->status) {
+                case "Creada":
+                    $item->created = 1;
+                    $item->release = 0;
+                    $item->weight = 0;
+                    $item->prepared = 0;
+                    $item->encapsulated = 0;
+                    $item->dryed = 0;
+                    $item->inspection = 0;
+                    $item->warehouse = 0;
+                    $item->process = "12.5%";
+                    $item->delivery_date = NULL;
+                    break;
+                case "Liberado":
+                    $item->created = 1;
+                    $item->release = 1;
+                    $item->weight = 0;
+                    $item->prepared = 0;
+                    $item->encapsulated = 0;
+                    $item->dryed = 0;
+                    $item->inspection = 0;
+                    $item->warehouse = 0;
+                    $item->process = "25%";
+                    $item->delivery_date = NULL;
+                    break;
+                case "Pesado":
+                    $item->created = 1;
+                    $item->release = 1;
+                    $item->weight = 1;
+                    $item->prepared = 0;
+                    $item->encapsulated = 0;
+                    $item->dryed = 0;
+                    $item->inspection = 0;
+                    $item->warehouse = 0;
+                    $item->process = "37.5%";
+                    $item->delivery_date = NULL;
+                    break;
+                case "Preparación":
+                    $item->created = 1;
+                    $item->release = 1;
+                    $item->weight = 1;
+                    $item->prepared = 1;
+                    $item->encapsulated = 0;
+                    $item->dryed = 0;
+                    $item->inspection = 0;
+                    $item->warehouse = 0;
+                    $item->process = "50%";
+                    $item->delivery_date = NULL;
+                    break;
+                case "Encapsulado":
+                    $item->created = 1;
+                    $item->release = 1;
+                    $item->weight = 1;
+                    $item->prepared = 1;
+                    $item->encapsulated = 1;
+                    $item->dryed = 0;
+                    $item->inspection = 0;
+                    $item->warehouse = 0;
+                    $item->process = "62.5%";
+                    $item->delivery_date = NULL;
+                    break;
+                case "Secado":
+                    $item->created = 1;
+                    $item->release = 1;
+                    $item->weight = 1;
+                    $item->prepared = 1;
+                    $item->encapsulated = 1;
+                    $item->dryed = 1;
+                    $item->inspection = 0;
+                    $item->warehouse = 0;
+                    $item->process = "75%";
+                    $item->delivery_date = NULL;
+                    break;
+                case "Inspección":
+                    $item->created = 1;
+                    $item->release = 1;
+                    $item->weight = 1;
+                    $item->prepared = 1;
+                    $item->encapsulated = 1;
+                    $item->dryed = 1;
+                    $item->inspection = 1;
+                    $item->warehouse = 0;
+                    $item->process = "87.5%";
+                    $item->delivery_date = NULL;
+                    break;
+                case "Granel":
+                    $item->created = 1;
+                    $item->release = 1;
+                    $item->weight = 1;
+                    $item->prepared = 1;
+                    $item->encapsulated = 1;
+                    $item->dryed = 1;
+                    $item->inspection = 1;
+                    $item->warehouse = 1;
+                    $item->process = "100%";
+                    $item->delivery_date = date("d-m-Y", strtotime($item->updated_at));
+                    break;
+                default:
+                    $newStatus = "N/A";
+                    break;
+            }
+        });
+
+        $csvExporter->build($items, [
+            "order_number" => "OT",
+            'name' => "Nombre",
+            "lot" => "Lote",
+            "created_at" => "Fecha",
+            "created" => "Creada",
+            "release" => "Liberada",
+            "weight" => "Pesada",
+            "prepared" => "Preparacion",
+            "encapsulated" => "Encapsulado",
+            "dryed" => "Secado",
+            "inspection" => "Inspeccion",
+            "warehouse" => "Almacen",
+            "process" => "% Avance",
+            "delivery_date" => "Fecha"
+        ])->download('reporte_de_fabricacion_' . date('d_m_Y') . '.csv');
+    }
 }

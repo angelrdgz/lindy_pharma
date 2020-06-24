@@ -30,6 +30,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/exportar/recetas/{id}', 'RecipeController@exportRecipe');
     Route::get('/exportar/productos', 'ProductController@export');
     Route::get('/exportar/productos/{id}', 'ProductController@exportProduct');
+    Route::get('/exportar/ordenes-de-fabricacion', 'DepartureController@export');
     Route::get('inventario-recetas', 'RecipeController@stock');
     Route::get('inventario-recetas/{id}', 'RecipeController@stockDetails');
     Route::put('inventario-recetas/{id}', 'RecipeController@updateStock');
@@ -54,6 +55,7 @@ Route::middleware(['auth'])->group(function () {
     Route::resource('proveedores', 'SupplierController');
     Route::resource('proveedores', 'SupplierController');
     Route::resource('descargas', 'DecreaseController');
+    Route::resource('descargas-granel', 'DecreasePackageController');
     Route::resource('pedidos', 'OrderController');
 
 
@@ -61,6 +63,8 @@ Route::middleware(['auth'])->group(function () {
     Route::get('ordenes-de-acondicionamiento/{id}/escanear', 'PackingController@scan');
     Route::put('ordenes-de-fabricacion/{id}/items', 'DepartureController@updateItems');
     Route::put('ordenes-de-acondicionamiento/{id}/items', 'PackingController@updateItems');
+    Route::put('descargas/{id}/items', 'DecreaseController@updateItems');
+    Route::put('descargas-granel/{id}/items', 'DecreasePackageController@updateItems');
     
 });
 

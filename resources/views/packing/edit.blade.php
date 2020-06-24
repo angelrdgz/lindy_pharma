@@ -62,11 +62,16 @@
                         </div>
                         <div class="col-sm-4">
                             <label for="">Status</label>
+                            @if($package->status == "Empacado")
+                            <input type="hidden" name="status" value="Empacado">
+                            <label for="">Empacado</label>
+                            @else
                             <select name="status" id="" class="form-control">
                                 <option {{ $package->status == NULL ? "selected":""}} value="">Seleccionar Estatus</option>
                                 <option {{ $package->status == "Creada" ? "selected":""}} value="Creada">Creada</option>
                                 <option {{ $package->status == "Liberado" ? "selected":""}} value="Liberado">Liberado</option>
                             </select>
+                            @endif
                         </div>
                         @endif
                         @if(Auth::user()->role_id == 3)
@@ -104,7 +109,7 @@
                             <button type="submit" class="btn btn-primary btn-block">Guardar</button>
                         </div>
                         <div class="col-sm-3 ">
-                            <a href="{{ url('ordenes-de-fabricacion') }}" class="btn btn-secondary btn-block">Cancelar</a>
+                            <a href="{{ url('ordenes-de-acondicionamiento') }}" class="btn btn-secondary btn-block">Cancelar</a>
                         </div>
                     </div>
                 </form>

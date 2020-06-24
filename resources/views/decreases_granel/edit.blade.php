@@ -8,48 +8,74 @@
             <div class="card-header">
                 <div class="row">
                     <div class="col-sm-12 pt-2">
-                        <h5 class="m-0 font-weight-bold text-primary">Modificar Descarga de Insumo</h5>
+                        <h5 class="m-0 font-weight-bold text-primary">Modificar Descarga de Granel</h5>
                     </div>
                 </div>
             </div>
             <div class="card-body">
-                <form method="post" action="{{ route('descargas.update', $decrease->id) }}">
+                <form method="post" action="{{ route('descargas-granel.update', $decrease->id) }}">
                     @method('PATCH')
                     @csrf
                     <div class="row">
                         <div class="col-sm-4">
                             <label for="">OT</label>
-                            <select name="order_number" id="" class="form-control">
+                            <select name="package_id" id="" class="form-control">
                                 <option value="">Seleccionar OT</option>
                                 @foreach($orderNumbers as $order)
-                                <option value="{{ $order->id }}" type="{{ $order->type }}" recipe_id="{{ $order->recipe_id }}" recipe="{{$order->recipe->name}}" lot="{{$order->lot}}" {{$order->id == $decrease->departure_id ? "selected":""}}>
-                                    @if($order->type == 1)
-                                    {{ $order->order_number }} - CONTENIDO DE LA CAPSULA
-                                    @elseif($order->type == 2)
-                                    {{ $order->order_number }} - ENVOLVENTE DE LA CAPSULA 1
-                                    @else
-                                    {{ $order->order_number }} - ENVOLVENTE DE LA CAPSULA 2
-                                    @endif
+                                <option value="{{ $order->id }}" type="{{ $order->type }}" product_id="{{ $order->product_id }}" product="{{$order->product->name}}" presentation="{{$order->presentation}}" {{$order->id ?? $decrease->package_id ? "selected":""}}>
+                                    {{ $order->lot }}
                                 </option>
                                 @endforeach
                             </select>
-                            @error('order_number')
+                            @error('package_id')
                             <p class="text-red-500 text-xs text-danger italic">{{ $message }}</p>
                             @enderror
                         </div>
                         <div class="col-sm-4">
-                            <label for="">Receta</label>
-                            <input name="recipe" type="text" readonly value="{{ $decrease->departure->recipe->name }}" class="form-control acSupply">
+                            <label for="">Producto</label>
+                            <input name="product" type="text" readonly value="{{ $decrease->package->product->name }}" class="form-control acSupply">
                         </div>
                         <div class="col-sm-4">
-                            <label for="">No. de Lote</label>
-                            <input name="lot" id="" readonly value="{{ $decrease->departure->lot }}" class="form-control">
+                            <label for="">Presentación</label>
+                            <input name="presentation" id="" readonly value="{{ $decrease->package->lot }}" class="form-control">
+                        </div>
+                    </div>
+                    <div class="row my-3">
+                        <div class="col-sm-12">
+                            <h5>Granel</h5>
+                            <table class="table suppliesTable">
+                                <thead>
+                                    <tr>
+                                        <th>Código</th>
+                                        <th>Receta</th>
+                                        <th>Cantidad</th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach($decrease->recipes as $recipe)
+                                    <tr>
+                                        <td><input type="hidden" value="{{ $recipe->recipe_id }}" name="idRecipe[]"><input type="text" name="recipeCode[]" value="{{ $recipe->recipe->code }}" class="form-control" readonly></td>
+                                        <td><input type="text" name="recipeName[]" value="{{ $recipe->recipe->name }}" class="form-control" readonly></td>
+                                        <td>
+                                            <div class="input-group">
+                                                <input type="text" name="quantityRecipe[]" value="{{ $recipe->quantity }}" class="form-control number">
+                                                <div class="input-group-append">
+                                                    <span class="input-group-text" id="basic-addon2">cap</span>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td class="text-center"><a class="btn btn-danger btn-circle removeRow"><i class="fas fa-trash" style="color: #fff;"></i></a></td>
+                                    </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
                         </div>
                     </div>
                     <div class="row my-3">
                         <div class="col-sm-12">
                             <h5>Insumos</h5>
-                            <table class="table">
+                            <table class="table suppliesTable">
                                 <thead>
                                     <tr>
                                         <th>Código</th>
@@ -94,7 +120,7 @@
                             <button type="submit" class="btn btn-primary btn-block">Guardar</button>
                         </div>
                         <div class="col-sm-3 ">
-                            <a href="{{ url('descargas') }}" class="btn btn-secondary btn-block">Cancelar</a>
+                            <a href="{{ url('descargas_granel') }}" class="btn btn-secondary btn-block">Cancelar</a>
                         </div>
                     </div>
                 </form>

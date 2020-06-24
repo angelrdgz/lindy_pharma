@@ -60,7 +60,7 @@ class RecipeController extends Controller
                     $prodSupply->recipe_id = $recipe->id;
                     $prodSupply->supply_id = $request->idItemCoverSecond[$key];
                     $prodSupply->quantity = $request->quantityItemCoverSecond[$key];
-                    $prodSupply->excess = $request->excessItemCoverSecond[$key] == NULL ? 0:$request->excessItemCoverSecond[$key];
+                    $prodSupply->excess = $request->excessItemCoverSecond[$key] == NULL ? 0 : $request->excessItemCoverSecond[$key];
                     $prodSupply->type = 3;
                     $prodSupply->save();
                 }
@@ -75,7 +75,7 @@ class RecipeController extends Controller
                 $prodSupply->recipe_id = $recipe->id;
                 $prodSupply->supply_id = $request->idItemCover[$key];
                 $prodSupply->quantity = $request->quantityItemCover[$key];
-                $prodSupply->excess = $request->excessItemCover[$key] == NULL ? 0:$request->excessItemCover[$key];
+                $prodSupply->excess = $request->excessItemCover[$key] == NULL ? 0 : $request->excessItemCover[$key];
                 $prodSupply->type = 2;
                 $prodSupply->save();
             }
@@ -87,7 +87,7 @@ class RecipeController extends Controller
                 $prodSupply->recipe_id = $recipe->id;
                 $prodSupply->supply_id = $request->idItem[$key];
                 $prodSupply->quantity = $request->quantityItem[$key];
-                $prodSupply->excess = $request->excessItem[$key] == NULL ? 0:$request->excessItem[$key];
+                $prodSupply->excess = $request->excessItem[$key] == NULL ? 0 : $request->excessItem[$key];
                 $prodSupply->type = 1;
                 $prodSupply->save();
             }
@@ -112,6 +112,36 @@ class RecipeController extends Controller
         $items = RecipeSupply::where('recipe_id', $id)->where('type', 1)->get();
         $itemsCover = RecipeSupply::where('recipe_id', $id)->where('type', 2)->get();
         return view('recipes.edit', ['recipe' => $recipe, 'molds' => $molds, 'supplies' => $supplies, 'items' => $items, 'itemsCover' => $itemsCover]);
+    }
+
+    public function show($id)
+    {
+        $request = explode("-", $id);
+        $recipe = Recipe::find($request[0]);
+        switch ($request[1]) {
+            case '1':
+                $recipe->supplies =$recipe->supplies;
+                $items = $recipe->supplies;
+                break;
+            case '2':
+                $recipe->supplies = $recipe->suppliesCover;
+                $items = $recipe->suppliesCover;
+                break;
+            case '3':
+                $recipe->supplies = $recipe->suppliesSecondCover;
+                $items = $recipe->suppliesSecondCover;
+                break;
+            default:
+                # code...
+                break;
+        }
+        foreach ($items as $key => $item) {
+            $item->supply;
+            $item->supply->measurementUse;
+            $item->supply->entrances = $item->supply->entranceNumbers($item->supply_id);
+        }
+
+        return response()->json(["data" => $recipe]);
     }
 
     public function update(Request $request, $id)
@@ -171,7 +201,7 @@ class RecipeController extends Controller
             $departure->code = $departure->recipe->code;
         });
 
-        $csvExporter->build($departures, ["order_number" => "OT", "code" => "Código", "name" => "Nombre", "lot" => "Lote", "quantity" => "Tamno de Lote", "quantity_real" => "Cantidad Real", "available_quantity"=>"Cantidad Disponible", "expired_date" => "Fecha de Caducidad", "production_status"=>"Estatus de Produccion", "quality_status"=>"Estatus de Calidad"])->download('inventario_' . date('d_m_Y') . '.csv');
+        $csvExporter->build($departures, ["order_number" => "OT", "code" => "Código", "name" => "Nombre", "lot" => "Lote", "quantity" => "Tamno de Lote", "quantity_real" => "Cantidad Real", "available_quantity" => "Cantidad Disponible", "expired_date" => "Fecha de Caducidad", "production_status" => "Estatus de Produccion", "quality_status" => "Estatus de Calidad"])->download('inventario_' . date('d_m_Y') . '.csv');
     }
 
     public function exportRecipe($id)
@@ -185,7 +215,7 @@ class RecipeController extends Controller
             $departure->code = $departure->recipe->code;
         });
 
-        $csvExporter->build($departures, ["order_number" => "OT", "code" => "Codigo", "name" => "Nombre", "lot" => "Lote", "quantity" => "Tamano de Lote", "quantity_real" => "Cantidad Real", "available_quantity"=>"Cantidad Disponible",  "expired_date" => "Fecha de Caducidad", "production_status"=>"Estatus de Produccion", "quality_status"=>"Estatus de Calidad"])->download('inventario_' . str_replace("_", "/", $departures[0]->recipe->name) . '_' . date('d_m_Y') . '.csv');
+        $csvExporter->build($departures, ["order_number" => "OT", "code" => "Codigo", "name" => "Nombre", "lot" => "Lote", "quantity" => "Tamano de Lote", "quantity_real" => "Cantidad Real", "available_quantity" => "Cantidad Disponible",  "expired_date" => "Fecha de Caducidad", "production_status" => "Estatus de Produccion", "quality_status" => "Estatus de Calidad"])->download('inventario_' . str_replace("_", "/", $departures[0]->recipe->name) . '_' . date('d_m_Y') . '.csv');
     }
 
     public function stock()

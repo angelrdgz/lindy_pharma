@@ -46,12 +46,14 @@
                                 <td>{{ $package->status }}</td>
                                 <td>{{ $package->user->name }}</td>
                                 <th>
+                                    @if($package->status !== "Empacado")
                                     <a href="{{ url('ordenes-de-acondicionamiento/'.$package->id.'/edit')}}" class="btn btn-warning btn-icon-split btn-sm">
                                         <span class="icon text-white-50">
                                             <i class="fas fa-pencil-alt"></i>
                                         </span>
                                         <span class="text">Modificar</span>
                                     </a>
+                                    @endif
                                     <a href="{{ url('ordenes-de-acondicionamiento/'.$package->id)}}" target="_blank" class="btn btn-info btn-icon-split btn-sm">
                                         <span class="icon text-white-50">
                                             <i class="far fa-file"></i>
@@ -110,7 +112,7 @@
                                         <span class="text">Modificar</span>
                                     </a>
                                     @endif
-                                    @if(in_array(Auth::user()->role_id, [1,2]))
+                                    @if(in_array(Auth::user()->role_id, [1,2]) && $package->status !== "Empacado")
                                     <form method="post" action="{{ route('ordenes-de-acondicionamiento.destroy', $package->id) }}">
                                         @method('DELETE')
                                         @csrf

@@ -92,6 +92,22 @@ class ProductController extends Controller
         return view('products.edit', ['product' => $product, 'recipes' => $recipes, 'supplies' => $supplies, 'productRecipes' => $productRecipes, 'productSupplies' => $productSupplies]);
     }
 
+    public function show($id)
+    {
+        $product = Product::find($id);
+
+        foreach ($product->recipes as $key => $item) {
+            $item->recipe;
+        }
+
+        foreach ($product->supplies as $key => $item) {
+            $item->supply;
+            $item->supply->measurementUse;
+        }
+
+        return response()->json(["data" => $product]);
+    }
+
     public function update(Request $request, $id)
     {
         $product =  Product::find($id);

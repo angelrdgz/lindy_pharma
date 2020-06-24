@@ -13,26 +13,13 @@
                 </div>
             </div>
             <div class="card-body">
-                <form method="post" action="{{ route('descargas.update', $decrease->id) }}">
-                    @method('PATCH')
+                <form method="post" action="{{ url('descargas/'.$decrease->id.'/items') }}">
+                    @method('PUT')
                     @csrf
                     <div class="row">
                         <div class="col-sm-4">
                             <label for="">OT</label>
-                            <select name="order_number" id="" class="form-control">
-                                <option value="">Seleccionar OT</option>
-                                @foreach($orderNumbers as $order)
-                                <option value="{{ $order->id }}" type="{{ $order->type }}" recipe_id="{{ $order->recipe_id }}" recipe="{{$order->recipe->name}}" lot="{{$order->lot}}" {{$order->id == $decrease->departure_id ? "selected":""}}>
-                                    @if($order->type == 1)
-                                    {{ $order->order_number }} - CONTENIDO DE LA CAPSULA
-                                    @elseif($order->type == 2)
-                                    {{ $order->order_number }} - ENVOLVENTE DE LA CAPSULA 1
-                                    @else
-                                    {{ $order->order_number }} - ENVOLVENTE DE LA CAPSULA 2
-                                    @endif
-                                </option>
-                                @endforeach
-                            </select>
+                            <input type="text" name="order_number" class="form-control" value="{{ $decrease->departure->order_number}}" readonly>
                             @error('order_number')
                             <p class="text-red-500 text-xs text-danger italic">{{ $message }}</p>
                             @enderror
@@ -61,17 +48,30 @@
                                 <tbody>
                                     @foreach($decrease->supplies as $supply)
                                     <tr>
-                                        <td><input type="hidden" value="{{ $supply->supply_id }}" name="idSupply[]"><input type="text" name="supplyCode[]" value="{{ $supply->supply->code }}" class="form-control" readonly></td>
-                                        <td><input type="text" name="supplyName[]" value="{{ $supply->supply->name }}" class="form-control" readonly></td>
-                                        <td>
-                                            <div class="input-group">
-                                                <input type="text" name="quantity[]" value="{{ $supply->quantity }}" class="form-control number">
+                                        <input type="hidden" name="idRow[]" value="{{ $supply->id }}">
+                                        <input type="hidden" name="processed[]" value="{{ $supply->processed }}">
+                                        <td  style="max-width:50px;"><input type="hidden" value="{{ $supply->supply_id }}" name="idSupply[]"><input type="text" name="supplyCode[]" value="{{ $supply->supply->code }}" class="form-control" readonly></td>
+                                        <td  style="max-width:50px;"><input type="text" name="supplyName[]" value="{{ $supply->supply->name }}" class="form-control" readonly></td>
+                                        <td style="width:200px !important;">
+                                            <div class="input-group m-0 float-left" style="max-width:160px;">
+                                                <input type="text" name="quantity[]" value="{{ $supply->quantity }}" class="form-control number" {{$supply->processed == 1 ? "readonly":""}}>
                                                 <div class="input-group-append">
                                                     <span class="input-group-text" id="basic-addon2">{{$supply->supply->measurementUse->code}}</span>
                                                 </div>
                                             </div>
                                         </td>
-                                        <td class="text-center"><a class="btn btn-danger btn-circle removeRow"><i class="fas fa-trash" style="color: #fff;"></i></a></td>
+                                        <td>
+                                            <input type="hidden" name="entranceNumbers[]">
+                                            @if($supply->processed == 1)
+                                            Procesado
+                                            @else
+                                            <select id="" class="form-control selectPicker" multiple>
+                                                @foreach($supply->supply->entranceNumbers($supply->supply->id) as $order)
+                                                <option value="{{ $order->id}}">{{sprintf("%05s", $order->id)}}</option>
+                                                @endforeach
+                                            </select>
+                                            @endif
+                                        </td>
                                     </tr>
                                     @endforeach
                                 </tbody>
@@ -82,7 +82,7 @@
                         <div class="col-sm-12">
                             <hr>
                             <h5>Motivo o Descripción</h5>
-                            <input type="text" name="description" value="{{ $decrease->description }}" class="form-control">
+                            <input type="text" name="description" readonly value="{{ $decrease->description }}" class="form-control">
                             @error('description')
                             <p class="text-red-500 text-xs text-danger italic">{{ $message }}</p>
                             @enderror
@@ -142,8 +142,21 @@
     }
 
 
-    $(document).ready(function() {
+    $(function(){
+        $('.selectPicker').selectpicker({
+            noneSelectedText: "Seleccionar Entrada"
+        });
 
+        $('.selectPicker').on('changed.bs.select', function (e, clickedIndex, isSelected, previousValue) {
+
+            var ids = [];
+
+            $.each( e.target.selectedOptions , function( index, obj ){
+                ids.push(obj.value)
+            });
+
+            $(this).closest('tr').find("input[name='entranceNumbers[]']").val(ids.join(','))
+        });
     })
 </script>
 @endsection

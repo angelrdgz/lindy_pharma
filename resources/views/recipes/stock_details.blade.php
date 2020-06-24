@@ -74,7 +74,7 @@
                             <button type="submit" class="btn btn-primary btn-block">Guardar</button>
                         </div>
                         <div class="col-sm-3 ">
-                            <a href="{{ url('ordenes-de-fabricacion') }}" class="btn btn-secondary btn-block">Cancelar</a>
+                            <a href="{{ url('recetas') }}" class="btn btn-secondary btn-block">Cancelar</a>
                         </div>
                     </div>
                 </div>

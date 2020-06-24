@@ -6,8 +6,16 @@
     <div class="card shadow mb-4">
       <div class="card-header">
         <div class="row">
-          <div class="col-sm-10 pt-2">
+          <div class="col-sm-8 pt-2">
             <h5 class="m-0 font-weight-bold text-primary">Ordenes de Fabricación</h5>
+          </div>
+          <div class="col-sm-2">
+            @if(in_array(Auth::user()->role_id, [1,2]))
+            <a href="{{ url('exportar/ordenes-de-fabricacion') }}" target="_blank" class="btn btn-primary btn-block">
+              <i class="fas fa-file"></i>
+              Reporte Proceso
+            </a>
+            @endif
           </div>
           <div class="col-sm-2">
             @if(in_array(Auth::user()->role_id, [1,2]))

@@ -6,11 +6,15 @@ use Illuminate\Database\Eloquent\Model;
 
 class Decrease extends Model
 {
-    public function supply(){
-        return $this->belongsTo('App\Supply', 'supply_id', 'id');
+    public function departure(){
+        return $this->belongsTo('App\Departure', 'departure_id', 'id');
     }
 
     public function user(){
         return $this->belongsTo('App\User', 'created_by', 'id');
+    }
+
+    public function supplies(){
+        return $this->hasMany('App\DecreaseSupply', 'decrease_id', 'id');
     }
 }
