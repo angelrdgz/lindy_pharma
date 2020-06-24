@@ -153,7 +153,7 @@ class SupplyController extends Controller
         $csvExporter = new \Laracsv\Export();
         if (request()->type == 1) {
 
-            $items = EntranceItem::select("entrance_items.*")->join('supplies', 'entrance_items.supply_id', '=', 'supplies.id')->orderBy('entrance_items.supply_id', 'ASC')->where("supplies.type_id", 1)->where('entrance_items.status', '!=', 'Rechazada')->get();
+            $items = EntranceItem::select("entrance_items.*")->join('supplies', 'entrance_items.supply_id', '=', 'supplies.id')->orderBy('entrance_items.supply_id', 'ASC')->where("supplies.measurement_buy", 2)->where('entrance_items.status', '!=', 'Rechazada')->get();
 
             $csvExporter->beforeEach(function ($supply) {
                 $supply->created_at = $supply->entrance->created_at;
@@ -167,7 +167,7 @@ class SupplyController extends Controller
             $csvExporter->build($items, ["created_at" => "Fecha", 'supply_id' => "Codigo Producto", "name" => "Nombre Producto", "entrance_id" => "No Orden de Compra", "lot_supplier" => "Lote de Proveedor", "idx" => "Numero de Entrada","quantity"=>"Cantidad Inicial Kg", "available_quantity" => "Cantidad Disponible Kg", "cups" => "No de Envases", "expired_date" => "Fecha de Caducidad", "reanalized_date" => "Fecha de Reanalisis", "supplier" => "Proveedor"] /**/)->download('inventario_de_materias_primas_' . date('d_m_Y') . '.csv');
         } else {
 
-            $items = EntranceItem::select("entrance_items.*")->join('supplies', 'entrance_items.supply_id', '=', 'supplies.id')->orderBy('entrance_items.supply_id', 'ASC')->where("supplies.type_id", "!=", 1)->where('entrance_items.status', '!=', 'Rechazada')->get();
+            $items = EntranceItem::select("entrance_items.*")->join('supplies', 'entrance_items.supply_id', '=', 'supplies.id')->orderBy('entrance_items.supply_id', 'ASC')->where("supplies.measurement_buy", "!=", 2)->where('entrance_items.status', '!=', 'Rechazada')->get();
 
             $csvExporter->beforeEach(function ($supply) {
                 $supply->created_at = $supply->entrance->created_at;
