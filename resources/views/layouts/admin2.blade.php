@@ -36,9 +36,9 @@
 
       <!-- Sidebar - Brand -->
       <a class="sidebar-brand d-flex align-items-center justify-content-center" href="index.html">
-        <!--<div class="sidebar-brand-icon rotate-n-15">
-          <i class="fas fa-laugh-wink"></i>
-        </div>-->
+        <div class="sidebar-brand-icon">
+        <i class="fas fa-flask"></i>
+        </div>
         <div class="sidebar-brand-text mx-3">
           <img src="{{ asset('images/logo.png') }}" class="logo p-1" alt="">
         </div>
@@ -88,18 +88,18 @@
           <span>Insumos</span></a>
       </li>
       @endif
-      @if(in_array(Auth::user()->role_id, [1,2,3]))
+      @if(in_array(Auth::user()->role_id, [1,2,3,6]))
       <li class="nav-item {{ Request::is('descargas') ? 'active':'' }}">
         <a class="nav-link" href="{{ url('descargas') }}">
           <i class="fas fa-angle-double-down"></i>
-          <span>Descarga de Insumo</span></a>
+          <span>Descarga de Producción</span></a>
       </li>
       @endif
-      @if(in_array(Auth::user()->role_id, [1,2,3]))
+      @if(in_array(Auth::user()->role_id, [1,2,3,6]))
       <li class="nav-item {{ Request::is('descargas-granel') ? 'active':'' }}">
         <a class="nav-link" href="{{ url('descargas-granel') }}">
           <i class="fas fa-angle-double-down"></i>
-          <span>Descarga de Granel</span></a>
+          <span>Descarga de Acondicionado</span></a>
       </li>
       @endif
       @if(in_array(Auth::user()->role_id, [1,2]))
@@ -117,7 +117,7 @@
         </a>
       </li>
       @endif
-      @if(in_array(Auth::user()->role_id, [1,2,3]))
+      @if(in_array(Auth::user()->role_id, [1,2,3,6]))
       <li class="nav-item {{ Request::is('recetas') ? 'active':'' }}">
         <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="true" aria-controls="collapseTwo">
           <i class="fas fa-flask"></i>
@@ -196,11 +196,13 @@
         </div>
       </li>      
       @endif
+      @if(in_array(Auth::user()->role_id, [1,2]))
       <li class="nav-item {{ Request::is('pedidos') ? 'active':'' }}">
         <a class="nav-link" href="{{ url('pedidos') }}">
         <i class="fas fa-file-invoice-dollar"></i>
           <span>Pedidos</span></a>
       </li>
+      @endif
       <!-- Divider -->
       <!--<hr class="sidebar-divider">-->
 

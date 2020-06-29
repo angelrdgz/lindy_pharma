@@ -31,6 +31,8 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/exportar/productos', 'ProductController@export');
     Route::get('/exportar/productos/{id}', 'ProductController@exportProduct');
     Route::get('/exportar/ordenes-de-fabricacion', 'DepartureController@export');
+    Route::get('/exportar/bitacora-de-descargas', 'EntranceController@exportLogbook');
+    Route::get('/exportar/bitacora-de-descargas-materiales', 'EntranceController@exportLogbookMaterial');
     Route::get('inventario-recetas', 'RecipeController@stock');
     Route::get('inventario-recetas/{id}', 'RecipeController@stockDetails');
     Route::put('inventario-recetas/{id}', 'RecipeController@updateStock');

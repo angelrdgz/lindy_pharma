@@ -12,6 +12,9 @@ use App\Supplier;
 use App\Logbook;
 use App\Catalog;
 use App\Cost;
+use App\DecreaseSupply;
+use App\DecreasePackageSupply;
+use App\DepartureItem;
 use App\User;
 
 use Auth;
@@ -253,6 +256,228 @@ class EntranceController extends Controller
         $entrance->delete();
 
         return redirect('ordenes-de-compra')->with('success', 'Orden cancelada correctamente');
+    }
+
+    public function exportLogbook()
+    {
+        $items = [];
+        $ids = Supply::where('measurement_buy', 2)->pluck("id")->toArray();
+        $csvExporter = new \Laracsv\Export();
+
+        $totals = [];
+
+        $departures = DepartureItem::where("deliver_date", "!=", NULL)->whereIn("supplie_id", $ids)->get();
+
+        foreach ($departures as $departure) {
+            if ($departure->entrances != NULL) {
+                foreach ($departure->entrances as $entrance) {
+                    if (!array_key_exists($entrance->entrance_number, $totals)) {
+                        $totals[$entrance->entrance_number] = $entrance->entrance->quantity;
+                    }
+
+                    $newdata =  array(
+                        'Fecha' => date("d/m/Y H:i", strtotime($departure->deliver_date)),
+                        'Codigo de MP/MAT' => $departure->supply->code,
+                        'Nombre' => $departure->supply->name,
+                        'No. Entrada' => "#" . sprintf("%05s", $entrance->entrance_number),
+                        'entrance' => $entrance->entrance_number,
+                        'Cantidad Entrada (kg)' => $entrance->entrance->quantity,
+                        'Cantidad Surtida (kg)' => number_format($this->reverse($departure->supply->measurement_buy, $departure->supply->measurement_use, $entrance->delivery_quantity), 4),
+                        'Cantidad Remanente (kg)' => number_format(($totals[$entrance->entrance_number] - $this->reverse($departure->supply->measurement_buy, $departure->supply->measurement_use, $entrance->delivery_quantity)), 4),
+                        'Tipo' => 'Producción',
+                        'OT' => $departure->departure->order_number,
+                        'Producto' => $departure->departure->recipe->name,
+                        'Lote' => $departure->departure->lot,
+                    );
+                    //echo "ID del insumo: ".$departure->supply->id." ID de entrada: ".$entrance->entrance_number." ID de descargar: ".$departure->id." Actual: ".$totals[$entrance->entrance_number].' a descargar: '.$this->reverse($departure->supply->measurement_buy, $departure->supply->measurement_use, $entrance->delivery_quantity).'<br>';
+                    $totals[$entrance->entrance_number] -=  $this->reverse($departure->supply->measurement_buy, $departure->supply->measurement_use, $entrance->delivery_quantity);
+                    $items[] = $newdata;
+                }
+            }
+        }
+
+        $decreases = DecreaseSupply::where("delivery_date", "!=", NULL)->whereIn("supply_id", $ids)->get();
+
+        foreach ($decreases as $decrease) {
+            if ($decrease->entrances != NULL) {
+                foreach ($decrease->entrances as $entrance) {
+                    if (!array_key_exists($entrance->entrance_number, $totals)) {
+                        $totals[$entrance->entrance_number] = $entrance->entrance->quantity;
+                    }
+
+                    $newdata =  array(
+                        'Fecha' => date("d/m/Y H:i", strtotime($decrease->delivery_date)),
+                        'Codigo de MP/MAT' => $decrease->supply->code,
+                        'Nombre' => $decrease->supply->name,
+                        'No. Entrada' => "#" . sprintf("%05s", $entrance->entrance_number),
+                        'entrance' => $entrance->entrance_number,
+                        'Cantidad Entrada (kg)' => $entrance->entrance->quantity,
+                        'Cantidad Surtida (kg)' => number_format(($entrance->delivery_quantity / 1000), 4),
+                        'Cantidad Remanente (kg)' => number_format(($totals[$entrance->entrance_number] - ($entrance->delivery_quantity / 1000)), 4),
+                        'Tipo' => 'Descarga',
+                        'OT' => $decrease->decrease->departure->order_number,
+                        'Producto' => $decrease->decrease->departure->recipe->name,
+                        'Lote' => $decrease->decrease->departure->lot,
+                    );
+
+                    $totals[$entrance->entrance_number] -= ($entrance->delivery_quantity / 1000);
+                    $items[] = $newdata;
+                }
+            }
+        }
+
+        $decreases = DecreasePackageSupply::where("delivery_date", "!=", NULL)->whereIn("supply_id", $ids)->get();
+
+        foreach ($decreases as $decrease) {
+            if ($decrease->entrances != NULL) {
+                foreach ($decrease->entrances as $entrance) {
+                    if (!array_key_exists($entrance->entrance_number, $totals)) {
+                        $totals[$entrance->entrance_number] = $entrance->entrance->quantity;
+                    }
+
+                    $newdata =  array(
+                        'Fecha' => date("d/m/Y H:i", strtotime($decrease->delivery_date)),
+                        'Codigo de MP/MAT' => $decrease->supply->code,
+                        'Nombre' => $decrease->supply->name,
+                        'No. Entrada' => "#" . sprintf("%05s", $entrance->entrance_number),
+                        'entrance' => $entrance->entrance_number,
+                        'Cantidad Entrada (kg)' => $entrance->entrance->quantity,
+                        'Cantidad Surtida (kg)' => number_format(($entrance->delivery_quantity / 1000), 4),
+                        'Cantidad Remanente (kg)' => number_format(($totals[$entrance->entrance_number] - ($entrance->delivery_quantity / 1000)), 4),
+                        'Tipo' => 'Descarga Paquete',
+                        'OT' => $decrease->decrease->departure->order_number,
+                        'Producto' => $decrease->decrease->departure->recipe->name,
+                        'Lote' => $decrease->decrease->departure->lot,
+                    );
+
+                    $totals[$entrance->entrance_number] -= ($entrance->delivery_quantity / 1000);
+                    $items[] = $newdata;
+                }
+            }
+        }
+
+        usort($items, function ($a, $b) {
+            return $a["entrance"] - $b["entrance"];
+        });
+
+        $csvExporter->build($this->r_collect($items), ['Fecha', 'Codigo de MP/MAT', 'Nombre', 'No. Entrada', 'Cantidad Entrada (kg)', 'Cantidad Surtida (kg)', 'Cantidad Remanente (kg)', 'Tipo', 'OT', 'Producto', 'Lote'])->download('inventario_de_materias_primas_' . date('d_m_Y') . '.csv');
+    }
+
+    public function exportLogbookMaterial()
+    {
+        $items = [];
+        $ids = Supply::where('measurement_buy', '!=', 2)->pluck("id")->toArray();
+        $csvExporter = new \Laracsv\Export();
+
+        $totals = [];
+
+        $departures = DepartureItem::where("deliver_date", "!=", NULL)->whereIn("supplie_id", $ids)->get();
+
+        foreach ($departures as $departure) {
+            if ($departure->entrances) {
+                foreach ($departure->entrances as $entrance) {
+                    if (!array_key_exists($entrance->entrance_number, $totals)) {
+                        $totals[$entrance->entrance_number] = $entrance->entrance->quantity;
+                    }
+
+                    $newdata =  array(
+                        'Fecha' => date("d/m/Y H:i", strtotime($departure->deliver_date)),
+                        'Codigo de MP/MAT' => $departure->supply->code,
+                        'Nombre' => $departure->supply->name,
+                        'No. Entrada' => "#" . sprintf("%05s", $entrance->entrance_number),
+                        'entrance' => $entrance->entrance_number,
+                        'Cantidad Entrada (pza)' => $entrance->entrance->quantity,
+                        'Cantidad Surtida (pza)' => number_format($this->reverse($departure->supply->measurement_buy, $departure->supply->measurement_use, $entrance->delivery_quantity), 4),
+                        'Cantidad Remanente (pza)' => number_format(($totals[$entrance->entrance_number] - $this->reverse($departure->supply->measurement_buy, $departure->supply->measurement_use, $entrance->delivery_quantity)), 4),
+                        'Tipo' => 'Producción',
+                        'OT' => $departure->departure->order_number,
+                        'Producto' => $departure->departure->recipe->name,
+                        'Lote' => $departure->departure->lot,
+                    );
+                    //echo "ID del insumo: ".$departure->supply->id." ID de entrada: ".$entrance->entrance_number." ID de descargar: ".$departure->id." Actual: ".$totals[$entrance->entrance_number].' a descargar: '.$this->reverse($departure->supply->measurement_buy, $departure->supply->measurement_use, $entrance->delivery_quantity).'<br>';
+                    $totals[$entrance->entrance_number] -=  $this->reverse($departure->supply->measurement_buy, $departure->supply->measurement_use, $entrance->delivery_quantity);
+                    $items[] = $newdata;
+                }
+            }
+        }
+
+        $decreases = DecreaseSupply::where("delivery_date", "!=", NULL)->whereIn("supply_id", $ids)->get();
+
+        foreach ($decreases as $decrease) {
+            if ($decrease->entrances != NULL) {
+                foreach ($decrease->entrances as $entrance) {
+                    if (!array_key_exists($entrance->entrance_number, $totals)) {
+                        $totals[$entrance->entrance_number] = $entrance->entrance->quantity;
+                    }
+
+                    $newdata =  array(
+                        'Fecha' => date("d/m/Y H:i", strtotime($decrease->delivery_date)),
+                        'Codigo de MP/MAT' => $decrease->supply->code,
+                        'Nombre' => $decrease->supply->name,
+                        'No. Entrada' => "#" . sprintf("%05s", $entrance->entrance_number),
+                        'entrance' => $entrance->entrance_number,
+                        'Cantidad Entrada (pza)' => $entrance->entrance->quantity,
+                        'Cantidad Surtida (pza)' => number_format(($entrance->delivery_quantity), 4),
+                        'Cantidad Remanente (pza)' => number_format(($totals[$entrance->entrance_number] - ($entrance->delivery_quantity)), 4),
+                        'Tipo' => 'Descarga',
+                        'OT' => $decrease->decrease->departure->order_number,
+                        'Producto' => $decrease->decrease->departure->recipe->name,
+                        'Lote' => $decrease->decrease->departure->lot,
+                    );
+
+                    $totals[$entrance->entrance_number] -= ($entrance->delivery_quantity);
+                    $items[] = $newdata;
+                }
+            }
+        }
+
+        $decreases = DecreasePackageSupply::where("delivery_date", "!=", NULL)->whereIn("supply_id", $ids)->get();
+
+        foreach ($decreases as $decrease) {
+            if ($decrease->entrances != NULL) {
+                foreach ($decrease->entrances as $entrance) {
+                    if (!array_key_exists($entrance->entrance_number, $totals)) {
+                        $totals[$entrance->entrance_number] = $entrance->entrance->quantity;
+                    }
+
+                    $newdata =  array(
+                        'Fecha' => date("d/m/Y H:i", strtotime($decrease->delivery_date)),
+                        'Codigo de MP/MAT' => $decrease->supply->code,
+                        'Nombre' => $decrease->supply->name,
+                        'No. Entrada' => "#" . sprintf("%05s", $entrance->entrance_number),
+                        'entrance' => $entrance->entrance_number,
+                        'Cantidad Entrada (pza)' => $entrance->entrance->quantity,
+                        'Cantidad Surtida (pza)' => number_format(($entrance->delivery_quantity), 4),
+                        'Cantidad Remanente (pza)' => number_format(($totals[$entrance->entrance_number] - ($entrance->delivery_quantity)), 4),
+                        'Tipo' => 'Descarga Paquete',
+                        'OT' => $decrease->decrease->departure->order_number,
+                        'Producto' => $decrease->decrease->departure->recipe->name,
+                        'Lote' => $decrease->decrease->departure->lot,
+                    );
+
+                    $totals[$entrance->entrance_number] -= ($entrance->delivery_quantity);
+                    $items[] = $newdata;
+                }
+            }
+        }
+
+        usort($items, function ($a, $b) {
+            return $a["entrance"] - $b["entrance"];
+        });
+
+        $csvExporter->build($this->r_collect($items), ['Fecha', 'Codigo de MP/MAT', 'Nombre', 'No. Entrada', 'Cantidad Entrada (pza)', 'Cantidad Surtida (pza)', 'Cantidad Remanente (pza)', 'Tipo', 'OT', 'Producto', 'Lote'])->download('inventario_de_materias_primas_materiales_' . date('d_m_Y') . '.csv');
+    }
+
+    private function r_collect($array)
+    {
+        foreach ($array as $key => $value) {
+            if (is_array($value)) {
+                $value = $this->r_collect($value);
+                $array[$key] = $value;
+            }
+        }
+
+        return collect($array);
     }
 
     private function convert($type1, $type2, $quantity)

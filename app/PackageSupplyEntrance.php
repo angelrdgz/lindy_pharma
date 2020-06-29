@@ -6,7 +6,6 @@ use Illuminate\Database\Eloquent\Model;
 
 class PackageSupplyEntrance extends Model
 {
-    public $timestamps = false;
     protected $table = "package_supply_entrances";
 
     public function supply(){

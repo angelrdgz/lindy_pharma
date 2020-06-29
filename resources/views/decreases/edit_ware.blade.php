@@ -54,9 +54,9 @@
                                         <td  style="max-width:50px;"><input type="text" name="supplyName[]" value="{{ $supply->supply->name }}" class="form-control" readonly></td>
                                         <td style="width:200px !important;">
                                             <div class="input-group m-0 float-left" style="max-width:160px;">
-                                                <input type="text" name="quantity[]" value="{{ $supply->quantity }}" class="form-control number" {{$supply->processed == 1 ? "readonly":""}}>
+                                                <input type="text" name="quantity[]" value="{{ $supply->quantity * 1000 }}" class="form-control number" {{$supply->processed == 1 ? "readonly":""}}>
                                                 <div class="input-group-append">
-                                                    <span class="input-group-text" id="basic-addon2">{{$supply->supply->measurementUse->code}}</span>
+                                                    <span class="input-group-text" id="basic-addon2">{{$supply->supply->measurementUse->code == "mg" ? "g":$supply->supply->measurementUse->code}}</span>
                                                 </div>
                                             </div>
                                         </td>

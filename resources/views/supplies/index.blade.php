@@ -15,7 +15,7 @@
               Exportar Stock
               </button>
               <div class="dropdown-menu" aria-labelledby="dropdownMenuButton2">
-                <a href="{{ url('exportar/insumos-stock?type=1') }}" target="_blank" class="dropdown-item">Stock (Kilos))</a>
+                <a href="{{ url('exportar/insumos-stock?type=1') }}" target="_blank" class="dropdown-item">Stock (Kilos)</a>
                 <a href="{{ url('exportar/insumos-stock?type=2') }}" target="_blank" class="dropdown-item">Stock (Piezas)</a>
               </div>
             </div>

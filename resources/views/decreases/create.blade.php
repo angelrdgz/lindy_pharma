@@ -116,7 +116,7 @@
                         '<div class="input-group">' +
                         '<input type="text" name="quantity[]" value="" class="form-control number">' +
                         '<div class="input-group-append">' +
-                        '<span class="input-group-text" id="basic-addon2">' + supply.supply.measurement_use.code + '</span>' +
+                        '<span class="input-group-text" id="basic-addon2">' + (supply.supply.measurement_use.code  == "mg" ? "g":supply.supply.measurement_use.code)+ '</span>' +
                         '</div>' +
                         '</div>' +
                         '<td class="text-center"><a class="btn btn-danger btn-circle removeRow"><i class="fas fa-trash" style="color: #fff;"></i></a></td>' +

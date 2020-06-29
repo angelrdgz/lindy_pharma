@@ -17,6 +17,6 @@ class DepartureItem extends Model
     }
 
     public function entrances(){
-        return $this->hasMany('App\DepartureItemEntrance', 'departure_item_id', 'id');
+        return $this->hasMany('App\DepartureItemEntrance', 'departure_item_id', 'id')->orderBy("created_at", "ASC");
     }
 }

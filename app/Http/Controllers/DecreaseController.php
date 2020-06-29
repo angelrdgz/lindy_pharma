@@ -50,7 +50,7 @@ class DecreaseController extends Controller
                 $decreaseSupply = new DecreaseSupply();
                 $decreaseSupply->decrease_id = $decrease->id;
                 $decreaseSupply->supply_id = $request->idSupply[$key];
-                $decreaseSupply->quantity = $request->quantity[$key];
+                $decreaseSupply->quantity = $request->quantity[$key] / 1000;
                 $decreaseSupply->save();
 
                 /*$entranceNumbers = explode(",", $request->quantity[$key]);
@@ -108,7 +108,7 @@ class DecreaseController extends Controller
                 $decreaseSupply = new DecreaseSupply();
                 $decreaseSupply->decrease_id = $decrease->id;
                 $decreaseSupply->supply_id = $request->idSupply[$key];
-                $decreaseSupply->quantity = $request->quantity[$key];
+                $decreaseSupply->quantity = $request->quantity[$key] / 1000;
                 $decreaseSupply->save();
 
                 /*$entranceNumbers = explode(",", $request->quantity[$key]);
@@ -132,7 +132,7 @@ class DecreaseController extends Controller
 
             $departureItem = DecreaseSupply::where('id', $request->idRow[$key])->first();
             $departureItem->delivery_date = date('Y-m-d'); // $request->deliverDate[$key];
-            $departureItem->delivery_quantity = $request->quantity[$key];
+            $departureItem->delivery_quantity = $request->quantity[$key] / 1000;
 
             $totalNeedIt = $departureItem->quantity;
             //echo "Total necesario: " . $totalNeedIt . '<br>';

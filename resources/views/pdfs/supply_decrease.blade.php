@@ -178,7 +178,7 @@
                  <td class="font-10">{{ $decrease->departure->lot }}</td>
                  <td class="font-10">{{ $supply->supply->code }}</td>
                  <td class="font-10">{{ $supply->supply->name }}</td>
-                 <td class="font-10">{{ number_format($supply->quantity,2) }}</td>
+                 <td class="font-10">{{ number_format(($supply->quantity * 1000),2) }} g</td>
                  <td class="font-10">{{ date("d/m/Y H:i", strtotime($decrease->created_at)) }}</td>
              </tr>
             @endforeach

@@ -10,10 +10,12 @@
                         <h5 class="m-0 font-weight-bold text-primary">Descargas</h5>
                     </div>
                     <div class="col-sm-2">
+                        @if(in_array(Auth::user()->role_id, [1,2]))
                         <a href="{{ url('descargas/create') }}" class="btn btn-link">
                             <i class="fas fa-plus"></i>
                             Nueva Descarga
                         </a>
+                        @endif
                     </div>
                 </div>
             </div>

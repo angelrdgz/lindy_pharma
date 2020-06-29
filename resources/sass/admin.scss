@@ -10828,6 +10828,9 @@ a:focus {
       font-family: "Font Awesome 5 Free";
       margin-left: 0.25rem;
     }
+    .sidebar-brand-icon{
+      display: block !important;
+    }
   }
   .sidebar-brand {
     height: 4.375rem;
@@ -10839,6 +10842,9 @@ a:focus {
     text-transform: uppercase;
     letter-spacing: 0.05rem;
     z-index: 1;
+    .sidebar-brand-icon{
+      display: none;
+    }
     .sidebar-brand-icon i {
       font-size: 2rem;
     }
@@ -10972,6 +10978,9 @@ a:focus {
         }
       }
       .sidebar-brand {
+        .sidebar-brand-icon{
+          display: block !important;
+        }
         .sidebar-brand-icon i {
           font-size: 2rem;
         }
