@@ -75,7 +75,7 @@
               <table class="table contentTable">
                 <thead>
                   <tr>
-                    <th colspan="{{Auth::user()->role_id == 2 ? '5':'6'}}">Contenido de la orden</th>
+                    <th colspan="{{Auth::user()->role_id == 2 ? '7':'8'}}">Contenido de la orden</th>
                     <th class="text-right">
                       @if(in_array(Auth::user()->role_id, [1,4]))
                       <a class="btn btn-link addContentRow text-primary">Agregar Insumo</a>
@@ -219,6 +219,7 @@
   availableItems.push({
     id: "{{$supply->id}}",
     value: "{{$supply->name}}",
+    code: "{{$supply->code}}",
     price: "{{$supply->price}}",
     label: "{{$supply->code}} {{$supply->name}}",
     measurement: "{{$supply->measurementBuy->name}}"
@@ -229,13 +230,13 @@
   currencyOptions += '<option value="{{ $currency->id }}">{{ $currency->name }}</option>';
   @endforeach
 
-  $(document).on('change', '#switchAll', function(){
-    if($(this).is(":checked")){
-      $(".contentTable tbody tr").each(function(index, tr){
+  $(document).on('change', '#switchAll', function() {
+    if ($(this).is(":checked")) {
+      $(".contentTable tbody tr").each(function(index, tr) {
         $(tr).find("select").val("Aprobada");
       })
-    }else{
-      $(".contentTable tbody tr").each(function(index, tr){
+    } else {
+      $(".contentTable tbody tr").each(function(index, tr) {
         $(tr).find("select").val("");
       })
     }
@@ -247,12 +248,22 @@
 
     let idRow = $('.tableContent tbody tr').length + 1;
     $('.contentTable').append('<tr class="activeRow">' +
-      '<td><input type="hidden" name="lotSupplierItems[]" value="" class="form-control"><input type="hidden" name="deletedItem[]" value="0" class="deleteInput"><input type="hidden" name="idItem[]" value=""><input type="hidden" class="idItem" name="idSupplyItem[]"/> <input type="text" class="form-control itemContent' + idRow + '" /></td>' +
+      '<td class="supplyCode"></td>' +
+      '<td>' +
+      '<input type="hidden" name="updated[]" value="0">'+
+      '<input type="hidden" name="lotSupplierItems[]" value="" class="form-control">' +
+      '<input type="hidden" name="deletedItem[]" value="0" class="deleteInput">' +
+      '<input type="hidden" name="idItem[]" value="">' +
+      '<input type="hidden" name="splittedItem[]" value="0" class="deleteInput">' +
+      '<input type="hidden" value="" class="idItem" name="idSupplyItem[]" />' +
+      '<input type="text" class="form-control itemContent' + idRow + '" /></td>' +
+      '<td>No asignada</td>' +
       '<td><input type="text" name="quantityItem[]" class="form-control number"/></td>' +
       '<td><input type="text" name="priceItem[]" class="form-control number price"/></td>' +
       '<td><select class="form-control" name="currencyItem[]">' + currencyOptions + '</select></td>' +
       '<input type="hidden" name="statusItem[]" value="Creada" />' +
       '<td><span> - </span></td>' +
+      '<td></td>' +
       '</tr>')
 
     $(".itemContent" + idRow).autocomplete({
@@ -260,6 +271,7 @@
       select: function(event, ui) {
         console.log(ui)
         $('.contentTable .activeRow .idItem').val(ui.item.id)
+        $('.contentTable .activeRow .supplyCode').text(ui.item.code)
         $('.contentTable .activeRow .price').val(ui.item.price)
         $('.contentTable .activeRow span').text(ui.item.measurement)
       }

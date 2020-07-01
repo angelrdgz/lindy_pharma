@@ -157,7 +157,7 @@
     let idRow = $('.tableContent tbody tr').length + 1;
     $('.contentTable').append('<tr class="activeRow">' +
       '<td><input type="hidden" name="idItem[]" class="idItem"/> <input type="text" class="form-control itemContent' + idRow + '" /></td>' +
-      '<td><input type="text" name="quantityItem[]" class="form-control number"/></td>' +
+      '<td><input type="text" name="quantityItem[]" value="0" class="form-control number"/></td>' +
       '<td><input type="text" name="priceItem[]" class="form-control number price"/></td>' +
       '<td><select class="form-control" name="currencyItem[]">'+currencyOptions+'</select></td>' +
       '<td><span> - </span></td>' +

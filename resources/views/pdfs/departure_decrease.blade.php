@@ -220,7 +220,7 @@
         <td style="width:15%;">_________________<td>
         <td class="text-left" style="font-size: 10px;">Fecha</td>
         <td style="width:15%;"></td>
-        <td style="font-size: 10px;">Recibio</td>
+        <td style="font-size: 10px;">Recibió</td>
         <td style="width:15%;">_________________</td>
         <td style="font-size: 10px;">Fecha</td>
         <td style="width:15%;"></td>
