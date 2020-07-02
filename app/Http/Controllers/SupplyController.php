@@ -97,7 +97,7 @@ class SupplyController extends Controller
 
     public function update(Request $request, $id)
     {
-        if (Auth::user()->role_id == 3) {
+        if (in_array(Auth::user()->role_id, [3,4])) {
 
             foreach ($request->idItems as $key => $supplie) {
                 $item =  EntranceItem::find($request->idItems[$key]);

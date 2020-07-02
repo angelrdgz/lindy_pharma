@@ -36,7 +36,7 @@ class DecreaseController extends Controller
                 'description' => 'required',
             ],
             [
-                'order_number.required' => 'El número de orden es requeridp',
+                'order_number.required' => 'El número de orden es requerido',
                 'description.required' => 'La descripción es requerida',
             ]
         );
