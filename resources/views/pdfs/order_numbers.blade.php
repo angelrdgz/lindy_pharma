@@ -201,7 +201,15 @@
                 <td style="width:15%;"></td>
                 <td style="width:15%;"></td>
                 <td class="text-right"><b>Surtió:</b></td>
-                <td style="width:19.8%; text-align:center;">{{ $departure->user_id == NULL ? "No definido":$departure->exporter->name}}</td>
+                <td style="width:19.8%; text-align:center;">______________________</td>
+                <td style="width:16.6%;" class="text-right"><b>Fecha:</b></td>
+                <td style="width:16.6%;">______________________</td>
+            </tr>
+            <tr>
+                <td style="width:15%;"></td>
+                <td style="width:15%;"></td>
+                <td class="text-right"><b>Recibió:</b></td>
+                <td style="width:19.8%; text-align:center;">______________________</td>
                 <td style="width:16.6%;" class="text-right"><b>Fecha:</b></td>
                 <td style="width:16.6%;">______________________</td>
             </tr>
