@@ -86,7 +86,7 @@
             <div class="modal-footer">
                 <a href="{{ url('ordenes-de-fabricacion') }}" class="btn btn-secondary">No</a>
                 <form method="post" action="{{ route('ordenes-de-fabricacion.update', $departure->id) }}">
-                    <input type="hidden" name="total" value='{{ $departure->status == "Granel" ? $departure->quantity:"0"}}'>
+                    <input type="hidden" name="total" value='{{ $departure->status == "Inspección" ? $departure->quantity:"0"}}'>
                     @method('PATCH')
                     @csrf
                     <button type="submit" class="btn btn-primary">Sí</button>

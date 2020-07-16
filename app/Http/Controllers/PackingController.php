@@ -68,7 +68,27 @@ class PackingController extends Controller
             ]
         );
 
+        $lastRecipe = Departure::latest()->first();
+        $lastPackage = Package::latest()->first();
+
+        if($lastRecipe !== NULL && $lastPackage !== NULL)
+        {
+            if(intval(str_replace("OT-", "", $lastRecipe->order_number)) ==  $lastPackage->id){
+                $nextid = ($lastRecipe !== NULL ? intval(str_replace("OT-", "", $lastRecipe->order_number)):0) + ($lastPackage !== NULL ? $lastPackage->id:0) +1;
+            }elseif(intval(str_replace("OT-", "", $lastRecipe->order_number)) >  $lastPackage->id){
+                $nextid = ($lastRecipe !== NULL ? intval(str_replace("OT-", "", $lastRecipe->order_number)):0) + ($lastPackage !== NULL ? $lastPackage->id:0);
+            }elseif(intval(str_replace("OT-", "", $lastRecipe->order_number)) <  $lastPackage->id){
+                $nextid = ($lastRecipe !== NULL ? intval(str_replace("OT-", "", $lastRecipe->order_number)):0) + ($lastPackage !== NULL ? $lastPackage->id:0);
+            }
+        }else
+        {
+            $nextid = ($lastRecipe !== NULL ? intval(str_replace("OT-", "", $lastRecipe->order_number)):0) + ($lastPackage !== NULL ? $lastPackage->id:0) + 1;
+        }
+
+        $order_number = $nextid;
+
         $package = new Package();
+        $package->id = $order_number;
         $package->product_id = $request->product;
         $package->quantity = $request->quantity;
         $package->client_id = $request->client;
@@ -360,7 +380,7 @@ class PackingController extends Controller
 
     public function scan($id)
     {
-        $package = Package::find($id);
+        $package = Package::findOrFail($id);
         if ($package->status == 'Empacado') {
             return redirect('ordenes-de-acondicionamiento')->with('success', 'La orden de acondicionamiento ya ha finalizado');
         }

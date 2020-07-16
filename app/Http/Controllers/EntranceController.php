@@ -15,6 +15,7 @@ use App\Cost;
 use App\DecreaseSupply;
 use App\DecreasePackageSupply;
 use App\DepartureItem;
+use App\PackageSupply;
 use App\User;
 
 use Auth;
@@ -453,6 +454,36 @@ class EntranceController extends Controller
                         'OT' => $decrease->decrease->departure->order_number,
                         'Producto' => $decrease->decrease->departure->recipe->name,
                         'Lote' => $decrease->decrease->departure->lot,
+                    );
+
+                    $totals[$entrance->entrance_number] -= ($entrance->delivery_quantity);
+                    $items[] = $newdata;
+                }
+            }
+        }
+
+        $packages = PackageSupply::where("deliver_date", "!=", NULL)->whereIn("supply_id", $ids)->get();
+
+        foreach ($packages as $package) {
+            if ($package->entrances != NULL) {
+                foreach ($package->entrances as $entrance) {
+                    if (!array_key_exists($entrance->entrance_number, $totals)) {
+                        $totals[$entrance->entrance_number] = $entrance->entrance->quantity;
+                    }
+
+                    $newdata =  array(
+                        'Fecha' => date("d/m/Y H:i", strtotime($package->delivery_date)),
+                        'Codigo de MP/MAT' => $package->supply->code,
+                        'Nombre' => $package->supply->name,
+                        'No. Entrada' => "#" . sprintf("%05s", $entrance->entrance_number),
+                        'entrance' => $entrance->entrance_number,
+                        'Cantidad Entrada (pza)' => $entrance->entrance->quantity,
+                        'Cantidad Surtida (pza)' => number_format(($entrance->delivery_quantity), 4),
+                        'Cantidad Remanente (pza)' => number_format(($totals[$entrance->entrance_number] - ($entrance->delivery_quantity)), 4),
+                        'Tipo' => 'Acondicionamiento',
+                        'OT' => $package->package->id,
+                        'Producto' => $package->package->product->name,
+                        'Lote' => $package->package->lot,
                     );
 
                     $totals[$entrance->entrance_number] -= ($entrance->delivery_quantity);

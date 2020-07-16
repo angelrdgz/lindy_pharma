@@ -152,7 +152,7 @@
         <i class="fas fa-flask"></i>
           <span>Recetas</span></a>
       </li>-->
-      @if(in_array(Auth::user()->role_id, [1,2,3]))
+      @if(in_array(Auth::user()->role_id, [1,2,3,4]))
       <li class="nav-item {{ Request::is('recetas') ? 'active':'' }}">
         <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapse4" aria-expanded="true" aria-controls="collapse3">
           <i class="fas fa-flask"></i>
@@ -196,7 +196,7 @@
         </div>
       </li>      
       @endif
-      @if(in_array(Auth::user()->role_id, [1,2]))
+      @if(in_array(Auth::user()->role_id, [1,2,3,4]))
       <li class="nav-item {{ Request::is('pedidos') ? 'active':'' }}">
         <a class="nav-link" href="{{ url('pedidos') }}">
         <i class="fas fa-file-invoice-dollar"></i>

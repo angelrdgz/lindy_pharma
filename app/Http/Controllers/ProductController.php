@@ -153,7 +153,7 @@ class ProductController extends Controller
 
     public function export()
     {
-        $packages = Package::where("status", 'Finalizada')->get();
+        $packages = Package::where("status", 'Empacado')->get();
         $csvExporter = new \Laracsv\Export();
 
         $csvExporter->beforeEach(function ($package) {
@@ -163,7 +163,7 @@ class ProductController extends Controller
             $package->code = $package->product->code;
         });
 
-        $csvExporter->build($packages, ["id" => "OT", "code" => "Código", "name" => "Nombre", "lot" => "Lote", "quantity" => "Tamano de Lote", "quantity_real" => "Cantidad Real",  "date_expire" => "Fecha de Caducidad", "production_status" => "Estatus de Produccion", "quality_status" => "Estatus de Calidad"])->download('inventario_products_' . date('d_m_Y') . '.csv');
+        $csvExporter->build($packages, ["id" => "OT", "code" => "Código", "name" => "Nombre", "lot" => "Lote", "quantity" => "Tamano de Lote", "quantity_real" => "Cantidad Real",  "date_expire" => "Fecha de Caducidad", "production_status" => "Estatus de Produccion", "quality_status" => "Estatus de Calidad"])->download('inventario_productos_' . date('d_m_Y') . '.csv');
     }
 
     public function exportProduct($id)

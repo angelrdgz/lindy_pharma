@@ -53,7 +53,7 @@
                         @if($package->status == "Creada" || $package->status == "Liberado")
                         <tr>
                             <td><b>Cantidad :</b></td>
-                            <td><input type="text" class="form-control number listenTotal" value='{{ $package->status == "Granel" ? $departure->quantity:"0"}}'></td>
+                            <td><input type="text" class="form-control number listenTotal" value='{{ $package->status == "Liberado" ? $package->quantity:"0"}}'></td>
                         </tr>
                         @endif
                         <tr>
@@ -67,7 +67,7 @@
                 <a href="{{ url('ordenes-de-acondicionamiento') }}" class="btn btn-secondary">No</a>
                 <form method="post" action="{{ route('ordenes-de-acondicionamiento.update', $package->id) }}">
                     <input type="hidden" name="status" value="{{ $newStatus }}">
-                    <input type="hidden" name="total" value='{{ $package->status == "Granel" ? $package->quantity:"0"}}'>
+                    <input type="hidden" name="total" value='{{ $package->status == "Liberado" ? $package->quantity:"0"}}'>
                     @method('PATCH')
                     @csrf
                     <button type="submit" class="btn btn-primary">Sí</button>

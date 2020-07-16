@@ -11,7 +11,7 @@ use App\DepartureItemEntrance;
 use App\EntranceItem;
 use Illuminate\Http\Request;
 use App\Logbook;
-
+use App\Package;
 use Auth;
 use PDF;
 use QrCode;
@@ -59,9 +59,23 @@ class DepartureController extends Controller
 
         $recipe = Recipe::find($request->recipe);
 
-        $total = Departure::count();
+        $lastRecipe = Departure::latest()->first();
+        $lastPackage = Package::latest()->first();
 
-        $order_number = "OT-" . sprintf("%04s", $total == 0 ? "1" : (($total / 2) + 1));
+
+        if($lastRecipe !== NULL && $lastPackage !== NULL)
+        {
+            if(intval(str_replace("OT-", "", $lastRecipe->order_number)) ==  $lastPackage->id){
+                $nextid = ($lastRecipe !== NULL ? intval(str_replace("OT-", "", $lastRecipe->order_number)):0) + ($lastPackage !== NULL ? $lastPackage->id:0) +1;
+            }elseif(intval(str_replace("OT-", "", $lastRecipe->order_number)) >  $lastPackage->id){
+                $nextid = ($lastRecipe !== NULL ? intval(str_replace("OT-", "", $lastRecipe->order_number)):0) + ($lastPackage !== NULL ? $lastPackage->id:0);
+            }
+        }else
+        {
+            $nextid = ($lastRecipe !== NULL ? intval(str_replace("OT-", "", $lastRecipe->order_number)):0) + ($lastPackage !== NULL ? $lastPackage->id:0) + 1;
+        }
+
+        $order_number = "OT-" . sprintf("%04s", $nextid);
 
         $folderPath = public_path('images/qrcode');
         if (!file_exists($folderPath)) {

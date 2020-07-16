@@ -10,7 +10,7 @@
                         <h5 class="m-0 font-weight-bold text-primary">Ordenes de Acondicionamiento</h5>
                     </div>
                     <div class="col-sm-2">
-                        @if(in_array(Auth::user()->role_id, [1,4]))
+                        @if(in_array(Auth::user()->role_id, [1]))
                         <a href="{{ url('ordenes-de-acondicionamiento/create') }}" class="btn btn-link">
                             <i class="fas fa-plus"></i>
                             Nueva Orden
