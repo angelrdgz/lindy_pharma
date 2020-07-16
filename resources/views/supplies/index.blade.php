@@ -6,7 +6,7 @@
     <div class="card shadow mb-4">
       <div class="card-header">
         <div class="row">
-          <div class="col-sm-6 pt-2">
+          <div class="col-sm-3 pt-2">
             <h5 class="m-0 font-weight-bold text-primary">Insumos</h5>
           </div>
           <div class="col-sm-2 pt-2">
@@ -31,6 +31,19 @@
                 <a href="{{ url('exportar/insumos?type=2') }}" target="_blank" class="dropdown-item">Inventario de Materiales</a>
               </div>
             </div>
+          </div>
+          <div class="col-sm-3">
+          @if(in_array(Auth::user()->role_id, [1,2,3]))
+          <div class="dropdown">
+              <button class="btn btn-primary btn-block dropdown-toggle" type="button" id="dropdownMenuButton2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              Bitacora de Descarga
+              </button>
+              <div class="dropdown-menu" aria-labelledby="dropdownMenuButton2">
+                <a href="{{ url('exportar/bitacora-de-descargas') }}" target="_blank" class="dropdown-item">Bitacora de Descarga (Kilos)</a>
+                <a href="{{ url('exportar/bitacora-de-descargas-materiales') }}" target="_blank" class="dropdown-item">Bitacora de Descarga (Piezas)</a>
+              </div>
+            </div>
+            @endif
           </div>
           <div class="col-sm-2">
             @if(Auth::user()->role_id !== 3)

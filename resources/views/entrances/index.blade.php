@@ -9,17 +9,6 @@
           <div class="col-sm-7 pt-2">
             <h5 class="m-0 font-weight-bold text-primary">Ordenes de Compra</h5>
           </div>
-          <div class="col-sm-3">
-          <div class="dropdown">
-              <button class="btn btn-primary btn-block dropdown-toggle" type="button" id="dropdownMenuButton2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-              Bitacora de Descarga
-              </button>
-              <div class="dropdown-menu" aria-labelledby="dropdownMenuButton2">
-                <a href="{{ url('exportar/bitacora-de-descargas') }}" target="_blank" class="dropdown-item">Bitacora de Descarga (Kilos)</a>
-                <a href="{{ url('exportar/bitacora-de-descargas-materiales') }}" target="_blank" class="dropdown-item">Bitacora de Descarga (Piezas)</a>
-              </div>
-            </div>
-          </div>
           <div class="col-sm-2">
             @if(in_array(Auth::user()->role_id, [1,4]))
             <a href="{{ url('ordenes-de-compra/create') }}" class="btn btn-link">
