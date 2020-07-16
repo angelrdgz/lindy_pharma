@@ -204,8 +204,12 @@
           <th style="width: 30%;">Descripción del Insumo</th>
           <th>Cantidad Unitaria</th>
           <th>UM</th>
+          @if($order->type == 1)
           <th>Exceso (%)</th>
           <th>Cantidad Unitaria</th>
+          @else
+          <th>Composición de la formula</th>
+          @endif          
           <th>UM</th>
           <th>Cantidad Total</th>
           <th>UM</th>
@@ -217,6 +221,7 @@
          $totalFirst = 0;
          $totalSecond = 0;
          $totalThird = 0;
+         
         @endphp
         @foreach($order->items as $supply)
          <tr>
@@ -224,9 +229,15 @@
            <td>{{ $supply->supply->name }}</td>
            <td class="text-right">{{ $supply->quantity }}</td>
            <td class="text-center">{{ $supply->supply->measurementUse->code }}</td>
+           @if($order->type == 1)
            <td class="text-center">{{ $supply->excess }}</td>
            <td class="text-right">{{ number_format(($supply->quantity + ($supply->quantity * ($supply->excess / 100))),4) }}</td>
            <td class="text-center">{{ $supply->supply->measurementUse->code }}</td>
+          @else
+          <td class="text-right">{{ number_format(($totalSupplies * 100) / $supply->quantity,2) }}</td>
+          <td class="text-center">%</td>
+          @endif            
+           
            <td class="text-right">{{ number_format(((($supply->quantity + ($supply->quantity * ($supply->excess / 100))) * $order->quantity) / 1000),1)  }}</td>
            <td class="text-center">g</td>
            <td class="text-center">{{ $supply->order_number == NULL ? "":sprintf("%05s", $supply->order_number)}}</td>
@@ -244,9 +255,14 @@
           <td><b>Total</b></td>
           <td class="text-right"><b>{{ number_format($totalFirst,4) }}</b></td>
           <td></td>
+          @if($order->type == 1)
           <td></td>
           <td class="text-right"><b>{{ number_format($totalSecond,4) }}</b></td>
           <td></td>
+          @else
+          <td class="text-right"><b>100.00</b></td>
+          <td class="text-center">%</td>
+          @endif          
           <td class="text-right"><b>{{ number_format(($totalThird/ 1000),1) }}</b></td>
           <td class="text-center">g</td>
           <td></td>

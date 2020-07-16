@@ -32,7 +32,7 @@
               </div>
             </div>
           </div>
-          <div class="col-sm-3">
+          <div class="col-sm-3 pt-2">
           @if(in_array(Auth::user()->role_id, [1,2,3]))
           <div class="dropdown">
               <button class="btn btn-primary btn-block dropdown-toggle" type="button" id="dropdownMenuButton2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
