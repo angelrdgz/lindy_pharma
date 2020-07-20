@@ -47,14 +47,7 @@
                     </div>
                     <div class="row my-3">
                         <div class="col-sm-12">
-                            <div class="row">
-                                <div class="col-sm-10">
-                                    <h5>Insumos</h5>
-                                </div>
-                                <div class="col-sm-2">
-                                    <a class="btn btn-link addContentRow text-primary">Agregar Insumo</a>
-                                </div>
-                            </div>
+                            <h5>Insumos</h5>
                             <table class="table">
                                 <thead>
                                     <tr>
@@ -66,9 +59,6 @@
                                 </thead>
                                 <tbody></tbody>
                             </table>
-                            @error('idSupply')
-                            <p class="text-red-500 text-xs text-danger italic">{{ $message }}</p>
-                            @enderror
                         </div>
                     </div>
                     <div class="row">
@@ -103,28 +93,10 @@
 <script>
     var availableItems = [];
 
-    @foreach($supplies as $supply)
-    availableItems.push({
-        id: "{{$supply->id}}",
-        value: "{{$supply->code}}",
-        name: "{{$supply->name}}",
-        price: "{{$supply->price}}",
-        label: "{{$supply->code}} {{$supply->name}}",
-        measurement: "{{$supply->measurementBuy->name}}"
-    })
-    @endforeach
-
     $(document).on('change', 'select[name="order_number"]', function() {
         $('.table tbody').empty();
         $('input[name="recipe"]').val($(this).find('option:selected').attr("recipe"))
         $('input[name="lot"]').val($(this).find('option:selected').attr("lot"))
-
-        if($(this).val() == ""){
-            $('.addContentRow').show()
-        }else{
-            $('.addContentRow').hide()
-        }
-
 
         $.ajax({
 
@@ -144,7 +116,7 @@
                         '<div class="input-group">' +
                         '<input type="text" name="quantity[]" value="" class="form-control number">' +
                         '<div class="input-group-append">' +
-                        '<span class="input-group-text" id="basic-addon2">' + (supply.supply.measurement_use.code == "mg" ? "g" : supply.supply.measurement_use.code) + '</span>' +
+                        '<span class="input-group-text" id="basic-addon2">' + (supply.supply.measurement_use.code  == "mg" ? "g":supply.supply.measurement_use.code)+ '</span>' +
                         '</div>' +
                         '</div>' +
                         '<td class="text-center"><a class="btn btn-danger btn-circle removeRow"><i class="fas fa-trash" style="color: #fff;"></i></a></td>' +
@@ -186,30 +158,6 @@
 
         $(this).closest('tr').find("input[name='entranceNumbers[]']").val(ids.join(','))
     })*/
-
-    $(document).on('click', '.addContentRow', function() {
-
-        $('.table tbody tr').removeClass('activeRow')
-
-        let idRow = $('.table tbody tr').length + 1;
-        $('.table').append('<tr class="activeRow">' +
-            '<td>'+
-            '<input type="hidden" name="idItem[]" class="idItem"/>'+
-            '<input type="text" class="form-control itemContent' + idRow + '" /></td>' +
-            '<td><input type="text" class="form-control supplyName" readonly/></td>' +
-            '<td><input type="text" name="quantityItem[]" value="0" class="form-control number"/></td>' +
-            '</tr>')
-
-        $(".itemContent" + idRow).autocomplete({
-            source: availableItems,
-            select: function(event, ui) {
-                console.log(ui)
-                $('.table .activeRow .idItem').val(ui.item.id)
-                $('.table .activeRow .supplyName').val(ui.item.name)
-                $('.table .activeRow span').text(ui.item.measurement)
-            }
-        });
-    })
 
     callEntrances = (x) => {
         $('select[name="entrance"]').empty();

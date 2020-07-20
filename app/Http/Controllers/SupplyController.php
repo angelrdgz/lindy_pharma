@@ -219,15 +219,15 @@ class SupplyController extends Controller
             switch ($supply->measurement_use) {
                 case 6:
                     $supply->stock = $supply->stock / 1000000;
-                    $supply->price = $supply->price * $supply->stock;
+                    $supply->price = $supply->price * ($supply->stock / 1000000);
                     break;
                 case 3:
                     $supply->stock = $supply->stock / 1000000;
-                    $supply->price = $supply->price * $supply->stock;
+                    $supply->price = $supply->price * ($supply->stock / 1000000);
                     break;
                 case 1:
                     $supply->stock = $supply->stock / 1000;
-                    $supply->price = $supply->price * $supply->stock;
+                    $supply->price = $supply->price * ($supply->stock / 1000);
                     break;
                 default:
                     $supply->stock = $supply->stock;
