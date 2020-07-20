@@ -24,19 +24,20 @@ class DecreaseController extends Controller
 
     public function create()
     {
+        $supplies = Supply::all();
         $orderNumbers = Departure::where("status", "!=", "Cancelada")->get();        
-        return view('decreases.create', ["orderNumbers"=>$orderNumbers]);
+        return view('decreases.create', ["orderNumbers"=>$orderNumbers, "supplies"=>$supplies]);
     }
 
     public function store(Request $request)
     {
         $request->validate(
             [
-                'order_number' => 'required',
+                'idSupply' => 'required',
                 'description' => 'required',
             ],
             [
-                'order_number.required' => 'El número de orden es requerido',
+                'idSupply.required' => 'Se requiere al menos un insumo en la descarga',
                 'description.required' => 'La descripción es requerida',
             ]
         );
