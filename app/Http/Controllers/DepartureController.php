@@ -69,6 +69,8 @@ class DepartureController extends Controller
                 $nextid = ($lastRecipe !== NULL ? intval(str_replace("OT-", "", $lastRecipe->order_number)):0) + ($lastPackage !== NULL ? $lastPackage->id:0) +1;
             }elseif(intval(str_replace("OT-", "", $lastRecipe->order_number)) >  $lastPackage->id){
                 $nextid = ($lastRecipe !== NULL ? intval(str_replace("OT-", "", $lastRecipe->order_number)):0) + ($lastPackage !== NULL ? $lastPackage->id:0);
+            }elseif(intval(str_replace("OT-", "", $lastRecipe->order_number)) <  $lastPackage->id){
+                $nextid = $lastPackage->id + 1;
             }
         }else
         {
@@ -186,7 +188,7 @@ class DepartureController extends Controller
 
         $order = Departure::find($id);
         $recipe = Recipe::find($order->recipe_id);
-        $totals = DB::select('SELECT quantity + (quantity * (excess / 100)) as "Total" FROM recipe_supplies where recipe_id = :id AND type = 1', ["id" => $order->recipe_id]);
+        $totals = DB::select('SELECT quantity + (quantity * (excess / 100)) as "Total" FROM recipe_supplies where recipe_id = :id AND type = :type', ["id" => $order->recipe_id, "type"=>$order->type]);
         $tt = 0;
         foreach ($totals as $total) {
             $tt += $total->Total;

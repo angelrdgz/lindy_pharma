@@ -234,7 +234,7 @@
            <td class="text-right">{{ number_format(($supply->quantity + ($supply->quantity * ($supply->excess / 100))),4) }}</td>
            <td class="text-center">{{ $supply->supply->measurementUse->code }}</td>
           @else
-          <td class="text-right">{{ number_format(($totalSupplies * 100) / $supply->quantity,2) }}</td>
+          <td class="text-right">{{ number_format(($supply->quantity * 100) / $totalSupplies,2) }}</td>
           <td class="text-center">%</td>
           @endif            
            
