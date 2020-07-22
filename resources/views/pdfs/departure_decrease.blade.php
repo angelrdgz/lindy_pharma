@@ -173,9 +173,9 @@
         <tbody>
             @foreach($decrease->recipes as $recipe)
              <tr>
-                 <td class="font-10">{{ $decrease->package->id }}</td>
-                 <td class="font-10">{{ $decrease->package->product->name }}</td>
-                 <td class="font-10">{{ $decrease->package->lot }}</td>
+                 <td class="font-10">{{ $decrease->package_id == NULL ? 'Sin asignar':$decrease->package->id }}</td>
+                 <td class="font-10">{{ $decrease->package_id == NULL ? 'Sin asignar':$decrease->package->product->name }}</td>
+                 <td class="font-10">{{ $decrease->package_id == NULL ? 'Sin asignar':$decrease->package->lot }}</td>
                  <td class="font-10">{{ $recipe->recipe->code }}</td>
                  <td class="font-10">{{ $recipe->recipe->name }}</td>
                  <td class="font-10">{{ number_format($recipe->quantity,2) }}</td>
@@ -201,9 +201,9 @@
         <tbody>
             @foreach($decrease->supplies as $supply)
              <tr>
-                 <td class="font-10">{{ $decrease->package->id }}</td>
-                 <td class="font-10">{{ $decrease->package->product->name }}</td>
-                 <td class="font-10">{{ $decrease->package->lot }}</td>
+                 <td class="font-10">{{ $decrease->package_id == NULL ? 'Sin asignar':$decrease->package->id }}</td>
+                 <td class="font-10">{{ $decrease->package_id == NULL ? 'Sin asignar':$decrease->package->product->name }}</td>
+                 <td class="font-10">{{ $decrease->package_id == NULL ? 'Sin asignar':$decrease->package->lot }}</td>
                  <td class="font-10">{{ $supply->supply->code }}</td>
                  <td class="font-10">{{ $supply->supply->name }}</td>
                  <td class="font-10">{{ number_format($supply->quantity,2) }}</td>

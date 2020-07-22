@@ -173,9 +173,9 @@
         <tbody>
             @foreach($decrease->supplies as $supply)
              <tr>
-                 <td class="font-10">{{ $decrease->departure->order_number }}</td>
-                 <td class="font-10">{{ $decrease->departure->recipe->name }}</td>
-                 <td class="font-10">{{ $decrease->departure->lot }}</td>
+                 <td class="font-10">{{ $decrease->departure_id == NULL ? "Sin asignar":$decrease->departure->order_number }}</td>
+                 <td class="font-10">{{ $decrease->departure_id == NULL ? "Sin asignar":$decrease->departure->recipe->name }}</td>
+                 <td class="font-10">{{ $decrease->departure_id == NULL ? "Sin asignar":$decrease->departure->lot }}</td>
                  <td class="font-10">{{ $supply->supply->code }}</td>
                  <td class="font-10">{{ $supply->supply->name }}</td>
                  <td class="font-10">{{ number_format(($supply->quantity * 1000),2) }} g</td>

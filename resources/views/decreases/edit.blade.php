@@ -21,6 +21,19 @@
                             <label for="">OT</label>
                             <select name="order_number" id="" class="form-control">
                                 <option value="">Seleccionar OT</option>
+                                @if($decrease->departure_id == NULL)
+                                    @foreach($orderNumbers as $order)
+                                    <option value="{{ $order->id }}" type="{{ $order->type }}" recipe_id="{{ $order->recipe_id }}" recipe="{{$order->recipe->name}}" lot="{{$order->lot}}">
+                                        @if($order->type == 1)
+                                        {{ $order->order_number }} - CONTENIDO DE LA CAPSULA
+                                        @elseif($order->type == 2)
+                                        {{ $order->order_number }} - ENVOLVENTE DE LA CAPSULA 1
+                                        @else
+                                        {{ $order->order_number }} - ENVOLVENTE DE LA CAPSULA 2
+                                        @endif
+                                    </option>
+                                    @endforeach
+                                @else
                                 @foreach($orderNumbers as $order)
                                 <option value="{{ $order->id }}" type="{{ $order->type }}" recipe_id="{{ $order->recipe_id }}" recipe="{{$order->recipe->name}}" lot="{{$order->lot}}" {{$order->id == $decrease->departure_id ? "selected":""}}>
                                     @if($order->type == 1)
@@ -32,6 +45,7 @@
                                     @endif
                                 </option>
                                 @endforeach
+                                @endif
                             </select>
                             @error('order_number')
                             <p class="text-red-500 text-xs text-danger italic">{{ $message }}</p>
@@ -39,11 +53,11 @@
                         </div>
                         <div class="col-sm-4">
                             <label for="">Receta</label>
-                            <input name="recipe" type="text" readonly value="{{ $decrease->departure->recipe->name }}" class="form-control acSupply">
+                            <input name="recipe" type="text" readonly value="{{ $decrease->departure_id == NULL ? '':$decrease->departure->recipe->name }}" class="form-control acSupply">
                         </div>
                         <div class="col-sm-4">
                             <label for="">No. de Lote</label>
-                            <input name="lot" id="" readonly value="{{ $decrease->departure->lot }}" class="form-control">
+                            <input name="lot" id="" readonly value="{{ $decrease->departure_id == NULL ? '':$decrease->departure->lot }}" class="form-control">
                         </div>
                     </div>
                     <div class="row my-3">

@@ -32,9 +32,6 @@
                                 </option>
                                 @endforeach
                             </select>
-                            @error('order_number')
-                            <p class="text-red-500 text-xs text-danger italic">{{ $message }}</p>
-                            @enderror
                         </div>
                         <div class="col-sm-4">
                             <label for="">Receta</label>
@@ -47,7 +44,14 @@
                     </div>
                     <div class="row my-3">
                         <div class="col-sm-12">
-                            <h5>Insumos</h5>
+                            <div class="row">
+                                <div class="col-sm-10">
+                                    <h5>Insumos</h5>
+                                </div>
+                                <div class="col-sm-2">
+                                    <a class="btn btn-link addContentRow text-primary">Agregar Insumo</a>
+                                </div>
+                            </div>
                             <table class="table">
                                 <thead>
                                     <tr>
@@ -59,6 +63,9 @@
                                 </thead>
                                 <tbody></tbody>
                             </table>
+                            @error('idSupply')
+                            <p class="text-red-500 text-xs text-danger italic">{{ $message }}</p>
+                            @enderror
                         </div>
                     </div>
                     <div class="row">
@@ -93,6 +100,49 @@
 <script>
     var availableItems = [];
 
+    @foreach($supplies as $supply)
+    availableItems.push({
+        id: "{{$supply->id}}",
+        value: "{{$supply->code}}",
+        name: "{{$supply->name}}",
+        price: "{{$supply->price}}",
+        label: "{{$supply->code}} {{$supply->name}}",
+        measurement: "{{$supply->measurementUse->code}}"
+    })
+    @endforeach
+
+    $(document).on('click', '.addContentRow', function() {
+
+        $('.table tbody tr').removeClass('activeRow')
+
+        let idRow = $('.tableContent tbody tr').length + 1;
+        $('.table').append('<tr class="activeRow">' +
+            '<td>' +
+            '<input type="hidden" name="idSupply[]" class="idItem"/>' +
+            '<input type="text" class="form-control itemContent' + idRow + '" />' +
+            '</td>' +
+            '<td><input type="text" name="supplyName[]" class="form-control number supplyName" readonly/></td>' +
+            '<td>' +
+            '<div class="input-group">' +
+            '<input type="text" name="quantity[]" value="" class="form-control number">' +
+            '<div class="input-group-append">' +
+            '<span class="input-group-text" id="basic-addon2"></span>' +
+            '</div>' +
+            '</div>' +
+            '<td><a class="btn btn-danger btn-circle removeRow"><i class="fas fa-trash" style="color: #fff;"></i></a></td>' +
+            '</tr>')
+
+        $(".itemContent" + idRow).autocomplete({
+            source: availableItems,
+            select: function(event, ui) {
+                console.log(ui)
+                $('.table .activeRow .idItem').val(ui.item.id)
+                $('.table .activeRow .supplyName').val(ui.item.name)
+                $('.table .activeRow .input-group-text').text(ui.item.measurement == "mg" ? "g" : ui.item.measurement)
+            }
+        });
+    })
+
     $(document).on('change', 'select[name="order_number"]', function() {
         $('.table tbody').empty();
         $('input[name="recipe"]').val($(this).find('option:selected').attr("recipe"))
@@ -116,7 +166,7 @@
                         '<div class="input-group">' +
                         '<input type="text" name="quantity[]" value="" class="form-control number">' +
                         '<div class="input-group-append">' +
-                        '<span class="input-group-text" id="basic-addon2">' + (supply.supply.measurement_use.code  == "mg" ? "g":supply.supply.measurement_use.code)+ '</span>' +
+                        '<span class="input-group-text" id="basic-addon2">' + (supply.supply.measurement_use.code == "mg" ? "g" : supply.supply.measurement_use.code) + '</span>' +
                         '</div>' +
                         '</div>' +
                         '<td class="text-center"><a class="btn btn-danger btn-circle removeRow"><i class="fas fa-trash" style="color: #fff;"></i></a></td>' +

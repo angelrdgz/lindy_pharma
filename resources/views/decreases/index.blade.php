@@ -34,8 +34,11 @@
                         <tbody>
                             @foreach($decreases as $decrease)
                             <tr>
-                                <td>{{ $decrease->departure->order_number }}</td>
+                                <td>{{ $decrease->departure_id !== NULL ? $decrease->departure->order_number:"Sin asignar" }}</td>
                                 <td>
+                                    @if($decrease->departure_id == NULL)
+                                    Sin asignar
+                                    @else
                                     @switch($decrease->type)
                                     @case("1")
                                     CONTENIDO DE LA CAPSULA
@@ -49,6 +52,7 @@
                                     @default
                                     CONTENIDO DE LA CAPSULA
                                     @endswitch
+                                    @endif
                                 </td>
                                 <td>{{ $decrease->user->name }}</td>
                                 <td>{{ date('d/m/Y H:i', strtotime($decrease->created_at)) }}</td>

@@ -22,11 +22,11 @@
                                 <option value="">Seleccionar OT</option>
                                 @foreach($orderNumbers as $order)
                                 <option value="{{ $order->id }}" type="{{ $order->type }}" product_id="{{ $order->product_id }}" product="{{$order->product->name}}" presentation="{{$order->presentation}}">
-                                    {{ $order->lot }} 
+                                    {{ $order->lot }}
                                 </option>
                                 @endforeach
                             </select>
-                            @error('recipe_id')
+                            @error('package_id')
                             <p class="text-red-500 text-xs text-danger italic">{{ $message }}</p>
                             @enderror
                         </div>
@@ -41,7 +41,14 @@
                     </div>
                     <div class="row my-3">
                         <div class="col-sm-12">
-                            <h5>Granel</h5>
+                            <div class="row">
+                                <div class="col-sm-9">
+                                    <h5>Granel</h5>
+                                </div>
+                                <div class="col-sm-3">
+                                    <a class="btn btn-link text-right text-primary addCoverRow">Agregar Producto a Granel</a>
+                                </div>
+                            </div>
                             <table class="table recipesTable">
                                 <thead>
                                     <tr>
@@ -57,7 +64,14 @@
                     </div>
                     <div class="row my-3">
                         <div class="col-sm-12">
-                            <h5>Insumos</h5>
+                            <div class="row">
+                                <div class="col-sm-10">
+                                    <h5>Insumos</h5>
+                                </div>
+                                <div class="col-sm-2">
+                                    <a class="btn btn-link text-primary addContentRow">Agregar Insumo</a>
+                                </div>
+                            </div>
                             <table class="table suppliesTable">
                                 <thead>
                                     <tr>
@@ -102,6 +116,86 @@
 @section("script")
 <script>
     var availableItems = [];
+    var availableRecipes = [];
+
+    @foreach($supplies as $supply)
+    availableItems.push({
+        id: "{{$supply->id}}",
+        value: "{{$supply->code}}",
+        name: "{{$supply->name}}",
+        label: "{{$supply->code}} {{$supply->name}}",
+        measurement: "{{$supply->measurementUse->code}}"
+    })
+    @endforeach
+
+    @foreach($recipes as $recipe)
+    availableRecipes.push({
+        id: "{{$recipe->id}}",
+        value: "{{$recipe->code}}",
+        name: "{{$recipe->name}}",
+        label: "{{$recipe->code}} {{$recipe->name}}"
+    })
+    @endforeach
+
+    $(document).on('click', '.addContentRow', function() {
+
+        $('.suppliesTable tbody tr').removeClass('activeRow')
+
+        let idRow = $('.suppliesTable tbody tr').length + 1;
+        $('.suppliesTable').append('<tr class="activeRow">' +
+            '<td><input type="hidden" class="idItem" name="idSupply[]"/> <input type="text" class="form-control itemContent' + idRow + '" /></td>' +
+            '<td><input type="text" name="nameItem[]" readonly class="form-control number"/></td>' +
+            '<td>' +
+            '<div class="input-group">' +
+            '<input type="text" name="quantity[]" value="" class="form-control number">' +
+            '<div class="input-group-append">' +
+            '<span class="input-group-text" id="basic-addon2"></span>' +
+            '</div>' +
+            '</div>' +
+            '</td>'+
+            '<td class="text-center"><a class="btn btn-danger btn-circle removeRow"><i class="fas fa-trash" style="color: #fff;"></i></a></td>' +
+            '</tr>')
+
+        $(".itemContent" + idRow).autocomplete({
+            source: availableItems,
+            select: function(event, ui) {
+                console.log(ui)
+                $('.suppliesTable .activeRow .idItem').val(ui.item.id)
+                $('.suppliesTable .activeRow input[name="nameItem[]"]').val(ui.item.name)
+                $('.suppliesTable .activeRow .input-group-text').text(ui.item.measurement == "mg" ? "g" : ui.item.measurement)
+            }
+        });
+    })
+
+    $(document).on('click', '.addCoverRow', function() {
+
+        $('.recipesTable tbody tr').removeClass('activeRow')
+
+        let idRow = $('.recipesTable tbody tr').length + 1;
+        $('.recipesTable').append('<tr class="activeRow">' +
+            '<td><input type="hidden" class="idItem" name="idRecipe[]"/> <input type="text" class="form-control itemRecipe' + idRow + '" /></td>' +
+            '<td><input type="text" name="nameRecipe[]" readonly class="form-control number" /></td>' +
+            '<td>' +
+            '<div class="input-group">' +
+            '<input type="text" name="quantityRecipe[]" value="" class="form-control number">' +
+            '<div class="input-group-append">' +
+            '<span class="input-group-text" id="basic-addon2">cap</span>' +
+            '</div>' +
+            '</div>' +
+            '</td>'+
+            '<td class="text-center"><a class="btn btn-danger btn-circle removeRow"><i class="fas fa-trash" style="color: #fff;"></i></a></td>' +
+            '</tr>')
+
+        $(".itemRecipe" + idRow).autocomplete({
+            source: availableRecipes,
+            select: function(event, ui) {
+                console.log(ui)
+                $('.recipesTable .activeRow .idItem').val(ui.item.id)
+                $('.recipesTable .activeRow input[name="nameRecipe[]"]').val(ui.item.name)
+                
+            }
+        });
+    })
 
     $(document).on('change', 'select[name="package_id"]', function() {
         $('.table tbody').empty();
@@ -131,6 +225,7 @@
                         '<span class="input-group-text" id="basic-addon2">cap</span>' +
                         '</div>' +
                         '</div>' +
+                        '</td>'+
                         '<td class="text-center"><a class="btn btn-danger btn-circle removeRow"><i class="fas fa-trash" style="color: #fff;"></i></a></td>' +
                         '</tr>');
                 })

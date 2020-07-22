@@ -11,7 +11,7 @@ use App\Departure;
 use App\EntranceItem;
 use App\Supply;
 
-use Auth;
+use Illuminate\Support\Facades\Auth;
 use PDF;
 
 class DecreaseController extends Controller
@@ -19,41 +19,76 @@ class DecreaseController extends Controller
     public function index()
     {
         $decreases = Decrease::all();
-        return view('decreases.index', ["decreases"=>$decreases]);
+        return view('decreases.index', ["decreases" => $decreases]);
     }
 
     public function create()
     {
-        $orderNumbers = Departure::where("status", "!=", "Cancelada")->get();        
-        return view('decreases.create', ["orderNumbers"=>$orderNumbers]);
+        $supplies = Supply::all();
+        $orderNumbers = Departure::where("status", "!=", "Cancelada")->get();
+        return view('decreases.create', ["orderNumbers" => $orderNumbers, "supplies" => $supplies]);
     }
 
     public function store(Request $request)
     {
-        $request->validate(
-            [
-                'order_number' => 'required',
-                'description' => 'required',
-            ],
-            [
-                'order_number.required' => 'El número de orden es requerido',
-                'description.required' => 'La descripción es requerida',
-            ]
-        );
+        switch (Auth::user()->id) {
+            case 1:
+            case 2:
+                $request->validate(
+                    [
+                        'idSupply' => 'required|array',
+                        'description' => 'required',
+                    ],
+                    [
+                        'idSupply.required' => 'La descarga requiere al menos un insumo',
+                        'idSupply.array' => 'La descarga requiere al menos un insumo',
+                        'description.required' => 'La descripción es requerida',
+                    ]
+                );
+                break;
+            case 6:
+                $request->validate(
+                    [
+                        'order_number' => 'required',
+                        'description' => 'required',
+                    ],
+                    [
+                        'order_number.required' => 'La orden de trabajo es requerida.',
+                        'description.required' => 'La descripción es requerida',
+                    ]
+                );
+                break;
+
+            default:
+                $request->validate(
+                    [
+                        'idSupply' => 'required|array',
+                        'description' => 'required',
+                    ],
+                    [
+                        'idSupply.required' => 'La descarga requiere al menos un insumo',
+                        'idSupply.array' => 'La descarga requiere al menos un insumo',
+                        'description.required' => 'La descripción es requerida',
+                    ]
+                );
+                break;
+        }
+
         $decrease = new Decrease();
         $decrease->departure_id = $request->order_number;
         $decrease->description = $request->description;
         $decrease->created_by = Auth::user()->id;
+        $decrease->status = 'Creada';
         $decrease->save();
 
         foreach ($request->idSupply as $key => $value) {
-                $decreaseSupply = new DecreaseSupply();
-                $decreaseSupply->decrease_id = $decrease->id;
-                $decreaseSupply->supply_id = $request->idSupply[$key];
-                $decreaseSupply->quantity = $request->quantity[$key] / 1000;
-                $decreaseSupply->save();
+            $decreaseSupply = new DecreaseSupply();
+            $decreaseSupply->decrease_id = $decrease->id;
+            $decreaseSupply->supply_id = $request->idSupply[$key];
+            $decreaseSupply->quantity = $request->quantity[$key] / 1000;
+            $decreaseSupply->save();
 
-                /*$entranceNumbers = explode(",", $request->quantity[$key]);
+            /*$entranceNumbers = explode(",", $request->quantity[$key]);
 
                 foreach ($entranceNumbers as $kex => $value) {
                     $decreaseEntrance = new DecreaseSupplyEntrance();
@@ -78,21 +113,22 @@ class DecreaseController extends Controller
     {
         $orderNumbers = Departure::where("status", "!=", "Cancelada")->get();
         $decrease = Decrease::find($id);
-        if(Auth::user()->role_id == 3)
-        return view('decreases.edit_ware', ["orderNumbers"=>$orderNumbers, "decrease"=>$decrease]);
+        if (Auth::user()->role_id == 3)
+            return view('decreases.edit_ware', ["orderNumbers" => $orderNumbers, "decrease" => $decrease]);
         else
-        return view('decreases.edit', ["orderNumbers"=>$orderNumbers, "decrease"=>$decrease]);
+            return view('decreases.edit', ["orderNumbers" => $orderNumbers, "decrease" => $decrease]);
     }
 
     public function update(Request $request, $id)
     {
         $request->validate(
             [
-                'order_number' => 'required',
+                'idSupply' => 'required|array',
                 'description' => 'required',
             ],
             [
-                'order_number.required' => 'El número de orden es requeridp',
+                'idSupply.required' => 'La descarga requiere al menos un insumo',
+                'idSupply.array' => 'La descarga requiere al menos un insumo',
                 'description.required' => 'La descripción es requerida',
             ]
         );
@@ -105,13 +141,13 @@ class DecreaseController extends Controller
         $decrease->supplies()->delete();
 
         foreach ($request->idSupply as $key => $value) {
-                $decreaseSupply = new DecreaseSupply();
-                $decreaseSupply->decrease_id = $decrease->id;
-                $decreaseSupply->supply_id = $request->idSupply[$key];
-                $decreaseSupply->quantity = $request->quantity[$key] / 1000;
-                $decreaseSupply->save();
+            $decreaseSupply = new DecreaseSupply();
+            $decreaseSupply->decrease_id = $decrease->id;
+            $decreaseSupply->supply_id = $request->idSupply[$key];
+            $decreaseSupply->quantity = $request->quantity[$key] / 1000;
+            $decreaseSupply->save();
 
-                /*$entranceNumbers = explode(",", $request->quantity[$key]);
+            /*$entranceNumbers = explode(",", $request->quantity[$key]);
 
                 foreach ($entranceNumbers as $kex => $value) {
                     $decreaseEntrance = new DecreaseSupplyEntrance();
@@ -134,7 +170,7 @@ class DecreaseController extends Controller
             $departureItem->delivery_date = date('Y-m-d'); // $request->deliverDate[$key];
             $departureItem->delivery_quantity = $request->quantity[$key] / 1000;
 
-            $totalNeedIt = $departureItem->quantity;
+            $totalNeedIt = $this->convert($departureItem->supply->measurement_buy, $departureItem->supply->measurement_use, $departureItem->quantity);
             //echo "Total necesario: " . $totalNeedIt . '<br>';
             if ($request->processed[$key] == 0 && $request->entranceNumbers[$key] !== NULL) {
 

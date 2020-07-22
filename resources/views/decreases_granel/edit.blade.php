@@ -21,11 +21,19 @@
                             <label for="">OT</label>
                             <select name="package_id" id="" class="form-control">
                                 <option value="">Seleccionar OT</option>
+                                @if($decrease->package_id == NULL)
+                                @foreach($orderNumbers as $order)
+                                <option value="{{ $order->id }}" type="{{ $order->type }}" product_id="{{ $order->product_id }}" product="{{$order->product->name}}" presentation="{{$order->presentation}}"}>
+                                    {{ $order->lot }}
+                                </option>
+                                @endforeach
+                                @else
                                 @foreach($orderNumbers as $order)
                                 <option value="{{ $order->id }}" type="{{ $order->type }}" product_id="{{ $order->product_id }}" product="{{$order->product->name}}" presentation="{{$order->presentation}}" {{$order->id ?? $decrease->package_id ? "selected":""}}>
                                     {{ $order->lot }}
                                 </option>
                                 @endforeach
+                                @endif
                             </select>
                             @error('package_id')
                             <p class="text-red-500 text-xs text-danger italic">{{ $message }}</p>
@@ -33,11 +41,11 @@
                         </div>
                         <div class="col-sm-4">
                             <label for="">Producto</label>
-                            <input name="product" type="text" readonly value="{{ $decrease->package->product->name }}" class="form-control acSupply">
+                            <input name="product" type="text" readonly value="{{ $decrease->package_id == NULL ? '':$decrease->package->product->name }}" class="form-control acSupply">
                         </div>
                         <div class="col-sm-4">
                             <label for="">Presentación</label>
-                            <input name="presentation" id="" readonly value="{{ $decrease->package->lot }}" class="form-control">
+                            <input name="presentation" id="" readonly value="{{ $decrease->package_id == NULL ? '':$decrease->package->lot }}" class="form-control">
                         </div>
                     </div>
                     <div class="row my-3">
@@ -120,7 +128,7 @@
                             <button type="submit" class="btn btn-primary btn-block">Guardar</button>
                         </div>
                         <div class="col-sm-3 ">
-                            <a href="{{ url('descargas_granel') }}" class="btn btn-secondary btn-block">Cancelar</a>
+                            <a href="{{ url('descargas-granel') }}" class="btn btn-secondary btn-block">Cancelar</a>
                         </div>
                     </div>
                 </form>

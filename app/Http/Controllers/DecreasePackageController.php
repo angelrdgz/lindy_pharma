@@ -13,9 +13,9 @@ use App\Supply;
 use App\Departure;
 use App\Recipe;
 
-use Auth;
 use PDF;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class DecreasePackageController extends Controller
 {
@@ -27,22 +27,51 @@ class DecreasePackageController extends Controller
 
     public function create()
     {
+        $supplies = Supply::all();
+        $recipes = Recipe::all();
         $orderNumbers = Package::where("status", "!=", "Cancelada")->get();
-        return view('decreases_granel.create', ["orderNumbers" => $orderNumbers]);
+        return view('decreases_granel.create', ["orderNumbers" => $orderNumbers, "supplies" => $supplies, "recipes" => $recipes]);
     }
 
     public function store(Request $request)
     {
-        $request->validate(
-            [
-                'package_id' => 'required',
-                'description' => 'required',
-            ],
-            [
-                'package_id.required' => 'El número de orden es requeridp',
-                'description.required' => 'La descripción es requerida',
-            ]
-        );
+        switch (Auth::user()->role_id) {
+            case 1:
+                $request->validate(
+                    [
+                        'package_id' => 'required',
+                        'description' => 'required',
+                    ],
+                    [
+                        'package_id.required' => 'El número de orden es requerido.',
+                        'description.required' => 'La descripción es requerida',
+                    ]
+                );
+                break;
+            case 2:
+                $request->validate(
+                    [
+                        'description' => 'required',
+                    ],
+                    [
+                        'description.required' => 'La descripción es requerida',
+                    ]
+                );
+                break;
+            default:
+                $request->validate(
+                    [
+                        'package_id' => 'required',
+                        'description' => 'required',
+                    ],
+                    [
+                        'package_id.required' => 'El número de orden es requerido.',
+                        'description.required' => 'La descripción es requerida.',
+                    ]
+                );
+                break;
+        }
+
         $decrease = new DecreasePackage();
         $decrease->package_id = $request->package_id;
         $decrease->description = $request->description;
@@ -93,16 +122,31 @@ class DecreasePackageController extends Controller
 
     public function update(Request $request, $id)
     {
-        $request->validate(
-            [
-                'package_id' => 'required',
-                'description' => 'required',
-            ],
-            [
-                'package_id.required' => 'El número de orden es requeridp',
-                'description.required' => 'La descripción es requerida',
-            ]
-        );
+        switch (Auth::user()->role_id) {
+            case 2:
+                $request->validate(
+                    [
+                        'description' => 'required',
+                    ],
+                    [
+                        'description.required' => 'La descripción es requerida',
+                    ]
+                );
+                break;
+            default:
+                $request->validate(
+                    [
+                        'package_id' => 'required',
+                        'description' => 'required',
+                    ],
+                    [
+                        'package_id.required' => 'El número de orden es requerido.',
+                        'description.required' => 'La descripción es requerida.',
+                    ]
+                );
+                break;
+        }
+
         $decrease = DecreasePackage::find($id);
         $decrease->package_id = $request->package_id;
         $decrease->description = $request->description;
