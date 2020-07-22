@@ -10,7 +10,7 @@
                         <h5 class="m-0 font-weight-bold text-primary">Descargas de Granel</h5>
                     </div>
                     <div class="col-sm-2">
-                        @if(in_array(Auth::user()->role_id, [1,2]))
+                        @if(in_array(Auth::user()->role_id, [1,2,6]))
                         <a href="{{ url('descargas-granel/create') }}" class="btn btn-link">
                             <i class="fas fa-plus"></i>
                             Nueva Descarga
