@@ -188,12 +188,17 @@ class DepartureController extends Controller
 
         $order = Departure::find($id);
         $recipe = Recipe::find($order->recipe_id);
+        $totalContent = DB::select('SELECT quantity + (quantity * (excess / 100)) as "Total" FROM recipe_supplies where recipe_id = :id AND type = 1', ["id" => $order->recipe_id]);
         $totals = DB::select('SELECT quantity + (quantity * (excess / 100)) as "Total" FROM recipe_supplies where recipe_id = :id AND type = :type', ["id" => $order->recipe_id, "type"=>$order->type]);
         $tt = 0;
         foreach ($totals as $total) {
             $tt += $total->Total;
         }
-        $pdf = PDF::setOptions(['isHtml5ParserEnabled' => true, 'isRemoteEnabled' => true])->loadView('pdfs.pdf', ["order" => $order, "recipe" => $recipe, "totalSupplies" => $tt]);
+        $tc = 0;
+        foreach ($totalContent as $totalc) {
+            $tc += $totalc->Total;
+        }
+        $pdf = PDF::setOptions(['isHtml5ParserEnabled' => true, 'isRemoteEnabled' => true])->loadView('pdfs.pdf', ["order" => $order, "recipe" => $recipe, "totalContent" => $tc, "totalSupplies" => $tt]);
         return $pdf->stream('orden_de_fabricación_' . $order->id . '.pdf');
     }
 

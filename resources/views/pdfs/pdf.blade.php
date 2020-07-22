@@ -159,7 +159,7 @@
       @endphp
       <tr>
         <td>Peso de contenido:</td>
-        <td>{{ number_format($totalSupplies,2) }}</td>
+        <td>{{ number_format($totalContent,2) }}</td>
         <td>mg</td>
         <td></td>
         <td>Molde:</td>
@@ -170,7 +170,7 @@
       </tr>
       <tr>
         <td>Peso máximo:</td>
-        <td>{{ number_format(($totalSupplies + ($totalSupplies * 0.03)),2) }}</td>
+        <td>{{ number_format(($totalContent + ($totalContent * 0.03)),2) }}</td>
         <td>mg</td>
         <td></td>
         <td colspan="3">Tiempo de encapsulado:</td>
@@ -180,7 +180,7 @@
       </tr>
       <tr>
         <td>Peso mínimo:</td>
-        <td>{{ number_format(($totalSupplies - ($totalSupplies * 0.03)),2) }}</td>
+        <td>{{ number_format(($totalContent - ($totalContent * 0.03)),2) }}</td>
         <td>mg</td>
         <td></td>
         <td>Línea:</td>
