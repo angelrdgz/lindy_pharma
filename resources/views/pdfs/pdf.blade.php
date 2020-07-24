@@ -254,11 +254,11 @@
           <td></td>
           <td><b>Total</b></td>
           <td class="text-right"><b>{{ number_format($totalFirst,4) }}</b></td>
-          <td></td>
+          <td class="text-center"><b>mg</b></td>
           @if($order->type == 1)
           <td></td>
           <td class="text-right"><b>{{ number_format($totalSecond,4) }}</b></td>
-          <td></td>
+          <td class="text-center"><b>mg</b></td>
           @else
           <td class="text-right"><b>100.00</b></td>
           <td class="text-center">%</td>
