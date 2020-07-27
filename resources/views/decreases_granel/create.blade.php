@@ -122,8 +122,8 @@
     availableItems.push({
         id: "{{$supply->id}}",
         value: "{{$supply->code}}",
-        name: "{{$supply->name}}",
-        label: "{{$supply->code}} {{$supply->name}}",
+        name: "{{ preg_replace('/[^A-Za-z0-9 ]/', '', $supply->name) }}",
+        label: "{{$supply->code}} {{ preg_replace('/[^A-Za-z0-9 ]/', '', $supply->name) }}",
         measurement: "{{$supply->measurementUse->code}}"
     })
     @endforeach
@@ -132,8 +132,8 @@
     availableRecipes.push({
         id: "{{$recipe->id}}",
         value: "{{$recipe->code}}",
-        name: "{{$recipe->name}}",
-        label: "{{$recipe->code}} {{$recipe->name}}"
+        name: "{{ preg_replace('/[^A-Za-z0-9 ]/', '', $recipe->name) }}",
+        label: "{{$recipe->code}} {{ preg_replace('/[^A-Za-z0-9 ]/', '', $recipe->name) }}"
     })
     @endforeach
 

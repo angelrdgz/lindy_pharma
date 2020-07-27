@@ -106,7 +106,7 @@
       <li class="nav-item {{ Request::is('moldes') ? 'active':'' }}">
         <a class="nav-link" href="{{ url('moldes') }}">
           <i class="fas fa-dice-d20"></i>
-          <span>Moldes</span></a>
+          <span>Herramientas</span></a>
       </li>
       @endif
       @if(in_array(Auth::user()->role_id, [1,2]))

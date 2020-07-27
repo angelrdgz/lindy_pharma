@@ -139,9 +139,9 @@
   @foreach($supplies as $supply)
   availableItems.push({
     id: "{{$supply->id}}",
-    value: "{{$supply->name}}",
+    value: "{{ preg_replace('/[^A-Za-z0-9 ]/', '', $supply->name) }}",
     price: "{{$supply->price}}",
-    label: "{{$supply->code}} {{$supply->name}}",
+    label: "{{$supply->code}} {{ preg_replace('/[^A-Za-z0-9 ]/', '', $supply->name) }}",
     measurement: "{{$supply->measurementBuy->name}}"
   })
   @endforeach
