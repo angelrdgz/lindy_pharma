@@ -255,12 +255,17 @@
         <td class="text-right">{{ number_format(((($supply->quantity + ($supply->quantity * ($supply->excess / 100))) * $order->quantity) / 1000),1)  }}</td>
         <td class="text-center">g</td>
         <td class="text-center">
-          @if($supply->processed == 1)
-          $ids = $supply->entrances()->pluck('entrance_number')->toArray();
-          @foreach($ids as $id)
-          {{ sprintf("%05s", $id) }}, 
-          @endforeach          
-          @endif
+         <?php
+          if($supply->processed == 1){
+            $ids = $supply->entrances()->pluck('entrance_number')->toArray();
+            foreach ($ids as $id) { ?>
+              {{ sprintf("%05s", $id) }},
+            <?php
+            }
+          }else{
+            echo "";
+          }
+         ?>
         </td>
       </tr>
       @php
