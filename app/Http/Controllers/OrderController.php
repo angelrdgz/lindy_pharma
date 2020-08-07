@@ -12,7 +12,7 @@ use App\Client;
 use App\Catalog;
 use App\Entrance;
 use App\Logbook;
-
+use App\Package;
 use Auth;
 use PDF;
 use QrCode;
@@ -110,16 +110,26 @@ class OrderController extends Controller
             foreach ($request->idItem as $key => $item) {
                 if ($request->idItem[$key] !== NULL) {
                     $orderItem = OrderProduct::find($request->idItem[$key]);
-                    $orderItem->quantity_real = $request->realQuantityItem[$key];
-                    $orderItem->lot = $request->lotItem[$key];
-                    $orderItem->pieces = $request->piecesItem[$key];
-                    $orderItem->boxes = $request->boxesItem[$key];
-                    $orderItem->partial = $request->partialItem[$key];
-                    $orderItem->total = $request->totalItem[$key];
-                    $orderItem->save();
+                    if ($orderItem->processed == 0) {
+                        $orderItem->quantity_real = $request->realQuantityItem[$key];
+                        $orderItem->lot = $request->lotItem[$key];
+                        $orderItem->pieces = $request->piecesItem[$key];
+                        $orderItem->boxes = $request->boxesItem[$key];
+                        $orderItem->partial = $request->partialItem[$key];
+                        $orderItem->total = $request->totalItem[$key];
+                        $orderItem->processed = 1;
+                        $orderItem->save();
+
+                        $prod = Product::find($orderItem->product_id);
+                        $prod->stock = $prod->stock - $request->totalItem[$key];
+                        $prod->save();
+
+                        $pack = Package::where('lot', $request->lotItem[$key])->first();
+                        $pack->available_quantity = $pack->available_quantity - $request->totalItem[$key];
+                        $pack->save();
+                    }
                 }
             }
-
         } else {
             $order = Order::find($id);
             $order->delivery = $request->delivery;
@@ -184,7 +194,6 @@ class OrderController extends Controller
 
     public function destroy($id)
     {
-        
     }
 
     public function remitionNote($id)

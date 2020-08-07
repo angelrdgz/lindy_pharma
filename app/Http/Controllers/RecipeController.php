@@ -221,9 +221,9 @@ class RecipeController extends Controller
     public function stock()
     {
         if (Auth::user()->role_id == 2)
-            $departures = Departure::where("status", 'Granel')->where("production_status", "Completa")->distinct("order_number")->get();
+            $departures = Departure::where("status", 'Granel')->where("production_status", "Completa")->where('type', 1)->get();
         else
-            $departures = Departure::where("status", 'Granel')->distinct("order_number")->get();
+            $departures = Departure::where("status", 'Granel')->where('type', 1)->get();
         return view('recipes.stock', ["departures" => $departures]);
     }
 

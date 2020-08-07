@@ -26,7 +26,7 @@
                         </div>
                         <div class="col-sm-4">
                             <label for="">Cantidad Real</label>
-                            <input type="text" name="quantity_real" {{ Auth::user()->role_id == 3 ? "":"readonly"}} value="{{ $departure->quantity_real }}" class="form-control number">
+                            <input type="text" name="quantity_real" {{ Auth::user()->role_id == 3 ? "":"readonly"}} value="{{ $departure->quantity_real }}" class="form-control number" {{$departure->production_status == 'Completa' ? 'readonly':''}} >
                         </div>
                         <div class="col-sm-4">
                             <label for="">Cantidad Disponible</label>
@@ -34,14 +34,14 @@
                         </div>
                         <div class="col-sm-4">
                             <label for="">Fecha de Caducidad</label>
-                            <input type="date" name="expired_date" {{ Auth::user()->role_id == 3 ? "":"readonly"}} value="{{ $departure->expired_date }}" class="form-control">
+                            <input type="date" name="expired_date" {{ Auth::user()->role_id == 3 ? "":"readonly"}} value="{{ $departure->expired_date }}" class="form-control" {{$departure->production_status == 'Completa' ? 'readonly':''}}>
                         </div>
                         <div class="col-sm-4">
                             @if(Auth::user()->role_id == 3)
                             <label for="">Estatus de Producción</label>
                             <select name="production_status" id="" class="form-control">
-                                <option value="" {{$departure->production_status == NULL ? 'selected':''}}>Seleccionar Estatus</option>
-                                <option value="Incompleta" {{$departure->production_status == "Incompleta" ? 'selected':''}}>Incompleta</option>
+                                <option value="" {{$departure->production_status == NULL ? 'selected':''}} {{$departure->production_status == 'Completa' ? 'disabled':''}}>Seleccionar Estatus</option>
+                                <option value="Incompleta" {{$departure->production_status == "Incompleta" ? 'selected':''}} {{$departure->production_status == 'Completa' ? 'disabled':''}}>Incompleta</option>
                                 <option value="Completa" {{$departure->production_status == "Completa" ? 'selected':''}}>Completa</option>
                             </select>
                             <input type="hidden" name="quality_status" value="{{$departure->quality_status}}">

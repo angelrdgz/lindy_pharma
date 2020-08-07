@@ -57,9 +57,9 @@
                                         <td>
                                             <input type="hidden" name="idItem[]" value="{{ $item->id }}">
                                             <input type="hidden" name="idProductItem[]" value="{{ $item->product_id }}">
-                                            <input type="text" readonly class="form-control itemContent{{$item->id}}" value="{{ $item->product->name }}" /></td>
+                                            <input type="text" readonly name="codeItem[]" value="{{ $item->product->code}}" class="form-control" /></td>
                                         <td>
-                                            <input type="text" readonly name="codeItem[]" value="{{ $item->product->code}}" class="form-control" />
+                                            <input type="text" readonly class="form-control itemContent{{$item->id}}" value="{{ $item->product->name }}" />
                                         </td>
                                         <td>
                                             <input type="text" readonly name="quantityItem[]" value="{{ $item->quantity}}" class="form-control" />

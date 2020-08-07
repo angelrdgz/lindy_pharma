@@ -393,4 +393,10 @@ class PackingController extends Controller
         $pdf = PDF::setOptions(['isHtml5ParserEnabled' => true, 'isRemoteEnabled' => true])->loadView('pdfs.lot_numbers', ["package" => $package]);
         return $pdf->stream('numeros_de_lote_' . $package->id . '.pdf');
     }
+
+    public function destroy(Request $request, $id){
+        $package = Package::find($id);
+        $package->delete();        
+        return redirect('ordenes-de-acondicionamiento')->with('success', 'Orden eliminada correctamente');
+    }
 }
