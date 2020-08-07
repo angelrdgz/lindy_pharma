@@ -163,7 +163,7 @@ class ProductController extends Controller
             $package->code = $package->product->code;
         });
 
-        $csvExporter->build($packages, ["id" => "OT", "code" => "Código", "name" => "Nombre", "lot" => "Lote", "quantity" => "Tamano de Lote", "quantity_real" => "Cantidad Real",  "date_expire" => "Fecha de Caducidad", "production_status" => "Estatus de Produccion", "quality_status" => "Estatus de Calidad"])->download('inventario_productos_' . date('d_m_Y') . '.csv');
+        $csvExporter->build($packages, ["id" => "OT", "code" => "Codigo", "name" => "Nombre", "lot" => "Lote", "quantity" => "Tamano de Lote", "quantity_real" => "Cantidad Real", "available_quantity"=>"Cantidad Disponible",  "date_expire" => "Fecha de Caducidad", "production_status" => "Estatus de Produccion", "quality_status" => "Estatus de Calidad"])->download('inventario_productos_' . date('d_m_Y') . '.csv');
     }
 
     public function exportProduct($id)
