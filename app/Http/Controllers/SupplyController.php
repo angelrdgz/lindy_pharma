@@ -12,6 +12,7 @@ use App\EntranceItem;
 use App\Logbook;
 
 use Auth;
+use Illuminate\Support\Facades\DB;
 use PDF;
 
 class SupplyController extends Controller
@@ -261,5 +262,31 @@ class SupplyController extends Controller
         $supply->entrance_id = '#' . strval(sprintf("%05s", $supply->id));
 
         $csvExporter->build($supply, ["created_at" => "Fecha", 'supply_id' => "Código Producto", "name" => "Nombre Producto", "entrance_id" => "Número de Entrada", "quantity" => "Cantidad Kg", "cups" => "No de Envases", "expired_date" => "Fecha de Caducidad", "reanalized_date" => "Fecha de Reanalisis", "supplier" => "Proveedor"] )->download('insumo_' . $sup->code . '_' . str_replace(array("/", "-"), "_", $sup->name) . '_' . date('d_m_Y') . '.csv');*/
+    }
+
+    public function exportQuarantine()
+    {
+        if (request()->type == 1)
+        $items = EntranceItem::select("entrance_items.*")->join('supplies', 'entrance_items.supply_id', '=', 'supplies.id')->orderBy('entrance_items.supply_id', 'ASC')->where("supplies.type_id", 1)->where('entrance_items.status', 'Cuarentena')->get();
+        //Supply::where("type_id", 1)->get();
+        else
+        $items = EntranceItem::select("entrance_items.*")->join('supplies', 'entrance_items.supply_id', '=', 'supplies.id')->orderBy('entrance_items.supply_id', 'ASC')->where("supplies.type_id", '!=', 1)->where('entrance_items.status', 'Cuarentena')->get();
+        $csvExporter = new \Laracsv\Export();
+
+
+        $csvExporter->beforeEach(function ($supply) {
+            $supply->type_id = $supply->supply->type->name;
+            $supply->code = $supply->supply->code;
+            $supply->name = $supply->supply->name;
+            $supply->entrance = "#" . sprintf("%05s", $supply->id);
+            $supply->supplier_id = $supply->supplier_id;
+            $supply->quantity = $supply->quantity;
+        });
+
+        if (request()->type == 1)
+        $csvExporter->build($items, ['entrance' => 'Número de Entrada','code' => 'Código', 'name' => 'Nombre', 'type_id' => 'Tipo', 'quantity' => 'Cantidad (Kg)', 'price' => 'Precio'])->download('caurentena_materias_primas_' . date('d_m_Y') . '.csv');
+        else
+        $csvExporter->build($items, ['entrance' => 'Número de Entrada','code' => 'Código', 'name' => 'Nombre', 'type_id' => 'Tipo', 'quantity' => 'Cantidad (pza)', 'price' => 'Precio'])->download('caurentena_materiales_' . date('d_m_Y') . '.csv');
+
     }
 }

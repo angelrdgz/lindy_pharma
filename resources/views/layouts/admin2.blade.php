@@ -23,6 +23,7 @@
   <link href="{{ asset('css/admin.css') }}" rel="stylesheet">
 
   <link rel="shortcut icon" href="{{ asset('images/favicon.png') }}">
+  @yield('styles')
 
 </head>
 

@@ -25,6 +25,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/exportar/insumos', 'SupplyController@export');
     Route::get('/exportar/insumos-stock', 'SupplyController@exportStock');
     Route::get('/exportar/insumos/{id}', 'SupplyController@exportSupply');
+    Route::get('/exportar/cuarentena', 'SupplyController@exportQuarantine');
     Route::get('/exportar/moldes', 'MoldController@export');
     Route::get('/exportar/recetas', 'RecipeController@export');
     Route::get('/exportar/recetas/{id}', 'RecipeController@exportRecipe');
