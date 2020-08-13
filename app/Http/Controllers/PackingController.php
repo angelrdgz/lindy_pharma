@@ -148,7 +148,7 @@ class PackingController extends Controller
 
     public function update(Request $request, $id)
     {
-        if (in_array(Auth::user()->role_id, [3,5])) {
+        if (in_array(Auth::user()->role_id, [3,6])) {
             $package = Package::find($id);
             if ($package->status == 'Liberado' && $request->status == 'Empacado') {
                 $package->quantity_real = $request->total;

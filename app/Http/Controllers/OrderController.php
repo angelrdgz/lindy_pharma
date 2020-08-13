@@ -59,13 +59,15 @@ class OrderController extends Controller
             }
         }
 
-        if (count($request->comments) > 0) {
-            foreach ($request->comments as $key => $comment) {
-                if ($comment != NULL) {
-                    $orderComment = new OrderComment();
-                    $orderComment->order_id = $order->id;
-                    $orderComment->comment = $comment;
-                    $orderComment->save();
+        if ($request->comments !== NULL) {
+            if (count($request->comments) > 0) {
+                foreach ($request->comments as $key => $comment) {
+                    if ($comment != NULL) {
+                        $orderComment = new OrderComment();
+                        $orderComment->order_id = $order->id;
+                        $orderComment->comment = $comment;
+                        $orderComment->save();
+                    }
                 }
             }
         }
