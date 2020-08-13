@@ -26,11 +26,11 @@
                         </div>
                         <div class="col-sm-4">
                             <label for="">Receta</label>
-                            <input name="recipe" type="text" readonly value="{{ $decrease->departure->recipe->name }}" class="form-control acSupply">
+                            <input name="recipe" type="text" readonly value="{{ $decrease->departure_id == NULL ? '':$decrease->departure->recipe->name }}" class="form-control acSupply">
                         </div>
                         <div class="col-sm-4">
                             <label for="">No. de Lote</label>
-                            <input name="lot" id="" readonly value="{{ $decrease->departure->lot }}" class="form-control">
+                            <input name="lot" id="" readonly value="{{ $decrease->departure_id == NULL ? '':$decrease->departure->lot }}" class="form-control">
                         </div>
                     </div>
                     <div class="row my-3">
