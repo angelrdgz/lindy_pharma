@@ -284,9 +284,9 @@ class SupplyController extends Controller
         });
 
         if (request()->type == 1)
-        $csvExporter->build($items, ['entrance' => 'Número de Entrada','code' => 'Código', 'name' => 'Nombre', 'type_id' => 'Tipo', 'quantity' => 'Cantidad (Kg)', 'price' => 'Precio'])->download('caurentena_materias_primas_' . date('d_m_Y') . '.csv');
+        $csvExporter->build($items, ['entrance' => 'Número de Entrada','code' => 'Código', 'name' => 'Nombre', 'type_id' => 'Tipo', 'quantity' => 'Cantidad (Kg)', 'price' => 'Precio'])->download('cuarentena_materias_primas_' . date('d_m_Y') . '.csv');
         else
-        $csvExporter->build($items, ['entrance' => 'Número de Entrada','code' => 'Código', 'name' => 'Nombre', 'type_id' => 'Tipo', 'quantity' => 'Cantidad (pza)', 'price' => 'Precio'])->download('caurentena_materiales_' . date('d_m_Y') . '.csv');
+        $csvExporter->build($items, ['entrance' => 'Número de Entrada','code' => 'Código', 'name' => 'Nombre', 'type_id' => 'Tipo', 'quantity' => 'Cantidad (pza)', 'price' => 'Precio'])->download('cuarentena_materiales_' . date('d_m_Y') . '.csv');
 
     }
 }
