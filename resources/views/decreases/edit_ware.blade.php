@@ -19,7 +19,7 @@
                     <div class="row">
                         <div class="col-sm-4">
                             <label for="">OT</label>
-                            <input type="text" name="order_number" class="form-control" value="{{ $decrease->departure->order_number}}" readonly>
+                            <input type="text" name="order_number" class="form-control" value="{{ $decrease->departure_id == NULL ? '':$decrease->departure->order_number}}" readonly>
                             @error('order_number')
                             <p class="text-red-500 text-xs text-danger italic">{{ $message }}</p>
                             @enderror
