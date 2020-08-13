@@ -48,7 +48,7 @@
                 <td>{{ number_format($package->quantity,0) }}</td>
                 <td>{{ number_format($package->quantity_real,0) }}</td>
                 <td>{{ number_format($package->available_quantity,0) }}</td>
-                <td>{{ $package->expired_date == NULL ? "No definida":date("d/m/Y", strtotime($package->expired_date))}}</td>
+                <td>{{ $package->date_expired == NULL ? "No definida":date("d/m/Y", strtotime($package->expired_date))}}</td>
                 <td>{{ $package->production_status == NULL ? "No definido":$package->production_status}}</td>
                 <td>{{ $package->quality_status == NULL ? "No definido":$package->quality_status}}</td>
                 <td>
