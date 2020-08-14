@@ -195,24 +195,24 @@
 
   $(document).on('click', '.addCoverSecondRow', function() {
 
-$('.coverSecondTable tbody tr').removeClass('activeRow')
+    $('.coverSecondTable tbody tr').removeClass('activeRow')
 
-let idRow = $('.tableCoverSecond tbody tr').length + 1;
-$('.coverSecondTable').append('<tr class="activeRow">' +
-  '<td><input type="hidden" class="idItem" name="idItemCoverSecond[]"/> <input type="text" class="form-control itemCoverSecond' + idRow + '" /></td>' +
-  '<td><input type="text" name="quantityItemCoverSecond[]" class="form-control number" /></td>' +
-  '<td><input type="text" name="excessItemCoverSecond[]" class="form-control number" value="0.0"/></td>' +
-  '<td><span> - </span></td>' +
-  '</tr>')
+    let idRow = $('.tableCoverSecond tbody tr').length + 1;
+    $('.coverSecondTable').append('<tr class="activeRow">' +
+      '<td><input type="hidden" class="idItem" name="idItemCoverSecond[]"/> <input type="text" class="form-control itemCoverSecond' + idRow + '" /></td>' +
+      '<td><input type="text" name="quantityItemCoverSecond[]" class="form-control number" /></td>' +
+      '<td><input type="text" name="excessItemCoverSecond[]" class="form-control number" value="0.0"/></td>' +
+      '<td><span> - </span></td>' +
+      '</tr>')
 
-$(".itemCoverSecond" + idRow).autocomplete({
-  source: availableItems,
-  select: function(event, ui) {
-    console.log(ui)
-    $('.coverSecondTable .activeRow .idItem').val(ui.item.id)
-    $('.coverSecondTable .activeRow span').text(ui.item.measurement)
-  }
-});
-})
+    $(".itemCoverSecond" + idRow).autocomplete({
+      source: availableItems,
+      select: function(event, ui) {
+        console.log(ui)
+        $('.coverSecondTable .activeRow .idItem').val(ui.item.id)
+        $('.coverSecondTable .activeRow span').text(ui.item.measurement)
+      }
+    });
+  })
 </script>
 @stop

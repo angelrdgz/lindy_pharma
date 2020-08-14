@@ -111,6 +111,7 @@ class RecipeController extends Controller
         $molds = Mold::all();
         $items = RecipeSupply::where('recipe_id', $id)->where('type', 1)->get();
         $itemsCover = RecipeSupply::where('recipe_id', $id)->where('type', 2)->get();
+        $itemsCover2 = RecipeSupply::where('recipe_id', $id)->where('type', 3)->get();
         return view('recipes.edit', ['recipe' => $recipe, 'molds' => $molds, 'supplies' => $supplies, 'items' => $items, 'itemsCover' => $itemsCover]);
     }
 

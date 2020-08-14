@@ -133,6 +133,42 @@
             </div>
           </div>
           <div class="row">
+            <div class="col-sm-12">
+              <table class="table coverSecondTable">
+                <thead>
+                  <tr>
+                    <th colspan="3">Segundo Envolvente de la Capsula </th>
+                    <th class="text-right">
+                      <a class="btn btn-link addCoverSecondRow" style="color: #2146f5;">Agregar Insumo</a>
+                    </th>
+                  </tr>
+                  <tr class="text-center">
+                    <th>Nombre</th>
+                    <th>Cantidad</th>
+                    <th>Exceso</th>
+                    <th>Medida de Uso</th>
+                    <th></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  @foreach($itemsCover2 as $item)
+                  <tr>
+                    <td><input type="hidden" value="{{ $item->supply_id}}" class="idItemCover" name="idItemCoverSecond[]" /> <input type="text" value="{{ $item->supply->name }}" class="form-control itemCoverSecond" /></td>
+                    <td><input type="text" name="quantityItemCoverSecond[]" value="{{ $item->quantity}}" class="form-control" /></td>
+                    <td><input type="text" name="excessItemCoverSecond[]" value="{{ $item->excess}}" class="form-control" /></td>
+                    <td class="text-center"><span> {{ $item->supply->measurementUse->name}} </span></td>
+                    <td class="text-center">
+                      <a class="btn btn-danger btn-circle removeRow">
+                        <i class="fas fa-trash" style="color: #fff;"></i>
+                      </a>
+                    </td>
+                  </tr>
+                  @endforeach
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <div class="row">
             <div class="col-sm-3 offset-sm-3">
               <button type="submit" class="btn btn-primary btn-block">Guardar</button>
             </div>
@@ -207,7 +243,29 @@
     });
   })
 
-  $(document).on('click', '.removeRow', function(){
+  $(document).on('click', '.addCoverSecondRow', function() {
+
+    $('.coverSecondTable tbody tr').removeClass('activeRow')
+
+    let idRow = $('.tableCoverSecond tbody tr').length + 1;
+    $('.coverSecondTable').append('<tr class="activeRow">' +
+      '<td><input type="hidden" class="idItem" name="idItemCoverSecond[]"/> <input type="text" class="form-control itemCoverSecond' + idRow + '" /></td>' +
+      '<td><input type="text" name="quantityItemCoverSecond[]" class="form-control number" /></td>' +
+      '<td><input type="text" name="excessItemCoverSecond[]" class="form-control number" value="0.0"/></td>' +
+      '<td><span> - </span></td>' +
+      '</tr>')
+
+    $(".itemCoverSecond" + idRow).autocomplete({
+      source: availableItems,
+      select: function(event, ui) {
+        console.log(ui)
+        $('.coverSecondTable .activeRow .idItem').val(ui.item.id)
+        $('.coverSecondTable .activeRow span').text(ui.item.measurement)
+      }
+    });
+  })
+
+  $(document).on('click', '.removeRow', function() {
     $(this).closest('tr').remove();
   })
 </script>
