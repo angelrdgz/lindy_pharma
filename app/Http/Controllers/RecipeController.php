@@ -112,7 +112,7 @@ class RecipeController extends Controller
         $items = RecipeSupply::where('recipe_id', $id)->where('type', 1)->get();
         $itemsCover = RecipeSupply::where('recipe_id', $id)->where('type', 2)->get();
         $itemsCover2 = RecipeSupply::where('recipe_id', $id)->where('type', 3)->get();
-        return view('recipes.edit', ['recipe' => $recipe, 'molds' => $molds, 'supplies' => $supplies, 'items' => $items, 'itemsCover' => $itemsCover]);
+        return view('recipes.edit', ['recipe' => $recipe, 'molds' => $molds, 'supplies' => $supplies, 'items' => $items, 'itemsCover' => $itemsCover, 'itemsCover2' => $itemsCover2]);
     }
 
     public function show($id)
@@ -155,6 +155,7 @@ class RecipeController extends Controller
 
         $recipe->supplies()->delete();
         $recipe->suppliesCover()->delete();
+        $recipe->suppliesSecondCover()->delete();
 
         foreach ($request->idItem as $key => $item) {
             if ($request->idItem[$key] != NULL) {
@@ -177,6 +178,21 @@ class RecipeController extends Controller
                 $prodSupply->excess = $request->excessItemCover[$key];
                 $prodSupply->type = 2;
                 $prodSupply->save();
+            }
+        }
+
+        if ($request->idItemCoverSecond !== NULL) {
+
+            foreach ($request->idItemCoverSecond as $key => $item) {
+                if ($request->idItemCoverSecond[$key] != NULL) {
+                    $prodSupply = new RecipeSupply();
+                    $prodSupply->recipe_id = $recipe->id;
+                    $prodSupply->supply_id = $request->idItemCoverSecond[$key];
+                    $prodSupply->quantity = $request->quantityItemCoverSecond[$key];
+                    $prodSupply->excess = $request->excessItemCoverSecond[$key] == NULL ? 0 : $request->excessItemCoverSecond[$key];
+                    $prodSupply->type = 3;
+                    $prodSupply->save();
+                }
             }
         }
 
