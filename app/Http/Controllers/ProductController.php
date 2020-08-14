@@ -157,13 +157,13 @@ class ProductController extends Controller
         $csvExporter = new \Laracsv\Export();
 
         $csvExporter->beforeEach(function ($package) {
-            $package->id = '#' . sprintf("%05s",  $package->id);
+            $package->ot = '#' . sprintf("%05s",  $package->id);
             $package->date_expire = $package->date_expire == NULL ? "No definida" : date("d/m/Y", strtotime($package->date_expire));
             $package->name = $package->product->name;
             $package->code = $package->product->code;
         });
 
-        $csvExporter->build($packages, ["id" => "OT", "code" => "Codigo", "name" => "Nombre", "lot" => "Lote", "quantity" => "Tamano de Lote", "quantity_real" => "Cantidad Real", "available_quantity"=>"Cantidad Disponible",  "date_expire" => "Fecha de Caducidad", "production_status" => "Estatus de Produccion", "quality_status" => "Estatus de Calidad"])->download('inventario_productos_' . date('d_m_Y') . '.csv');
+        $csvExporter->build($packages, ["ot" => "OT", "code" => "Codigo", "name" => "Nombre", "lot" => "Lote", "quantity" => "Tamano de Lote", "quantity_real" => "Cantidad Real", "available_quantity"=>"Cantidad Disponible",  "date_expire" => "Fecha de Caducidad", "production_status" => "Estatus de Produccion", "quality_status" => "Estatus de Calidad"])->download('inventario_productos_' . date('d_m_Y') . '.csv');
     }
 
     public function exportProduct($id)
