@@ -81,6 +81,7 @@
                 <span class="caret"></span></button>
               <ul class="dropdown-menu">
                 <!-- Export Stock List-->
+                @if(in_array(Auth::user()->role_id, [1])) {
                 <li class="dropdown-submenu">
                   <a class="test" tabindex="-1" href="#">Exportar Stock<span class="caret text-dark"></span></a>
                   <ul class="dropdown-menu">
@@ -92,6 +93,7 @@
                     </li>
                   </ul>
                 </li>
+                @endif
                 <!-- Export CSV List-->
                 <li class="dropdown-submenu">
                   <a class="test" tabindex="-1" href="#">Exportar CSV<span class="caret"></span></a>
