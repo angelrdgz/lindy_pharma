@@ -94,7 +94,10 @@
                 <tbody>
                   @foreach($productSupplies as $item)
                   <tr>
-                    <td><input type="hidden" value="{{ $item->supply_id}}" class="idItemCover" name="idItem[]" /> <input type="text" value="{{ $item->supply->name }}" class="form-control itemContentIdRow" /></td>
+                    <td>
+                      <input type="hidden" value="{{ $item->supply_id}}" class="idItemCover" name="idItem[]" />
+                      <input type="text" value="{{ $item->supply->name }}" class="form-control itemContentIdRow" />
+                    </td>
                     <td><input type="text" name="quantityItem[]" value="{{ $item->quantity}}" class="form-control" /></td>
                     <td><input type="text" name="excessItem[]" value="{{ $item->excess}}" class="form-control" /></td>
                     <td class="text-center"><span> {{ $item->supply->measurementUse->name}} </span></td>
@@ -152,9 +155,9 @@
 
   $(document).on('click', '.addContentRow', function() {
 
-    $('.tableContent tbody tr').removeClass('activeRow')
+    $('.contentTable tbody tr').removeClass('activeRow')
 
-    let idRow = $('.tableContent tbody tr').length + 1;
+    let idRow = $('.contentTable tbody tr').length + 1;
     $('.contentTable').append('<tr class="activeRow">' +
       '<td><input type="hidden" class="idItem" name="idItem[]"/> <input type="text" class="form-control itemContent' + idRow + '" /></td>' +
       '<td><input type="text" name="quantityItem[]" class="form-control" /></td>' +
