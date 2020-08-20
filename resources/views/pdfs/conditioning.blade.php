@@ -186,7 +186,7 @@
          <tr>
            <td class="text-center">{{ $recipe->recipe->code }}</td>
            <td>{{ $recipe->recipe->name }}</td>
-           <td class="text-right">{{ $recipe->quantity }}</td>
+           <td class="text-right">{{ number_format($recipe->quantity,4) }}</td>
            <td class="text-center">caps</td>
            <td class="text-center">{{ $recipe->excess }}</td>
            <td class="text-right">{{ number_format(($recipe->quantity + ($recipe->quantity * ($recipe->excess / 100))),4) }}</td>
@@ -199,7 +199,7 @@
          <tr>
            <td class="text-center">{{ $supply->supply->code }}</td>
            <td>{{ $supply->supply->name }}</td>
-           <td class="text-right">{{ $supply->quantity }}</td>
+           <td class="text-right">{{ number_format($supply->quantity,4) }}</td>
            <td class="text-center">{{ $supply->supply->measurementUse->code }}</td>
            <td class="text-center">{{ $supply->excess }}</td>
            <td class="text-right">{{ number_format(($supply->quantity + ($supply->quantity * ($supply->excess / 100))),4) }}</td>

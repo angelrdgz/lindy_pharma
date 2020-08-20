@@ -18,7 +18,21 @@ class DecreaseController extends Controller
 {
     public function index()
     {
-        $decreases = Decrease::all();
+        switch (Auth::user()->role_id) {
+            case 1:
+                $decreases = Decrease::all();
+                break;
+            case 2:
+                $decreases = Decrease::where('status', 'Creada')->get();
+                break;
+            case 3:
+                $decreases = Decrease::where('status', 'Liberado')->get();
+                break;
+            default:
+            $decreases = Decrease::all();
+                break;
+        }
+        
         return view('decreases.index', ["decreases" => $decreases]);
     }
 
@@ -135,6 +149,7 @@ class DecreaseController extends Controller
         $decrease = Decrease::find($id);
         $decrease->departure_id = $request->order_number;
         $decrease->description = $request->description;
+        $decrease->status = $request->status == NULL ? $decrease->status:$request->status;
         $decrease->created_by = Auth::user()->id;
         $decrease->save();
 

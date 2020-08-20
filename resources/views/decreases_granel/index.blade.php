@@ -34,7 +34,7 @@
                         <tbody>
                             @foreach($decreases as $decrease)
                             <tr>
-                                <td>{{ $decrease->package_id !== NULL ? $decrease->package_id:"Sin asignar" }}</td>
+                                <td>{{ $decrease->package_id !== NULL ? "OT-".sprintf("%04s", $decrease->package_id):"Sin asignar" }}</td>
                                 <td>{{ $decrease->package_id !== NULL ? $decrease->package->lot:"Sin asignar" }}</td>
                                 <td>{{ $decrease->user->name }}</td>
                                 <td>{{ date('d/m/Y H:i', strtotime($decrease->created_at)) }}</td>

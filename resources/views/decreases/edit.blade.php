@@ -59,6 +59,15 @@
                             <label for="">No. de Lote</label>
                             <input name="lot" id="" readonly value="{{ $decrease->departure_id == NULL ? '':$decrease->departure->lot }}" class="form-control">
                         </div>
+                        @if(Auth::user()->role_id == 2)
+                        <div class="col-sm-4">
+                            <label for="">Estatus</label>
+                            <select name="status"  class="form-control">
+                                <option value="Creada" selected>Creada</option>
+                                <option value="Liberado">Liberado</option>
+                            </select>
+                        </div>
+                        @endif
                     </div>
                     <div class="row my-3">
                         <div class="col-sm-12">

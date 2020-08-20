@@ -12,4 +12,8 @@ class DecreasePackageSupply extends Model
     public function supply(){
         return $this->belongsTo('App\Supply', 'supply_id', 'id');
     }
+
+    public function entrances(){
+        return $this->hasMany('App\DecreasePackageSupplyEntrance', 'decrease_package_supply_id', 'id')->orderBy("created_at", "ASC");
+    }
 }

@@ -19,18 +19,18 @@
                     <div class="row">
                         <div class="col-sm-4">
                             <label for="">OT</label>
-                            <input type="text" name="package_id" class="form-control" value="{{ $decrease->package->lot}}" readonly>
+                            <input type="text" name="package_id" class="form-control" value="{{ $decrease->package_id == NULL ? '':$decrease->package->lot}}" readonly>
                             @error('package_id')
                             <p class="text-red-500 text-xs text-danger italic">{{ $message }}</p>
                             @enderror
                         </div>
                         <div class="col-sm-4">
                             <label for="">Producto</label>
-                            <input name="product" type="text" readonly value="{{ $decrease->package->product->name }}" class="form-control acSupply">
+                            <input name="product" type="text" readonly value="{{ $decrease->package_id == NULL ? '':$decrease->package->product->name }}" class="form-control acSupply">
                         </div>
                         <div class="col-sm-4">
                             <label for="">Presentación</label>
-                            <input name="presentation" id="" readonly value="{{ $decrease->package->presentation }}" class="form-control">
+                            <input name="presentation" id="" readonly value="{{ $decrease->package_id == NULL ? '':$decrease->package->presentation }}" class="form-control">
                         </div>
                     </div>
                     <div class="row my-3">

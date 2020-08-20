@@ -147,14 +147,14 @@
 <body>
     <table class="table">
         <tbody>
-        <tr>
-        <td>
-        <img src="{{ public_path().'/images/logo.png' }}" class="logo" alt="">
-        </td>
-        <td class="text-right">
-         <h2>Descarga Extra de Granel</h2>
-        </td>
-      </tr>
+            <tr>
+                <td>
+                    <img src="{{ public_path().'/images/logo.png' }}" class="logo" alt="">
+                </td>
+                <td class="text-right">
+                    <h2>Descarga Extra de Granel</h2>
+                </td>
+            </tr>
         </tbody>
     </table>
     <br><br>
@@ -172,15 +172,17 @@
         </thead>
         <tbody>
             @foreach($decrease->recipes as $recipe)
-             <tr>
-                 <td class="font-10">{{ $decrease->package_id == NULL ? 'Sin asignar':$decrease->package->id }}</td>
-                 <td class="font-10">{{ $decrease->package_id == NULL ? 'Sin asignar':$decrease->package->product->name }}</td>
-                 <td class="font-10">{{ $decrease->package_id == NULL ? 'Sin asignar':$decrease->package->lot }}</td>
-                 <td class="font-10">{{ $recipe->recipe->code }}</td>
-                 <td class="font-10">{{ $recipe->recipe->name }}</td>
-                 <td class="font-10">{{ number_format($recipe->quantity,2) }}</td>
-                 <td class="font-10">{{ date("d/m/Y H:i", strtotime($decrease->created_at)) }}</td>
-             </tr>
+                @foreach($recipe->ots as $ot)
+                <tr>
+                    <td class="font-10">{{ $decrease->package_id == NULL ? 'Sin asignar':$decrease->package->id }}</td>
+                    <td class="font-10">{{ $decrease->package_id == NULL ? 'Sin asignar':$decrease->package->product->name }}</td>
+                    <td class="font-10">{{ $decrease->package_id == NULL ? 'Sin asignar':$decrease->package->lot }}</td>
+                    <td class="font-10">{{ $recipe->recipe->code }}</td>
+                    <td class="font-10">{{ $recipe->recipe->name }}</td>
+                    <td class="font-10">{{ number_format($recipe->quantity,2) }}</td>
+                    <td class="font-10">{{ date("d/m/Y H:i", strtotime($decrease->created_at)) }}</td>
+                </tr>
+                @endforeach
             @endforeach
         </tbody>
     </table>
@@ -195,37 +197,42 @@
                 <th class="text-center box-blue font-10">Código</th>
                 <th class="text-center box-blue font-10">Insumo</th>
                 <th class="text-center box-blue font-10">Cantidad</th>
+                <th class="text-center box-blue font-10">No. de Entrada</th>
                 <th class="text-center box-blue font-10">Fecha</th>
             </tr>
         </thead>
         <tbody>
             @foreach($decrease->supplies as $supply)
-             <tr>
-                 <td class="font-10">{{ $decrease->package_id == NULL ? 'Sin asignar':$decrease->package->id }}</td>
-                 <td class="font-10">{{ $decrease->package_id == NULL ? 'Sin asignar':$decrease->package->product->name }}</td>
-                 <td class="font-10">{{ $decrease->package_id == NULL ? 'Sin asignar':$decrease->package->lot }}</td>
-                 <td class="font-10">{{ $supply->supply->code }}</td>
-                 <td class="font-10">{{ $supply->supply->name }}</td>
-                 <td class="font-10">{{ number_format($supply->quantity,2) }}</td>
-                 <td class="font-10">{{ date("d/m/Y H:i", strtotime($decrease->created_at)) }}</td>
-             </tr>
+                @foreach($supply->entrances as $entrance)
+                <tr>
+                    <td class="font-10">{{ $decrease->package_id == NULL ? 'Sin asignar':$decrease->package->id }}</td>
+                    <td class="font-10">{{ $decrease->package_id == NULL ? 'Sin asignar':$decrease->package->product->name }}</td>
+                    <td class="font-10">{{ $decrease->package_id == NULL ? 'Sin asignar':$decrease->package->lot }}</td>
+                    <td class="font-10">{{ $supply->supply->code }}</td>
+                    <td class="font-10">{{ $supply->supply->name }}</td>
+                    <td class="font-10">{{ number_format($supply->quantity,2) }}</td>
+                    <td class="font-10">{{ '#' . strval(sprintf("%05s", $entrance->entrance_number)) }}</td>
+                    <td class="font-10">{{ date("d/m/Y H:i", strtotime($decrease->created_at)) }}</td>
+                </tr>
+                @endforeach
             @endforeach
         </tbody>
     </table>
     <br><br>
     <table style="width:100%;" cellspacing="0">
-    <tbody>
-      <tr>
-        <td style="font-size: 10px;">Entregó</td>
-        <td style="width:15%;">_________________<td>
-        <td class="text-left" style="font-size: 10px;">Fecha</td>
-        <td style="width:15%;"></td>
-        <td style="font-size: 10px;">Recibió</td>
-        <td style="width:15%;">_________________</td>
-        <td style="font-size: 10px;">Fecha</td>
-        <td style="width:15%;"></td>
-      </tr>
-    </tbody>
+        <tbody>
+            <tr>
+                <td style="font-size: 10px;">Entregó</td>
+                <td style="width:15%;">_________________
+                <td>
+                <td class="text-left" style="font-size: 10px;">Fecha</td>
+                <td style="width:15%;"></td>
+                <td style="font-size: 10px;">Recibió</td>
+                <td style="width:15%;">_________________</td>
+                <td style="font-size: 10px;">Fecha</td>
+                <td style="width:15%;"></td>
+            </tr>
+        </tbody>
     </table>
 </body>
 

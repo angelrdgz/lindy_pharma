@@ -241,7 +241,7 @@
       <tr>
         <td class="text-center">{{ $supply->supply->code }}</td>
         <td>{{ $supply->supply->name }}</td>
-        <td class="text-right">{{ $supply->quantity }}</td>
+        <td class="text-right">{{ number_format($supply->quantity,4) }}</td>
         <td class="text-center">{{ $supply->supply->measurementUse->code }}</td>
         @if($order->type == 1)
         <td class="text-center">{{ $supply->excess }}</td>
@@ -252,7 +252,7 @@
         <td class="text-center">%</td>
         @endif
 
-        <td class="text-right">{{ number_format(((($supply->quantity + ($supply->quantity * ($supply->excess / 100))) * $order->quantity) / 1000),1)  }}</td>
+        <td class="text-right">{{ number_format(((($supply->quantity + ($supply->quantity * ($supply->excess / 100))) * $order->quantity) / 1000),4)  }}</td>
         <td class="text-center">g</td>
         <td class="text-center">
          <?php

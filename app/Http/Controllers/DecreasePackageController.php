@@ -21,7 +21,21 @@ class DecreasePackageController extends Controller
 {
     public function index()
     {
-        $decreases = DecreasePackage::all();
+        switch (Auth::user()->role_id) {
+            case 1:
+                $decreases = DecreasePackage::all();
+                break;
+            case 2:
+                $decreases = DecreasePackage::where('status', 'Creada')->get();
+                break;
+            case 3:
+                $decreases = DecreasePackage::where('status', 'Liberado')->get();
+                break;
+            default:
+            $decreases = DecreasePackage::all();
+                break;
+        }
+
         return view('decreases_granel.index', ["decreases" => $decreases]);
     }
 
@@ -76,6 +90,7 @@ class DecreasePackageController extends Controller
         $decrease->package_id = $request->package_id;
         $decrease->description = $request->description;
         $decrease->created_by = Auth::user()->id;
+        $decrease->status = 'Creada';
         $decrease->save();
 
         if ($request->idRecipe !== NULL) {
@@ -151,6 +166,7 @@ class DecreasePackageController extends Controller
         $decrease->package_id = $request->package_id;
         $decrease->description = $request->description;
         $decrease->created_by = Auth::user()->id;
+        $decrease->status = $request->status == NULL ? $decrease->status:$request->status;
         $decrease->save();
 
         $decrease->recipes()->delete();

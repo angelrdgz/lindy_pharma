@@ -47,6 +47,15 @@
                             <label for="">Presentación</label>
                             <input name="presentation" id="" readonly value="{{ $decrease->package_id == NULL ? '':$decrease->package->lot }}" class="form-control">
                         </div>
+                        @if(Auth::user()->role_id == 2)
+                        <div class="col-sm-4">
+                            <label for="">Estatus</label>
+                            <select name="status"  class="form-control">
+                                <option value="Creada" selected>Creada</option>
+                                <option value="Liberado">Liberado</option>
+                            </select>
+                        </div>
+                        @endif
                     </div>
                     <div class="row my-3">
                         <div class="col-sm-12">
