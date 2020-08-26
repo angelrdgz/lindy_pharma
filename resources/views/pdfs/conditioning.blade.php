@@ -81,9 +81,9 @@
          <h2 class="text-center ">ORDEN DE ACONDICIONAMIENTO</h2>
         </td>
         <td class="text-right">
-          <p style="margin:1px;">Anexo 1</p>
+          <p style="margin:1px;">Anexo 2</p>
           <p style="margin:1px;">LPH-4K-02</p>
-          <p style="margin:1px;">rev: Nuevo</p>
+          <p style="margin:1px;">Rev: Nuevo</p>
         </td>
       </tr>
       <tr>

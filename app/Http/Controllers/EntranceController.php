@@ -316,9 +316,9 @@ class EntranceController extends Controller
                         'Cantidad Surtida (kg)' => number_format(($entrance->delivery_quantity / 1000), 4),
                         'Cantidad Remanente (kg)' => number_format(($totals[$entrance->entrance_number] - ($entrance->delivery_quantity / 1000)), 4),
                         'Tipo' => 'Descarga',
-                        'OT' => $decrease->decrease->departure->order_number,
-                        'Producto' => $decrease->decrease->departure->recipe->name,
-                        'Lote' => $decrease->decrease->departure->lot,
+                        'OT' => $decrease->decrease->departure_id == NULL ? "Sin asignar":$decrease->decrease->departure->order_number,
+                        'Producto' => $decrease->decrease->departure_id == NULL ? "Sin asignar":$decrease->decrease->departure->recipe->name,
+                        'Lote' => $decrease->decrease->departure_id == NULL ? "Sin asignar":$decrease->decrease->departure->lot,
                     );
 
                     $totals[$entrance->entrance_number] -= ($entrance->delivery_quantity / 1000);
@@ -346,9 +346,9 @@ class EntranceController extends Controller
                         'Cantidad Surtida (kg)' => number_format(($entrance->delivery_quantity / 1000), 4),
                         'Cantidad Remanente (kg)' => number_format(($totals[$entrance->entrance_number] - ($entrance->delivery_quantity / 1000)), 4),
                         'Tipo' => 'Descarga Paquete',
-                        'OT' => $decrease->decrease->departure->order_number,
-                        'Producto' => $decrease->decrease->departure->recipe->name,
-                        'Lote' => $decrease->decrease->departure->lot,
+                        'OT' => $decrease->decrease->package_id == NULL ? "Sin asignar":$decrease->decrease->departure->order_number,
+                        'Producto' => $decrease->decrease->package_id == NULL ? "Sin asignar":$decrease->decrease->departure->recipe->name,
+                        'Lote' => $decrease->decrease->package_id == NULL ? "Sin asignar":$decrease->decrease->departure->lot,
                     );
 
                     $totals[$entrance->entrance_number] -= ($entrance->delivery_quantity / 1000);

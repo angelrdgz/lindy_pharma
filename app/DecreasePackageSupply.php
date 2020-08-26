@@ -9,6 +9,10 @@ class DecreasePackageSupply extends Model
     public $timestamps = false;
     protected $table = "decrease_package_supplies";
 
+    public function decrease(){
+        return $this->belongsTo('App\DecreasePackage', 'decrease_package_id', 'id');
+    }
+
     public function supply(){
         return $this->belongsTo('App\Supply', 'supply_id', 'id');
     }

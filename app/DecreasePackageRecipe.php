@@ -10,6 +10,10 @@ class DecreasePackageRecipe extends Model
 
     protected $table = "decrease_package_recipes";
 
+    public function decrease(){
+        return $this->belongsTo('App\DecreasePackage', 'decrease_package_id', 'id');
+    }
+
     public function recipe(){
         return $this->belongsTo('App\Recipe', 'recipe_id', 'id');
     }

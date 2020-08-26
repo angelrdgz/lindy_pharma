@@ -97,7 +97,7 @@
       <td class="text-right">
         <p style="margin:1px;">Anexo 1</p>
         <p style="margin:1px;">LPH-4K-02</p>
-        <p style="margin:1px;">rev: Nuevo</p>
+        <p style="margin:1px;">Rev: Nuevo</p>
       </td>
     </tr>
     <tr>
@@ -289,7 +289,7 @@
         <td class="text-right"><b>100.00</b></td>
         <td class="text-center">%</td>
         @endif
-        <td class="text-right"><b>{{ number_format(($totalThird/ 1000),1) }}</b></td>
+        <td class="text-right"><b>{{ number_format(($totalThird/ 1000),4) }}</b></td>
         <td class="text-center">g</td>
         <td></td>
       </tr>
