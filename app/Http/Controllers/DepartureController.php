@@ -324,7 +324,7 @@ class DepartureController extends Controller
 
                 foreach ($departure->items as $item) {
                     $total = ($item->quantity + ($item->quantity * ($item->excess / 100))) * $departure->quantity;
-                    $enable = EntranceItem::where('supply_id', $item->supplie_id)->where("status", "Aprobada")->sum("quantity");
+                    $enable = EntranceItem::where('supply_id', $item->supplie_id)->where("status", "Aprobada")->sum("available_quantity");
                     $enable = $this->convert($item->supply->measurement_buy, $item->supply->measurement_use, $enable);
                     if ($total > $enable) {
                         switch ($item->supply->measurement_use) {
@@ -420,6 +420,8 @@ class DepartureController extends Controller
 
             $departure->status = $newStatus;
         }
+
+        dd();
 
 
         $departure->save();
