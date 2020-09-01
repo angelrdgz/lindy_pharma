@@ -421,9 +421,6 @@ class DepartureController extends Controller
             $departure->status = $newStatus;
         }
 
-        dd();
-
-
         $departure->save();
 
         try {
