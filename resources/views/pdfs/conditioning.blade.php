@@ -153,7 +153,7 @@
         <td></td>
         <td></td>
         <td>Precio Máximo al publico</td>
-        <td>${{ number_format($order->price, 4) }}</td>
+        <td>${{ number_format($order->price, 2) }}</td>
       </tr>
       <tr>
         <td>Presentación:</td>

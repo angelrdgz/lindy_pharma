@@ -76,9 +76,9 @@ class PackingController extends Controller
             if(intval(str_replace("OT-", "", $lastRecipe->order_number)) ==  $lastPackage->id){
                 $nextid = ($lastRecipe !== NULL ? intval(str_replace("OT-", "", $lastRecipe->order_number)):0) + ($lastPackage !== NULL ? $lastPackage->id:0) +1;
             }elseif(intval(str_replace("OT-", "", $lastRecipe->order_number)) >  $lastPackage->id){
-                $nextid = ($lastRecipe !== NULL ? intval(str_replace("OT-", "", $lastRecipe->order_number)):0) + ($lastPackage !== NULL ? $lastPackage->id:0);
+                $nextid = ($lastRecipe !== NULL ? intval(str_replace("OT-", "", $lastRecipe->order_number)):0) + ($lastPackage !== NULL ? 1:0);
             }elseif(intval(str_replace("OT-", "", $lastRecipe->order_number)) <  $lastPackage->id){
-                $nextid = ($lastRecipe !== NULL ? intval(str_replace("OT-", "", $lastRecipe->order_number)):0) + ($lastPackage !== NULL ? $lastPackage->id:0);
+                $nextid = $lastPackage->id + 1;
             }
         }else
         {
