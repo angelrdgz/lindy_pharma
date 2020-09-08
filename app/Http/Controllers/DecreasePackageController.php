@@ -107,10 +107,16 @@ class DecreasePackageController extends Controller
         if ($request->idSupply !== NULL) {
 
             foreach ($request->idSupply as $key => $value) {
+                $supply = Supply::find($request->idSupply[$key]);
                 $decreaseSupply = new DecreasePackageSupply();
                 $decreaseSupply->decrease_package_id = $decrease->id;
                 $decreaseSupply->supply_id = $request->idSupply[$key];
-                $decreaseSupply->quantity = $request->quantity[$key];
+                if($supply->measurement_use == 6){
+                    $decreaseSupply->quantity = $request->quantity[$key] * 1000;
+                }else{
+                    $decreaseSupply->quantity = $request->quantity[$key];
+                }
+                
                 $decreaseSupply->save();
             }
         }
@@ -186,10 +192,15 @@ class DecreasePackageController extends Controller
         if ($request->idSupply !== NULL) {
 
             foreach ($request->idSupply as $key => $value) {
+                $supply = Supply::find($request->idSupply[$key]);
                 $decreaseSupply = new DecreasePackageSupply();
                 $decreaseSupply->decrease_package_id = $decrease->id;
                 $decreaseSupply->supply_id = $request->idSupply[$key];
-                $decreaseSupply->quantity = $request->quantity[$key];
+                if($supply->measurement_use == 6){
+                    $decreaseSupply->quantity = $request->quantity[$key] * 1000;
+                }else{
+                    $decreaseSupply->quantity = $request->quantity[$key];
+                }
                 $decreaseSupply->save();
             }
         }
@@ -256,11 +267,11 @@ class DecreasePackageController extends Controller
                     $departureItem->processed = 1;
                 }
 
-                if ($x == 0) {
-                    $package =  Package::find($id);
+                /*if ($x == 0) {
+                    $package =  Package::find($departureItem->decrease->);
                     $package->user_id = Auth::user()->id;
                     $package->save();
-                }
+                }*/
                 $x++;
 
                 $departureItem->save();

@@ -330,16 +330,16 @@ class DepartureController extends Controller
                         switch ($item->supply->measurement_use) {
                             case 6:
                             case 3:
-                                $tag = number_format((($total - $enable) / 1000), 2) . ' gr';
+                                $tag = number_format((($total - $enable) / 1000), 4) . ' gr';
                                 break;
                             case 1:
-                                $tag = number_format(($total - $enable), 2) . ' gr';
+                                $tag = number_format(($total - $enable), 4) . ' gr';
                                 break;
                             case 5:
-                                $tag = number_format(($total - $enable), 2) . ' pza';
+                                $tag = number_format(($total - $enable), 4) . ' pza';
                                 break;
                             default:
-                                $tag = number_format(($total - $enable), 2) . ' pza';
+                                $tag = number_format(($total - $enable), 4) . ' pza';
                                 break;
                         }
                         array_push($supplies, $item->supply->name . ' (' . $tag . ')');

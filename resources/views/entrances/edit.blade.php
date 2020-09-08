@@ -75,7 +75,13 @@
               <table class="table contentTable">
                 <thead>
                   <tr>
-                    <th colspan="{{Auth::user()->role_id == 2 ? '7':'8'}}">Contenido de la orden</th>
+                    @if(in_array(Auth::user()->role_id, [2]))
+                    <th colspan="5">Contenido de la orden</th>
+                    @elseif(in_array(Auth::user()->role_id, [1,6]))
+                    <th colspan="7">Contenido de la orden</th>
+                    @else
+                    <th colspan="8">Contenido de la orden</th>
+                    @endif
                     <th class="text-right">
                       @if(in_array(Auth::user()->role_id, [1,4]))
                       <a class="btn btn-link addContentRow text-primary">Agregar Insumo</a>

@@ -100,9 +100,13 @@
                                         <td  style="max-width:50px;"><input type="text" name="supplyName[]" value="{{ $supply->supply->name }}" class="form-control" readonly></td>
                                         <td style="width:200px !important;">
                                             <div class="input-group m-0 float-left" style="max-width:160px;">
+                                            @if($supply->supply->measurement_use == 6)
+                                                <input type="text" name="quantity[]" value="{{ $supply->quantity / 1000 }}" class="form-control number" {{$supply->processed == 1 ? "readonly":""}}>
+                                                @else
                                                 <input type="text" name="quantity[]" value="{{ $supply->quantity }}" class="form-control number" {{$supply->processed == 1 ? "readonly":""}}>
+                                                @endif
                                                 <div class="input-group-append">
-                                                    <span class="input-group-text" id="basic-addon2">{{$supply->supply->measurementUse->code}}</span>
+                                                    <span class="input-group-text" id="basic-addon2">{{$supply->supply->measurement_use == 6 ? "gr":$supply->supply->measurementUse->code}}</span>
                                                 </div>
                                             </div>
                                         </td>

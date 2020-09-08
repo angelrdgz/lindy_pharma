@@ -66,8 +66,18 @@
                                     @foreach($package->supplies as $supply)
                                     <tr>
                                         <td>{{ $supply->supply->code.' - '.$supply->supply->name }}</td>
+                                        @if($supply->supply->measurement_use == 6)
+                                        <td>{{ number_format(((($supply->quantity + ($supply->quantity * ($supply->excess / 100))) * $package->quantity)/1000),2)}} gr</td>
+                                        @else
                                         <td>{{ number_format((($supply->quantity + ($supply->quantity * ($supply->excess / 100))) * $package->quantity),2)}} pza</td>
-                                        <td><input type="text" class="form-control number" name="deliverQuantity[]" value="{{ $supply->deliver_quantity !== NULL ? $supply->deliver_quantity:(($supply->quantity + ($supply->quantity * ($supply->excess / 100))) * $package->quantity)}}"></td>
+                                        @endif
+                                        <td>
+                                            @if($supply->supply->measurement_use == 6)
+                                            <input type="text" class="form-control number" name="deliverQuantity[]" value="{{ $supply->deliver_quantity !== NULL ? $supply->deliver_quantity:((($supply->quantity + ($supply->quantity * ($supply->excess / 100))) * $package->quantity) /1000)}}">
+                                            @else
+                                            <input type="text" class="form-control number" name="deliverQuantity[]" value="{{ $supply->deliver_quantity !== NULL ? $supply->deliver_quantity:(($supply->quantity + ($supply->quantity * ($supply->excess / 100))) * $package->quantity)}}">
+                                            @endif
+                                        </td>
                                         <td>
                                             <input type="hidden" name="supplyId[]" value="{{ $supply->supply_id }}">
                                             <input type="hidden" name="idSupplyRow[]" value="{{$supply->id}}">

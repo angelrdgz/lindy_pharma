@@ -71,18 +71,16 @@ class PackingController extends Controller
         $lastRecipe = Departure::latest()->first();
         $lastPackage = Package::latest()->first();
 
-        if($lastRecipe !== NULL && $lastPackage !== NULL)
-        {
-            if(intval(str_replace("OT-", "", $lastRecipe->order_number)) ==  $lastPackage->id){
-                $nextid = ($lastRecipe !== NULL ? intval(str_replace("OT-", "", $lastRecipe->order_number)):0) + ($lastPackage !== NULL ? $lastPackage->id:0) +1;
-            }elseif(intval(str_replace("OT-", "", $lastRecipe->order_number)) >  $lastPackage->id){
-                $nextid = ($lastRecipe !== NULL ? intval(str_replace("OT-", "", $lastRecipe->order_number)):0) + ($lastPackage !== NULL ? 1:0);
-            }elseif(intval(str_replace("OT-", "", $lastRecipe->order_number)) <  $lastPackage->id){
+        if ($lastRecipe !== NULL && $lastPackage !== NULL) {
+            if (intval(str_replace("OT-", "", $lastRecipe->order_number)) ==  $lastPackage->id) {
+                $nextid = ($lastRecipe !== NULL ? intval(str_replace("OT-", "", $lastRecipe->order_number)) : 0) + ($lastPackage !== NULL ? $lastPackage->id : 0) + 1;
+            } elseif (intval(str_replace("OT-", "", $lastRecipe->order_number)) >  $lastPackage->id) {
+                $nextid = ($lastRecipe !== NULL ? intval(str_replace("OT-", "", $lastRecipe->order_number)) : 0) + ($lastPackage !== NULL ? 1 : 0);
+            } elseif (intval(str_replace("OT-", "", $lastRecipe->order_number)) <  $lastPackage->id) {
                 $nextid = $lastPackage->id + 1;
             }
-        }else
-        {
-            $nextid = ($lastRecipe !== NULL ? intval(str_replace("OT-", "", $lastRecipe->order_number)):0) + ($lastPackage !== NULL ? $lastPackage->id:0) + 1;
+        } else {
+            $nextid = ($lastRecipe !== NULL ? intval(str_replace("OT-", "", $lastRecipe->order_number)) : 0) + ($lastPackage !== NULL ? $lastPackage->id : 0) + 1;
         }
 
         $order_number = $nextid;
@@ -148,7 +146,7 @@ class PackingController extends Controller
 
     public function update(Request $request, $id)
     {
-        if (in_array(Auth::user()->role_id, [3,6])) {
+        if (in_array(Auth::user()->role_id, [3, 6])) {
             $package = Package::find($id);
             if ($package->status == 'Liberado' && $request->status == 'Empacado') {
                 $package->quantity_real = $request->total;
@@ -203,6 +201,7 @@ class PackingController extends Controller
                 foreach ($package->supplies as $item) {
                     $total = ($item->quantity + ($item->quantity * ($item->excess / 100))) * $package->quantity;
                     $enable = floatval(EntranceItem::where('supply_id', $item->supply_id)->where("status", "Aprobada")->sum("available_quantity"));
+                    $enable = $this->convert($item->supply->measurement_buy, $item->supply->measurement_use, $enable);
                     if ($total > $enable) {
                         switch ($item->supply->measurement_use) {
                             case 6:
@@ -317,9 +316,21 @@ class PackingController extends Controller
 
         foreach ($request->idSupplyRow as $key => $value) {
 
+            $supply = Supply::find($request->supplyId[$key]);
+
             $departureItem = PackageSupply::where('id', $request->idSupplyRow[$key])->first();
             $departureItem->deliver_date = date('Y-m-d'); // $request->deliverDate[$key];
-            $departureItem->deliver_quantity = $request->deliverQuantity[$key];
+            switch ($supply->measurement_use) {
+                case 3:
+                case 6:
+                    $departureItem->deliver_quantity = $request->deliverQuantity[$key] * 1000;
+                    break;
+
+                default:
+                    $departureItem->deliver_quantity = $request->deliverQuantity[$key];
+                    break;
+            }
+
 
             $totalNeedIt = ($departureItem->quantity + ($departureItem->quantity * ($departureItem->excess / 100))) * $departureItem->package->quantity;
             if ($request->processed[$key] == 0 && $request->orderNumber[$key] !== NULL) {
@@ -331,16 +342,20 @@ class PackingController extends Controller
                 foreach ($ids as $idx) {
 
                     $entrance = EntranceItem::find($idx);
-                    $entranceQuantity = $entrance->available_quantity;
+                    if($supply->measurement_use == 6 || $supply->measurement_use == 3){
+                        $entranceQuantity = $this->convert($entrance->supply->measurement_buy, $entrance->supply->measurement_use, $entrance->available_quantity);
+                    }else{
+                        $entranceQuantity = $entrance->available_quantity;                        
+                    }
+                    
                     if ($totalForDiscount >= $entranceQuantity) {
                         $entrance->available_quantity = 0;
                     } else {
-                        $entrance->available_quantity = $entranceQuantity - $totalForDiscount;
+                        $entrance->available_quantity = $this->reverse($entrance->supply->measurement_buy, $entrance->supply->measurement_use, ($entranceQuantity - $totalForDiscount));
                     }
 
                     $entrance->save();
 
-                    $supply = Supply::find($request->supplyId[$key]);
                     if ($totalForDiscount >= $entranceQuantity) {
                         $supply->stock = $supply->stock - $entranceQuantity;
                         $different = $entranceQuantity;
@@ -394,9 +409,48 @@ class PackingController extends Controller
         return $pdf->stream('numeros_de_lote_' . $package->id . '.pdf');
     }
 
-    public function destroy(Request $request, $id){
+    public function destroy(Request $request, $id)
+    {
         $package = Package::find($id);
-        $package->delete();        
+        $package->delete();
         return redirect('ordenes-de-acondicionamiento')->with('success', 'Orden eliminada correctamente');
+    }
+
+    private function convert($type1, $type2, $quantity)
+    {
+        $total = 0;
+
+        if ($type1 == 2 && $type2 == 1) {
+            $total = $quantity * 1000;
+        } elseif ($type1 == 2 && $type2 == 6) {
+            $total = $quantity * 1000000;
+        } elseif ($type1 == 4 && $type2 == 6) {
+            $total = $quantity * 1000;
+        } elseif ($type1 == 4 && $type2 == 3) {
+            $total = $quantity * 1000;
+        } else {
+            $total = $quantity;
+        }
+
+        return $total;
+    }
+
+    private function reverse($type1, $type2, $quantity)
+    {
+        $total = 0;
+
+        if ($type1 == 2 && $type2 == 1) {
+            $total = $quantity / 1000;
+        } elseif ($type1 == 2 && $type2 == 6) {
+            $total = $quantity / 1000000;
+        } elseif ($type1 == 4 && $type2 == 6) {
+            $total = $quantity / 1000;
+        } elseif ($type1 == 4 && $type2 == 3) {
+            $total = $quantity / 1000;
+        } else {
+            $total = $quantity;
+        }
+
+        return $total;
     }
 }

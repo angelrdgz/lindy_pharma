@@ -181,7 +181,7 @@
                     <td class="font-10">{{ $decrease->departure_id == NULL ? "Sin asignar":$decrease->departure->lot }}</td>
                     <td class="font-10">{{ $supply->supply->code }}</td>
                     <td class="font-10">{{ $supply->supply->name }}</td>
-                    <td class="font-10">{{ number_format(($entrance->quantity * 1000),2) }} g</td>
+                    <td class="font-10">{{ number_format(($entrance->quantity / 1000),2) }} g</td>
                     <td class="font-10">{{ '#' . strval(sprintf("%05s", $entrance->entrance_number)) }}</td>
                     <td class="font-10">{{ date("d/m/Y H:i", strtotime($decrease->created_at)) }}</td>
                 </tr>

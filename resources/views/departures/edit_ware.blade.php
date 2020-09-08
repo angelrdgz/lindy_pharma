@@ -32,7 +32,7 @@
                                     @foreach($departure->items as $item)
                                     <tr>
                                         <td>{{ $item->supply->code.' '.$item->supply->name }}</td>
-                                        <td>{{ number_format(((($item->quantity + ($item->quantity * ($item->excess / 100))) * $departure->quantity) / 1000),2)}} gr</td>
+                                        <td>{{ number_format(((($item->quantity + ($item->quantity * ($item->excess / 100))) * $departure->quantity) / 1000),5)}} gr</td>
                                         <td><input type="text" class="form-control number" name="deliverQuantity[]" value="{{ $item->deliver_quantity !== NULL ? $item->deliver_quantity:((($item->quantity + ($item->quantity * ($item->excess / 100))) * $departure->quantity) / 1000)}}"></td>
                                         <td>
                                             <input type="hidden" name="id[]" value="{{$item->id}}">
@@ -40,7 +40,12 @@
                                             <input type="hidden" name="processed[]" value="{{$item->processed}}">
                                             <input type="hidden" name="orderNumber[]" value="{{$item->order_number}}">
                                             <select id="" class="form-control selectPicker" multiple>
-                                                <?php $exploded = explode(",", $item->order_number); ?>
+                                                <?php
+                                                $exploded = [];
+                                                foreach ($item->entrances()->pluck('entrance_number') as $key => $value) {
+                                                    array_push($exploded, $value);
+                                                }
+                                                ?>
                                                 @foreach($item->supply->entranceNumbers($item->supply->id) as $order)
                                                 <option value="{{ $order->id}}" {{ in_array($order->id, $exploded) ? "selected":""}}>{{sprintf("%05s", $order->id)}}</option>
                                                 @endforeach
@@ -78,11 +83,11 @@
             noneSelectedText: "Seleccionar Entrada"
         });
 
-        $('.selectPicker').on('changed.bs.select', function (e, clickedIndex, isSelected, previousValue) {
+        $('.selectPicker').on('changed.bs.select', function(e, clickedIndex, isSelected, previousValue) {
 
             var ids = [];
 
-            $.each( e.target.selectedOptions , function( index, obj ){
+            $.each(e.target.selectedOptions, function(index, obj) {
                 ids.push(obj.value)
             });
 
