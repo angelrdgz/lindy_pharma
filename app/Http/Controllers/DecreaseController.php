@@ -50,12 +50,9 @@ class DecreaseController extends Controller
             case 2:
                 $request->validate(
                     [
-                        'idSupply' => 'required|array',
                         'description' => 'required',
                     ],
                     [
-                        'idSupply.required' => 'La descarga requiere al menos un insumo',
-                        'idSupply.array' => 'La descarga requiere al menos un insumo',
                         'description.required' => 'La descripción es requerida',
                     ]
                 );
