@@ -45,7 +45,7 @@ class DecreaseController extends Controller
 
     public function store(Request $request)
     {
-        switch (Auth::user()->id) {
+        switch (Auth::user()->role_id) {
             case 1:
             case 2:
                 $request->validate(
