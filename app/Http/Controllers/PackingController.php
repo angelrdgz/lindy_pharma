@@ -48,7 +48,7 @@ class PackingController extends Controller
             [
                 'product' => 'required',
                 'client' => 'required',
-                'lot' => 'required|unique:packages',
+                'lot' => 'required',
                 'form' => 'required',
                 'quantity' => 'required',
                 'price' => 'required',
