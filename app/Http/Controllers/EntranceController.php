@@ -321,7 +321,7 @@ class EntranceController extends Controller
                         'Lote' => $decrease->decrease->departure_id == NULL ? "Sin asignar":$decrease->decrease->departure->lot,
                     );
 
-                    $totals[$entrance->entrance_number] -= ($entrance->delivery_quantity / 1000);
+                    $totals[$entrance->entrance_number] -= ($entrance->delivery_quantity / 1000000);
                     $items[] = $newdata;
                 }
             }
@@ -351,7 +351,7 @@ class EntranceController extends Controller
                         'Lote' => $decrease->decrease->package_id == NULL ? "Sin asignar":$decrease->decrease->departure->lot,
                     );
 
-                    $totals[$entrance->entrance_number] -= ($entrance->delivery_quantity / 1000);
+                    $totals[$entrance->entrance_number] -= ($entrance->delivery_quantity / 1000000);
                     $items[] = $newdata;
                 }
             }
