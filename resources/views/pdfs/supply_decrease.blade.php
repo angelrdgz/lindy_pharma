@@ -174,8 +174,8 @@
             </thead>
             <tbody>
                 @foreach($decrease->supplies as $supply)
-                 @foreach($supply->entrances as $entrance)
-                 <tr>
+                @foreach($supply->entrances as $entrance)
+                <tr>
                     <td class="font-10">{{ $decrease->departure_id == NULL ? "Sin asignar":$decrease->departure->order_number }}</td>
                     <td class="font-10">{{ $decrease->departure_id == NULL ? "Sin asignar":$decrease->departure->recipe->name }}</td>
                     <td class="font-10">{{ $decrease->departure_id == NULL ? "Sin asignar":$decrease->departure->lot }}</td>
@@ -185,7 +185,7 @@
                     <td class="font-10">{{ '#' . strval(sprintf("%05s", $entrance->entrance_number)) }}</td>
                     <td class="font-10">{{ date("d/m/Y H:i", strtotime($decrease->created_at)) }}</td>
                 </tr>
-                 @endforeach
+                @endforeach
                 @endforeach
             </tbody>
         </table>
