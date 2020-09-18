@@ -161,6 +161,7 @@ class SupplyController extends Controller
                 $supply->supply_id = $supply->supply->code;
                 $supply->name = $supply->supply->name;
                 $supply->supplier = $supply->entrance->supplier->name;
+                $supply->available_quantity = $supply->status == "Aprobada" ? $supply->available_quantity:0;
                 $supply->entrance_id = '#' . strval(sprintf("%05s", $supply->entrance_id));
                 $supply->idx = '#' . strval(sprintf("%05s", $supply->id));
             });
@@ -175,6 +176,7 @@ class SupplyController extends Controller
                 $supply->supply_id = $supply->supply->code;
                 $supply->name = $supply->supply->name;
                 $supply->supplier = $supply->entrance->supplier->name;
+                $supply->available_quantity = $supply->status == "Aprobada" ? $supply->available_quantity:0;
                 $supply->entrance_id = '#' . strval(sprintf("%05s", $supply->entrance_id));
                 $supply->idx = '#' . strval(sprintf("%05s", $supply->id));
             });
