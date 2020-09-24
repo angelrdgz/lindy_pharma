@@ -63,18 +63,16 @@ class DepartureController extends Controller
         $lastPackage = Package::latest()->first();
 
 
-        if($lastRecipe !== NULL && $lastPackage !== NULL)
-        {
-            if(intval(str_replace("OT-", "", $lastRecipe->order_number)) ==  $lastPackage->id){
-                $nextid = ($lastRecipe !== NULL ? intval(str_replace("OT-", "", $lastRecipe->order_number)):0) + ($lastPackage !== NULL ? $lastPackage->id:0) +1;
-            }elseif(intval(str_replace("OT-", "", $lastRecipe->order_number)) >  $lastPackage->id){
-                $nextid = ($lastRecipe !== NULL ? intval(str_replace("OT-", "", $lastRecipe->order_number)):0) + ($lastPackage !== NULL ? 1:0);
-            }elseif(intval(str_replace("OT-", "", $lastRecipe->order_number)) <  $lastPackage->id){
+        if ($lastRecipe !== NULL && $lastPackage !== NULL) {
+            if (intval(str_replace("OT-", "", $lastRecipe->order_number)) ==  $lastPackage->id) {
+                $nextid = ($lastRecipe !== NULL ? intval(str_replace("OT-", "", $lastRecipe->order_number)) : 0) + ($lastPackage !== NULL ? $lastPackage->id : 0) + 1;
+            } elseif (intval(str_replace("OT-", "", $lastRecipe->order_number)) >  $lastPackage->id) {
+                $nextid = ($lastRecipe !== NULL ? intval(str_replace("OT-", "", $lastRecipe->order_number)) : 0) + ($lastPackage !== NULL ? 1 : 0);
+            } elseif (intval(str_replace("OT-", "", $lastRecipe->order_number)) <  $lastPackage->id) {
                 $nextid = $lastPackage->id + 1;
             }
-        }else
-        {
-            $nextid = ($lastRecipe !== NULL ? intval(str_replace("OT-", "", $lastRecipe->order_number)):0) + ($lastPackage !== NULL ? $lastPackage->id:0) + 1;
+        } else {
+            $nextid = ($lastRecipe !== NULL ? intval(str_replace("OT-", "", $lastRecipe->order_number)) : 0) + ($lastPackage !== NULL ? $lastPackage->id : 0) + 1;
         }
 
         $order_number = "OT-" . sprintf("%04s", $nextid);
@@ -189,7 +187,7 @@ class DepartureController extends Controller
         $order = Departure::find($id);
         $recipe = Recipe::find($order->recipe_id);
         $totalContent = DB::select('SELECT quantity + (quantity * (excess / 100)) as "Total" FROM recipe_supplies where recipe_id = :id AND type = 1', ["id" => $order->recipe_id]);
-        $totals = DB::select('SELECT quantity + (quantity * (excess / 100)) as "Total" FROM recipe_supplies where recipe_id = :id AND type = :type', ["id" => $order->recipe_id, "type"=>$order->type]);
+        $totals = DB::select('SELECT quantity + (quantity * (excess / 100)) as "Total" FROM recipe_supplies where recipe_id = :id AND type = :type', ["id" => $order->recipe_id, "type" => $order->type]);
         $tt = 0;
         foreach ($totals as $total) {
             $tt += $total->Total;
@@ -219,6 +217,44 @@ class DepartureController extends Controller
     {
 
         $x = 0;
+
+        $supplies = [];
+
+        foreach ($request->id as $key => $value) {
+
+            $departureItem = DepartureItem::where('id', $request->id[$key])->first();
+
+            if ($request->processed[$key] == 0 && $request->orderNumber[$key] !== NULL) {
+
+                $ids = explode(",", $request->orderNumber[$key]);
+
+                $totalForDiscount = $totalNeedIt = ($departureItem->quantity + ($departureItem->quantity * ($departureItem->excess / 100))) * $departureItem->departure->quantity;
+
+                $entranceTotal = $this->convert($departureItem->supply->measurement_buy, $departureItem->supply->measurement_use, EntranceItem::whereIn('id', $ids)->sum('available_quantity'));
+
+                if ($totalForDiscount > $entranceTotal) {
+                    switch ($departureItem->supply->measurement_use) {
+                        case 6:
+                        case 3:
+                            $tag = number_format((($totalForDiscount - $entranceTotal) / 1000), 4) . ' gr';
+                            break;
+                        case 1:
+                            $tag = number_format(($totalForDiscount - $entranceTotal), 4) . ' gr';
+                            break;
+                        case 5:
+                            $tag = number_format(($totalForDiscount - $entranceTotal), 4) . ' pza';
+                            break;
+                        default:
+                            $tag = number_format(($totalForDiscount - $entranceTotal), 4) . ' pza';
+                            break;
+                    }
+                    array_push($supplies, $departureItem->supply->name . ' (' . $tag . ')');
+                }
+
+                if (count($supplies) > 0)
+                    return redirect('ordenes-de-fabricacion')->with('error', 'Estos insumos no cuentan con suficiente stock disponible: ' . implode(", ", $supplies));
+            }
+        }
 
         foreach ($request->id as $key => $value) {
 
