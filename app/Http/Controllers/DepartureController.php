@@ -250,11 +250,11 @@ class DepartureController extends Controller
                     }
                     array_push($supplies, $departureItem->supply->name . ' (' . $tag . ')');
                 }
-
-                if (count($supplies) > 0)
-                    return redirect('ordenes-de-fabricacion')->with('error', 'Estos insumos no cuentan con suficiente stock disponible: ' . implode(", ", $supplies));
             }
         }
+
+        if (count($supplies) > 0)
+                    return redirect('ordenes-de-fabricacion')->with('error', 'Estos insumos no cuentan con suficiente stock disponible: ' . implode(", ", $supplies));
 
         foreach ($request->id as $key => $value) {
 
